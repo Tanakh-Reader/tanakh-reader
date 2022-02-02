@@ -1,3 +1,5 @@
 data_files/*
 !data_files/*.md
 !data_files/*.txt
+data_code/convert_csv_data.ipynb
+Flutter/python_backend/
