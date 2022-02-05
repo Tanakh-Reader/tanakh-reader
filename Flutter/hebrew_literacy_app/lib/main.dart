@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
+import 'package:provider/provider.dart';
 
 import 'ui/screens/screens.dart';
 
+import 'data/providers/hebrew_passage.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.black,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: ReaderScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => HebrewPassage()
+        ),
+      ],
+      child: MaterialApp(
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: Colors.black,
+        ),
+        debugShowCheckedModeBanner: false,
+        home: const Scaffold(
+          body: Center(
+            child: ReaderScreen(),
+          ),
         ),
       ),
     );

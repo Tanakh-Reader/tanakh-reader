@@ -3,3 +3,5 @@ data_files/*
 !data_files/*.txt
 data_code/convert_csv_data.ipynb
 Flutter/python_backend/
+Flutter/hebrew_literacy_app/assets/db/bhsa.sqlite
+Flutter/hebrew_literacy_app/assets/db/bhsa_words.db
