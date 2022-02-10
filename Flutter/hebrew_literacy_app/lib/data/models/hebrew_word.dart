@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 class HebrewWord with ChangeNotifier {
   /* Consider also adding st (state), ls (lexical set) */
-  int? id;
-  int? freqLex;
+  int? id; // _id
+  int? freqLex; // freq_lex
   String? consText; // g_cons_utf8
   String? pointedText; // g_word_utf8
   String? trailer; // trailer_utf8
+  String? gloss; // gloss
   String? gender; // gn
   String? number; // nu
   String? person; // ps
@@ -23,6 +24,7 @@ class HebrewWord with ChangeNotifier {
     required this.consText,
     required this.pointedText,
     required this.trailer,
+    required this.gloss,
     required this.gender,
     required this.number,
     required this.person,
@@ -46,6 +48,7 @@ class HebrewWord with ChangeNotifier {
     consText: json["g_cons_utf8"],
     pointedText: json["g_word_utf8"],
     trailer: json["trailer_utf8"],
+    gloss: json['gloss'],
     gender: json["gn"],
     number: json["nu"],
     person: json["ps"],
@@ -60,6 +63,7 @@ class HebrewWord with ChangeNotifier {
     "g_cons_utf8": consText,
     "g_word_utf8": pointedText,
     "trailer_utf8": trailer,
+    "gloss": gloss,
     "gn": gender,
     "nu": number,
     "ps": person,

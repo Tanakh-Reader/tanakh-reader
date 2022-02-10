@@ -5,7 +5,6 @@ import '../widgets/reader_screen/reader_screen.dart';
 import '../../data/providers/hebrew_passage.dart';
 
 
-
 class ReaderScreen extends StatelessWidget {
   const ReaderScreen({ Key? key }) : super(key: key);
 
@@ -24,17 +23,21 @@ class ReaderScreen extends StatelessWidget {
       )
       : Stack(
         children: [
-          PassageDisplay(hebrewPassageFuture: _hebrewPassageFuture),
-          Consumer<HebrewPassage>(
-            builder: (ctx, hebrewPassage, _) =>
-              hebrewPassage.hasSelection
-                ? WordExpansionPanel(hebrewWord: hebrewPassage.selectedWord!)
-                : Text('NA',
-                    style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.normal
-                  ),)
+          const PassageDisplay(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Consumer<HebrewPassage>(
+              builder: (ctx, hebrewPassage, _) =>
+                hebrewPassage.hasSelection
+                  ? WordExpansionPanel(hebrewWord: hebrewPassage.selectedWord!)
+                  : const Text('NA',
+                      style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.normal
+                    ),
+                  )
+            ),
           )
       ],
     )

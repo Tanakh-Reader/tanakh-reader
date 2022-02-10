@@ -12,11 +12,9 @@ for a given passage. Each word is placed in a TextSpan such that its attributes 
 via a gesture detector. */
 
 class PassageDisplay extends StatefulWidget {
-  final Future<void> hebrewPassageFuture;
 
   const PassageDisplay({ 
     Key? key ,
-    required this.hebrewPassageFuture
   }) : super(key: key);
 
   @override
@@ -29,19 +27,22 @@ class _PassageDisplayState extends State<PassageDisplay> {
   Widget build(BuildContext context) {
 
     return Consumer<HebrewPassage>(
-          child: const Center(
-            child: Text('No text was loaded')
-          ),
-          builder: (ctx, hebrewPassage, child) =>
-            hebrewPassage.words.isEmpty
-              ? child as Widget
-              : RichText(
-                  text: TextSpan(
-                    children: _buildTextSpans(hebrewPassage)
-                  )
-              )
+      child: const Center(
+        child: Text('No text was loaded')
+      ),
+      builder: (ctx, _hebrewPassage, child) =>
+        _hebrewPassage.words.isEmpty
+          ? child as Widget
+          : SingleChildScrollView(
+            child: RichText(
+                text: TextSpan(
+                  children: _buildTextSpans(_hebrewPassage)
+                )
+            ),
+          )
       );
   }
+
 
   // Create a textspan for each word in the passage.
   List<TextSpan> _buildTextSpans(HebrewPassage hebrewPassage) {
@@ -51,25 +52,31 @@ class _PassageDisplayState extends State<PassageDisplay> {
 
     // Iterate over hebrewWords, converting each into a TextSpan
     for (int i = 0; i < hebrewWords.length; i++) {
-      // https://api.flutter.dev/flutter/painting/TextSpan-class.html
-      final text = hebrewWords[i].pointedText! + hebrewWords[i].trailer!;
+
+      Color wordColor = hebrewWords[i].speech == 'nmpr' ? Colors.grey : Colors.white;
+      String text = hebrewWords[i].pointedText! + hebrewWords[i].trailer!;
       TextSpan wordTextSpan;
+
       // If there is a selected word
       if (hebrewWords[i].isSelected == true) {
         wordTextSpan = TextSpan(
           text: text,
-          style: const TextStyle(
-            color: Colors.white,
+          style:  TextStyle(
+            color: wordColor,
             fontSize: 28,
             fontWeight: FontWeight.bold
           ),
+          recognizer: TapGestureRecognizer()
+          ..onTap = () {
+             hebrewPassage.toggleWordSelection(hebrewWords[i]);
+          }
         );
       // If there is not a selected word
       } else {
         wordTextSpan = TextSpan(
           text: text,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: wordColor,
             fontSize: 28,
             fontWeight: FontWeight.normal
           ),

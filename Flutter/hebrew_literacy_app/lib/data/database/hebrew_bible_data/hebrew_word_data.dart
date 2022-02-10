@@ -70,6 +70,7 @@ class HebrewWordDataBaseHelper {
           "g_cons_utf8",
           "g_word_utf8",
           "trailer_utf8",
+          "gloss",
           "gn",
           "nu",
           "ps",
@@ -77,7 +78,7 @@ class HebrewWordDataBaseHelper {
           "vs",
           "vt"
         ],
-        where: '_id < 100'
+        where: '_id < 300'
       );
     });
     print('query finished');
