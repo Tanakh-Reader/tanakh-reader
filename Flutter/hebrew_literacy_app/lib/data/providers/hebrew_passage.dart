@@ -2,24 +2,24 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 
-import '../models/hebrew_word.dart';
-import '../database/hebrew_bible_data/hebrew_word_data.dart';
+import '../models/word.dart';
+import '../database/hebrew_bible_data/word_data.dart';
 
 class HebrewPassage with ChangeNotifier {
-  List<HebrewWord> _words = [];
+  List<Word> _words = [];
   bool hasSelection = false;
 
-  List<HebrewWord> get words {
+  List<Word> get words {
     return [..._words];
   }
 
-   HebrewWord? get selectedWord {
+   Word? get selectedWord {
     return _words.firstWhereOrNull(
       (word) => word.isSelected == true
     );
   }
 
-  void toggleWordSelection(HebrewWord word) {
+  void toggleWordSelection(Word word) {
     hasSelection = !hasSelection;
     _words[
       _words.indexWhere((elem) => elem.id == word.id)
