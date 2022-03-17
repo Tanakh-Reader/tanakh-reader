@@ -2,9 +2,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-import '../../../data/database/hebrew_bible_data/hebrew_word_data.dart';
+import '../../../data/database/hebrew_bible_data/word_data.dart';
 import '../../../data/providers/hebrew_passage.dart';
-import '../../../data/models/hebrew_word.dart';
+import '../../../data/models/word.dart';
 
 
 /* PassageDisplay returns a RichText containing all of the word objects that will be displayed
@@ -48,7 +48,7 @@ class _PassageDisplayState extends State<PassageDisplay> {
   List<TextSpan> _buildTextSpans(HebrewPassage hebrewPassage) {
 
     List<TextSpan> hebrewPassageTextSpans = [];
-    List<HebrewWord> hebrewWords = hebrewPassage.words;
+    List<Word> hebrewWords = hebrewPassage.words;
 
     // Iterate over hebrewWords, converting each into a TextSpan
     for (int i = 0; i < hebrewWords.length; i++) {
