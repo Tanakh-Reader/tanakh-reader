@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/hebrew_word.dart';
+import '../../../data/models/word.dart';
 
 
 class WordExpansionPanel extends StatefulWidget {
-  final HebrewWord hebrewWord;
+  final Word hebrewWord;
   const WordExpansionPanel({ 
     Key? key,
     required this.hebrewWord
@@ -20,7 +20,7 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
 
   @override
   Widget build(BuildContext context) {
-    HebrewWord word = widget.hebrewWord;
+    Word word = widget.hebrewWord;
     Widget wordDisplay;
     if (nouns.contains(word.speech)) {
       wordDisplay = _nounDisplay(word);
@@ -92,7 +92,7 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
     );
   }
 
-  Widget _verbDisplay(HebrewWord word) {
+  Widget _verbDisplay(Word word) {
     return Column(
       children: [
         Text('${word.pointedText} occurs ${word.freqLex} times'),
@@ -105,7 +105,7 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
     );
   }
 
-  Widget _nounDisplay(HebrewWord word) {
+  Widget _nounDisplay(Word word) {
     return Column(
       children: [
         Text('${word.pointedText} occurs ${word.freqLex} times'),
@@ -116,7 +116,7 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
     );
   }
 
-  Widget _otherDisplay(HebrewWord word) {
+  Widget _otherDisplay(Word word) {
     return Column(
       children: [
         Text('${word.pointedText} occurs ${word.freqLex} times'),
