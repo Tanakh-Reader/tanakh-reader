@@ -23,7 +23,7 @@ c = conn.cursor()
 
 # OLD: Remove checkout=local if you haven't updated the data files in a while
 # Remove ":latest" to fix the rate limit thing
-A = use('bhsa', hoist=globals(), checkout='local')
+A = use('bhsa', hoist=globals(), checkout='local', version='c')
 
 
 # def nullifyNaAndEmptyAndUnknown(list_to_reduce):
