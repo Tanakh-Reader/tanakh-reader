@@ -1,5 +1,7 @@
 ## Notes
 
+convert_csv_data_v3 drops row 16563 from the BHSA df rather than skipping it in data comparison. It also computes the changes to OHB rather than manually doing it. Also removes unecessary items and keeps the two columns in saving the OHB_EXTENDED csv. 
+
 Some of the paragraph divisions are unhelpful. For example, rank 5 produces 
 2 Chr 6:1-23. See the chapter for better splittings, e.g. 6:1-11; 6:12-42
 Other examples are 1 Kings 21:27 - 22:40; Num 36:1 - Deut 2:1; 
