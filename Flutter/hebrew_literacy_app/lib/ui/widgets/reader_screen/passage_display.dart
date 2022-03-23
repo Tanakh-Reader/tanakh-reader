@@ -2,7 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-import '../../../data/database/hebrew_bible_data/word_data.dart';
+import '../../../data/database/hb_db_helper.dart';
 import '../../../data/providers/hebrew_passage.dart';
 import '../../../data/models/word.dart';
 
@@ -54,7 +54,7 @@ class _PassageDisplayState extends State<PassageDisplay> {
     for (int i = 0; i < hebrewWords.length; i++) {
 
       Color wordColor = hebrewWords[i].speech == 'nmpr' ? Colors.grey : Colors.white;
-      String text = hebrewWords[i].pointedText! + hebrewWords[i].trailer!;
+      String text = hebrewWords[i].text! + hebrewWords[i].trailer!;
       TextSpan wordTextSpan;
 
       // If there is a selected word

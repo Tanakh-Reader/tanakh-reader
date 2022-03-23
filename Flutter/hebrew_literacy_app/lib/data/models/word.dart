@@ -1,36 +1,90 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import '../constants.dart';
 
+// https://www.raywenderlich.com/22180993-flutter-code-generation-getting-started
+// USE CODE GENERATORS
+// ALSO THINK ABOUT USING GENERATOR TO STORE
+// WORD DATA IN PASSAGE RENDORING TO SAVE MEMORY
 class Word with ChangeNotifier {
-  /* Consider also adding st (state), ls (lexical set) */
-  int? id; // _id
-  int? freqLex; // freq_lex
-  String? consText; // g_cons_utf8
-  String? pointedText; // g_word_utf8
-  String? trailer; // trailer_utf8
-  String? gloss; // gloss
-  String? gender; // gn
-  String? number; // nu
-  String? person; // ps
-  String? speech; // sp
-  String? vbStem; // vs
-  String? vbTense; // vt
+  int? id;
+  int? book;
+  int? chKJV;
+  int? vsKJV;
+  int? vsIdKJV;
+  int? chBHS;
+  int? vsBHS;
+  int? vsIdBHS;
+  String? lang;
+  String? speech;
+  String? person;
+  String? gender;
+  String? number;
+  String? vTense;
+  String? vStem;
+  String? state;
+  String? prsPerson;
+  String? prsGender;
+  String? prsNumber;
+  String? suffix;
+  String? text;
+  String? textCons;
+  String? trailer;
+  String? transliteration;
+  String? glossExt;
+  String? glossBSB;
+  num? sortBSB;
+  String? strongs;
+  int? lexId;
+  int? phraseId;
+  int? clauseAtomId;
+  int? clauseId;
+  int? sentenceId;
+  int? freqOcc;
+  int? rankOcc;
+  String? poetryMarker;
+  String? parMarker;
+
   bool isSelected = false;
 
   Word ({
     required this.id,
-    required this.freqLex,
-    required this.consText,
-    required this.pointedText,
-    required this.trailer,
-    required this.gloss,
+    required this.book,
+    required this.chKJV,
+    required this.vsKJV,
+    required this.vsIdKJV,
+    required this.chBHS,
+    required this.vsBHS,
+    required this.vsIdBHS,
+    required this.lang,
+    required this.speech,
+    required this.person,
     required this.gender,
     required this.number,
-    required this.person,
-    required this.speech,
-    required this.vbStem,
-    required this.vbTense
+    required this.vTense,
+    required this.vStem,
+    required this.state,
+    required this.prsPerson,
+    required this.prsGender,
+    required this.prsNumber,
+    required this.suffix,
+    required this.text,
+    required this.textCons,
+    required this.trailer,
+    required this.transliteration,
+    required this.glossExt,
+    required this.glossBSB,
+    required this.sortBSB,
+    required this.strongs,
+    required this.lexId,
+    required this.phraseId,
+    required this.clauseAtomId,
+    required this.clauseId,
+    required this.sentenceId,
+    required this.freqOcc,
+    required this.rankOcc,
+    required this.poetryMarker,
+    required this.parMarker,
   });
 
   void toggleSelected() {
@@ -60,121 +114,45 @@ class Word with ChangeNotifier {
 
   // https://blog.devgenius.io/adding-sqlite-db-file-from-the-assets-internet-in-flutter-3ec42c14cd44
   factory Word.fromRawJson(String str) => Word.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
+  
   factory Word.fromJson(Map<String, dynamic> json) => Word(
-    id: json["_id"],
-    freqLex: json["freq_lex"],
-    consText: json["g_cons_utf8"],
-    pointedText: json["g_word_utf8"],
-    trailer: json["trailer_utf8"],
-    gloss: json['gloss'],
-    gender: json["gn"],
-    number: json["nu"],
-    person: json["ps"],
-    speech: json["sp"],
-    vbStem: json["vs"],
-    vbTense: json["vt"],
+    id: json[WordConstants.id], 
+    book: json[WordConstants.book], 
+    chKJV: json[WordConstants.chKJV],
+    vsKJV: json[WordConstants.vsKJV],
+    vsIdKJV: json[WordConstants.vsIdKJV],
+    chBHS: json[WordConstants.chBHS],
+    vsBHS: json[WordConstants.vsBHS],
+    vsIdBHS: json[WordConstants.vsIdBHS],
+    lang: json[WordConstants.lang],
+    speech: json[WordConstants.speech],
+    person: json[WordConstants.person],
+    gender: json[WordConstants.gender],
+    number: json[WordConstants.number],
+    vTense: json[WordConstants.vTense],
+    vStem: json[WordConstants.vStem],
+    state: json[WordConstants.state],
+    prsPerson: json[WordConstants.prsPerson],
+    prsGender: json[WordConstants.prsGender],
+    prsNumber: json[WordConstants.prsNumber],
+    suffix: json[WordConstants.suffix],
+    text: json[WordConstants.text],
+    textCons: json[WordConstants.textCons],
+    trailer: json[WordConstants.trailer],
+    transliteration: json[WordConstants.transliteration],
+    glossExt: json[WordConstants.glossExt],
+    glossBSB: json[WordConstants.glossBSB],
+    sortBSB: json[WordConstants.sortBSB],
+    strongs: json[WordConstants.strongs],
+    lexId: json[WordConstants.lexId],
+    phraseId: json[WordConstants.phraseId],
+    clauseAtomId: json[WordConstants.clauseAtomId],
+    clauseId: json[WordConstants.clauseId],
+    sentenceId: json[WordConstants.sentenceId],
+    freqOcc: json[WordConstants.freqOcc],
+    rankOcc: json[WordConstants.rankOcc],
+    poetryMarker: json[WordConstants.poetryMarker],
+    parMarker: json[WordConstants.parMarker]
   );
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "freq_lex": freqLex,
-    "g_cons_utf8": consText,
-    "g_word_utf8": pointedText,
-    "trailer_utf8": trailer,
-    "gloss": gloss,
-    "gn": gender,
-    "nu": number,
-    "ps": person,
-    "sp": speech,
-    "vs": vbStem,
-    "vt": vbTense,
-  };
   
 }
-
-Map<String, String> bookNames = {
-    "1": "Genesis",
-    "2": "Exodus",
-    "3": "Leviticus",
-    "4": "Numbers",
-    "5": "Deuteronomy",
-    "6": "Joshua",
-    "7": "Judges",
-    "8": "Ruth",
-    "9": "1 Samuel",
-    "10": "2 Samuel",
-    "11": "1Kings",
-    "12": "2Kings",
-    "13": "1 Chronicles",
-    "14": "2 Chronicles",
-    "15": "Ezra",
-    "16": "Nehemiah",
-    "17": "Esther",
-    "18": "Job",
-    "19": "Psalms",
-    "20": "Proverbs",
-    "21": "Ecclesiastes",
-    "22": "Song of Songs",
-    "23": "Isaiah",
-    "24": "Jeremiah",
-    "25": "Lamentations",
-    "26": "Ezekiel",
-    "27": "Daniel",
-    "28": "Hosea",
-    "29": "Joel",
-    "30": "Amos",
-    "31": "Obadiah",
-    "32": "Jonah",
-    "33": "Micah",
-    "34": "Nahum",
-    "35": "Habakkuk",
-    "36": "Zephaniah",
-    "37": "Haggai",
-    "38": "Zechariah",
-    "39": "Malachi"
-};
-
-Map<String, String> standardAbbreviationENG = {
-    "1": "Gen",
-    "2": "Exod",
-    "3": "Lev",
-    "4": "Num",
-    "5": "Deut",
-    "6": "Josh",
-    "7": "Judg",
-    "8": "Ruth",
-    "9": "1Sam",
-    "10": "2Sam",
-    "11": "1Kgs",
-    "12": "2Kgs",
-    "13": "1Chr",
-    "14": "2Chr",
-    "15": "Ezra",
-    "16": "Neh",
-    "17": "Esth",
-    "18": "Job",
-    "19": "Ps",
-    "20": "Prov",
-    "21": "Eccl",
-    "22": "Song",
-    "23": "Isa",
-    "24": "Jer",
-    "25": "Lam",
-    "26": "Ezek",
-    "27": "Dan",
-    "28": "Hos",
-    "29": "Joel",
-    "30": "Amos",
-    "31": "Obad",
-    "32": "Jonah",
-    "33": "Mic",
-    "34": "Nah",
-    "35": "Hab",
-    "36": "Zeph",
-    "37": "Hag",
-    "38": "Zech",
-    "39": "Mal"
-};

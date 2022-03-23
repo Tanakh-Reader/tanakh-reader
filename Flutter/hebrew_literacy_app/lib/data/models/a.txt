@@ -1,0 +1,9 @@
+required this.id
+required this.lang
+required this.speech
+required this.nameType
+required this.lexSet
+required this.text
+required this.gloss
+required this.freqLex
+required this.rankLex

@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../models/word.dart';
-import '../database/hebrew_bible_data/word_data.dart';
+import '../database/hb_db_helper.dart';
 
 class HebrewPassage with ChangeNotifier {
   List<Word> _words = [];
@@ -13,7 +13,7 @@ class HebrewPassage with ChangeNotifier {
     return [..._words];
   }
 
-   Word? get selectedWord {
+  Word? get selectedWord {
     return _words.firstWhereOrNull(
       (word) => word.isSelected == true
     );
@@ -34,12 +34,9 @@ class HebrewPassage with ChangeNotifier {
     }
   }
 
-
-
   // Convert SQL data to your Dart Object.
-  Future<void> getHebrewWords() async {
-    // final db = HebrewWordDataBaseHelper();
-    _words = await HebrewWordDataBaseHelper().getHebrewWords();
+  Future<void> getHebrewWords(int startId, int endId) async {
+    _words = await HebrewDatabaseHelper().getWordsByStartEndNode(startId, endId);
     notifyListeners();
   }
 }

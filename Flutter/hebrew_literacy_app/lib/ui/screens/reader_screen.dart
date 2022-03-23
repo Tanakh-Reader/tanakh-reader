@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../widgets/reader_screen/reader_screen.dart';
 import '../../data/providers/hebrew_passage.dart';
+import '../../data/models/models.dart';
 
 
 class ReaderScreen extends StatelessWidget {
@@ -11,7 +12,10 @@ class ReaderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _hebrewPassageFuture = Provider.of<HebrewPassage>(
-      context, listen: false).getHebrewWords();
+      context, listen: false).getHebrewWords(1, 200);
+    // HebrewDatabaseHelper().getChapterWords(1, 50);
+    HebrewDatabaseHelper().getBooks();
+    // print(lex.text);
 
     return FutureBuilder(
       future: _hebrewPassageFuture,
