@@ -12,9 +12,9 @@ class ReaderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _hebrewPassageFuture = Provider.of<HebrewPassage>(
-      context, listen: false).getHebrewWords(1, 200);
+      context, listen: false).getHebrewWords(1, 100);
     // HebrewDatabaseHelper().getChapterWords(1, 50);
-    HebrewDatabaseHelper().getBooks();
+    // HebrewDatabaseHelper().getBooks();
     // print(lex.text);
 
     return FutureBuilder(

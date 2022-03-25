@@ -22,8 +22,6 @@ import 'package:flutter/material.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:elisha/src/repositories/local_user_repository.dart';
-
 class StreaksRepository extends ChangeNotifier {
   var _currentStreak = 1;
   var _bestStreak = 1;

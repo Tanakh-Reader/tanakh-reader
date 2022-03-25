@@ -17,10 +17,8 @@ class HebrewDatabaseHelper {
   // Load the DB if it's initialized, else initialize it. 
   Future<Database> get database async {
     if (_db != null) {
-      print('db not null');
       return _db!;
     }
-    print('entering initDB');
     _db = await _initDB();
     return _db!;
   }
@@ -40,10 +38,7 @@ class HebrewDatabaseHelper {
 
     if (!dbExists) {
       // Copy the DB into android storage from assets.
-      print('collecting bytes');
       ByteData data = await rootBundle.load(path.join("assets/db", _dbName));
-      print("bytes loaded");
-      print("length: ${data.lengthInBytes}");
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
@@ -78,7 +73,9 @@ class HebrewDatabaseHelper {
   Future<List<Book>> getBooks() async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
-    final books = await db.query(BookConstants.table);
+    final books = await db.query(
+        BookConstants.table,
+        orderBy: "${BookConstants.id} ASC");
     print('getBooks ${stopwatch.elapsed} to query');
     return books.map((json) => Book.fromJson(json)).toList();
   }
@@ -92,6 +89,16 @@ class HebrewDatabaseHelper {
         whereArgs: [id]);
     print('getLexeme: ${stopwatch.elapsed} to query');
     return Lexeme.fromJson(lexeme.first);
+  }
+
+  Future<List<Lexeme>> getAllLexemes(int id) async {
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    final lexemes = await db.query(
+        LexemeConstants.table,
+        orderBy: "${LexemeConstants.text} ASC");
+    print('getAllLexemes: ${stopwatch.elapsed} to query');
+    return lexemes.map((json) => Lexeme.fromJson(json)).toList();
   }
 
   Future<List<Word>> getWordsByBookChapter(int book, int ch) async {
