@@ -43,7 +43,7 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
                 ExpansionPanel(
                   headerBuilder: (context, isExpanded) {
                     return ListTile(
-                      title: Text('${word.pointedText} information', style: textColor),
+                      title: Text('${word.text} information', style: textColor),
                     );
                   },
                   body: wordDisplay,
@@ -95,12 +95,12 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
   Widget _verbDisplay(Word word) {
     return Column(
       children: [
-        Text('${word.pointedText} occurs ${word.freqLex} times'),
-        Text('${word.gloss}'),
+        Text('${word.text} occurs ${word.freqOcc} times'),
+        Text('${word.glossExt}'),
         Text('${word.speech}'),
         Text('${word.person}'),
-        Text('${word.vbStem} stem'),
-        Text('${word.vbTense} tense'),
+        Text('${word.vStem} stem'),
+        Text('${word.vTense} tense'),
       ]
     );
   }
@@ -108,8 +108,8 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
   Widget _nounDisplay(Word word) {
     return Column(
       children: [
-        Text('${word.pointedText} occurs ${word.freqLex} times'),
-        Text('${word.gloss}'),
+        Text('${word.text} occurs ${word.freqOcc} times'),
+        Text('${word.glossExt}'),
         Text('${word.speech}'),
         Text('${word.gender}, ${word.number}'),
       ]
@@ -119,8 +119,8 @@ class _WordExpansionPanelState extends State<WordExpansionPanel> {
   Widget _otherDisplay(Word word) {
     return Column(
       children: [
-        Text('${word.pointedText} occurs ${word.freqLex} times'),
-        Text('${word.gloss}'),
+        Text('${word.text} occurs ${word.freqOcc} times'),
+        Text('${word.glossExt}'),
         Text('${word.speech}'),
       ]
     );
