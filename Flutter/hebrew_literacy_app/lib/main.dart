@@ -6,9 +6,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 
 import 'data/models/user_vocab.dart';
+import 'data/models/models.dart';
+
 import 'ui/screens/screens.dart';
 
-import 'data/providers/hebrew_passage.dart';
+import 'data/providers/providers.dart';
 
 void main() async {
   // https://www.optisolbusiness.com/insight/flutter-offline-storage-using-hive-database
@@ -17,6 +19,7 @@ void main() async {
   // Open the peopleBox
   Hive.registerAdapter(UserVocabAdapter());
   await Hive.openBox<UserVocab>('userVocab');
+  Books.getBooks();
   runApp(const MyApp());
 }
 

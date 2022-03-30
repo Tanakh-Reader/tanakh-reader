@@ -177,16 +177,20 @@ class BookConstants {
   static String table = 'book';
 
   static String id = 'id';
-  static String osis = 'osis';
-  static String leb = 'leb';
+  static String chapters = 'chapters';
+  static String abbrOSIS = 'abbrOSIS';
+  static String abbrLEB = 'abbrLEB';
   static String name = 'name';
-  static String tanakh = 'tanakh';
+  static String nameHeb = 'nameHeb';
+  static String tanakhSort = 'tanakhSort';
 
   List<String> cols = [
     id,
-    osis,
-    leb,
+    chapters,
+    abbrOSIS,
+    abbrLEB,
     name,
-    tanakh
+    nameHeb,
+    tanakhSort
   ];
 }

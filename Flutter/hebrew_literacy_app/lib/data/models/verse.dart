@@ -11,6 +11,7 @@ class Verse {
   List<Word>? words;
 
   Verse({
+    required this.id,
     required this.number,
     // required this.book,
     // required this.chapter,

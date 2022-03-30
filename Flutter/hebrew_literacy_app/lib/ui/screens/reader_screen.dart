@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hebrew_literacy_app/ui/widgets/reader_screen/references_expansion_panel.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/reader_screen/reader_screen.dart';
@@ -12,10 +13,7 @@ class ReaderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _hebrewPassageFuture = Provider.of<HebrewPassage>(
-      context, listen: false).getHebrewWords(1, 100);
-    // HebrewDatabaseHelper().getChapterWords(1, 50);
-    // HebrewDatabaseHelper().getBooks();
-    // print(lex.text);
+      context, listen: false).getPassageWordsByRef(4, 29);
 
     return FutureBuilder(
       future: _hebrewPassageFuture,
@@ -25,26 +23,31 @@ class ReaderScreen extends StatelessWidget {
       ? const Center(
         child: CircularProgressIndicator()
       )
-      : Stack(
-        children: [
-          const PassageDisplay(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Consumer<HebrewPassage>(
-              builder: (ctx, hebrewPassage, _) =>
-                hebrewPassage.hasSelection
-                  ? WordExpansionPanel(hebrewWord: hebrewPassage.selectedWord!)
-                  : const Text('NA',
-                      style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.normal
-                    ),
-                  )
+      : Consumer<HebrewPassage>(
+            builder: (ctx, hebrewPassage, _) {
+            return Stack(
+          children: [
+            const PassageDisplay(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Consumer<HebrewPassage>(
+                builder: (ctx, hebrewPassage, _) =>
+                  hebrewPassage.hasSelection
+                    ? WordExpansionPanel(hebrewWord: hebrewPassage.selectedWord!)
+                    : const Text('NA',
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.normal
+                      ),
+                    )
+              ),
             ),
-          )
-      ],
-    )
+            ReferencesExpansionPanel()
+        ],
+          );
+            }
+      )
     );
   }
 }
