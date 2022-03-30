@@ -10,31 +10,44 @@ class HebrewPassage with ChangeNotifier {
   List<Verse> _verses = [];
   List<Clause> _clauses = [];
   List<Phrase> _phrases = [];
+  Book? _book;
   bool hasSelection = false;
 
   List<Word> get words {
     return [..._words];
   }
   
+  // Get all of the verses in the current passage. 
   List<Verse> get verses {
-    if (_verses.isEmpty) {
-      int? currentVerse = _words.first.vsBHS;
-      int? endVerse = _words.last.vsBHS;
-      while (currentVerse! <= endVerse!) {
+    if (_verses.isEmpty && _words.isNotEmpty) {
+      // Iterate over all words in passage from the first vsId to
+      // the last vsId and group them into verses. 
+      int currentVerseId = _words.first.vsIdBHS!;
+      int lastVerseId = _words.last.vsIdBHS!;
+      while (currentVerseId <= lastVerseId) {
         List<Word> verseWords = _words.where(
-          (word) => word.vsBHS == currentVerse).toList();
+          (word) => word.vsIdBHS == currentVerseId).toList();
         _verses.add(
             Verse(
-              number: currentVerse,
+              id: currentVerseId,
+              number: verseWords.first.vsBHS,
               words: verseWords
             )
         );
-        currentVerse = currentVerse + 1;
+        currentVerseId = currentVerseId + 1;
       }
     }
     return [..._verses];
   }
 
+  // TODO fix these places where I use !!
+  Book get book {
+    _book ??= Books.books.firstWhereOrNull(
+        (bk) => bk.id == _words.first.book);
+    return _book!;
+  }
+
+  // Get the selected word in the current passage. 
   Word? get selectedWord {
     return _words.firstWhereOrNull(
       (word) => word.isSelected == true
@@ -57,7 +70,13 @@ class HebrewPassage with ChangeNotifier {
   }
 
   // Convert SQL data to your Dart Object.
-  Future<void> getHebrewWords(int startId, int endId) async {
+  Future<void> getPassageWordsByRef(int book, int ch) async {
+    _words = await HebrewDatabaseHelper().getWordsByBookChapter(book, ch);
+    notifyListeners();
+  }
+
+  // Convert SQL data to your Dart Object.
+  Future<void> getPassageWordsById(int startId, int endId) async {
     _words = await HebrewDatabaseHelper().getWordsByStartEndNode(startId, endId);
     notifyListeners();
   }

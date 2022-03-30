@@ -2,7 +2,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-import '../../../data/database/hb_db_helper.dart';
 import '../../../data/providers/hebrew_passage.dart';
 import '../../../data/models/models.dart';
 
@@ -104,7 +103,7 @@ class _PassageDisplayState extends State<PassageDisplay> {
 
     List<TextSpan> hebrewPassageTextSpans = [];
     List<Verse> verses = hebrewPassage.verses;
-    
+
     // Iterate over hebrewWords, converting each word into a TextSpan.
     for (int j = 0; j < verses.length; j++) {
       List<Word> words = verses[j].words!;

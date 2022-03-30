@@ -124,4 +124,24 @@ class HebrewDatabaseHelper {
     print('getWordsByStartEndNode: ${stopwatch.elapsed} to query');
     return words.map((json) => Word.fromJson(json)).toList();
   }
+
+  // Interacting with other DB tables
+  Future<List<Word>> testyTest(int startId, int endId) async {
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    final words = await db.query(
+        WordConstants.table, 
+        where: "${WordConstants.id} >= ? AND ${WordConstants.id} <= ?", 
+        whereArgs: [startId, endId],
+        orderBy: "${WordConstants.id} ASC");
+    print('testyTest: ${stopwatch.elapsed} to query');
+    var _words = words.map((json) => Word.fromJson(json)).toList();
+    for (Word word in _words) {
+      final lex = await db.query(
+        LexemeConstants.table, 
+        where: "${LexemeConstants.id} = ${WordConstants.lexId}");
+      }
+      // _lex = w
+    return words.map((json) => Word.fromJson(json)).toList();
+  }
 }
