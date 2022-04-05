@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -14,42 +15,35 @@ import 'package:google_fonts/google_fonts.dart';
 for a given passage. Each word is placed in a TextSpan such that its attributes can be accessed
 via a gesture detector. */
 
-class PassageDisplay extends StatefulWidget {
+class PassageDisplay extends ConsumerWidget {
 
   const PassageDisplay({ 
     Key? key ,
   }) : super(key: key);
 
-  @override
-  _PassageDisplayState createState() => _PassageDisplayState();
-}
+//   @override
+//   _PassageDisplayState createState() => _PassageDisplayState();
+// }
 
-class _PassageDisplayState extends State<PassageDisplay> {
+// class _PassageDisplayState extends State<PassageDisplay> {
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
 
     /* If HebrewPassage.words is populated, generate a TextSpan
     with all of the words -- otherwise display a message. */
-    return Consumer<HebrewPassage>(
-      child: const Center(
-        child: Text('No text was loaded')
+    final _hebrewPassage = ref.watch(hebrewPassageProvider);
+    return SingleChildScrollView(
+      child: RichText(
+        text: TextSpan(
+          children: _buildTextSpans(_hebrewPassage)
+        ),
+        textDirection: TextDirection.rtl,
       ),
-      builder: (ctx, _hebrewPassage, child) =>
-        _hebrewPassage.words.isEmpty
-          ? child as Widget
-          : SingleChildScrollView(
-            child: RichText(
-              text: TextSpan(
-                children: _buildTextSpans(_hebrewPassage)
-              ),
-              textDirection: TextDirection.rtl,
-            ),
-          )
       );
   }
 
-  /*
+  /*sw
   // Create a textspan for each word in the passage.
   List<TextSpan> _buildTextSpans(HebrewPassage hebrewPassage) {
 
