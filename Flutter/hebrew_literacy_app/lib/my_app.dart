@@ -6,6 +6,7 @@ import 'data/models/models.dart';
 
 import 'ui/screens/screens.dart';
 import 'data/providers/providers.dart';
+import 'ui/views.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -15,19 +16,27 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => HebrewPassage()
+          create: (ctx) => HebrewPassage(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => TabManager())
       ],
       child: MaterialApp(
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Colors.black,
         ),
         debugShowCheckedModeBanner: false,
-        home: const Scaffold(
+        home: Scaffold(
           body: Center(
-            child: ReaderScreen(),
+            child: Views(),
           ),
         ),
+        routes: {
+          // HomeScreen.routeName: (ctx) => HomeScreen(),
+          HomeScreen.routeName: (ctx) => HomeScreen(),
+          ReadScreen.routeName: (ctx) => ReadScreen(),
+          VocabScreen.routeName: (ctx) => VocabScreen()
+        },
       ),
     );
   }

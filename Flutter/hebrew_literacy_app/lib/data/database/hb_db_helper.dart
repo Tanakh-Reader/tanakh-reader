@@ -91,7 +91,7 @@ class HebrewDatabaseHelper {
     return Lexeme.fromJson(lexeme.first);
   }
 
-  Future<List<Lexeme>> getAllLexemes(int id) async {
+  Future<List<Lexeme>> getAllLexemes() async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
     final lexemes = await db.query(

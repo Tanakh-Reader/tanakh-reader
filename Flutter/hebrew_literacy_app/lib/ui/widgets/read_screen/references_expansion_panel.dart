@@ -1,63 +1,47 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-import '../../../data/providers/hebrew_passage.dart';
+import '../../../data/providers/providers.dart';
 import '../../../data/models/models.dart';
+import '../../screens/read_screen.dart';
 
-class ReferencesExpansionPanel extends StatelessWidget {
-  const ReferencesExpansionPanel ({ Key? key }) : super(key: key);
+// Code inspired by https://github.com/31Carlton7/elisha/blob/master/lib/src/ui/views/bible_view/bible_view.dart
 
-//   @override
-//   _ReferencesExpansionPanelState createState() => _ReferencesExpansionPanelState();
-// }
-
-// class _ReferencesExpansionPanelState extends State<ReferencesExpansionPanel> {
+class ReferencesExpansionPanel extends ConsumerWidget {
+  Widget? button;
+  ReferencesExpansionPanel ({ Key? key, required this.button}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final passage = Provider.of<HebrewPassage>(context, listen: true);
-    // print(Books.books.first.values);
+  Widget build(BuildContext context, WidgetRef ref) {
+    
+    final passage = ref.watch(hebrewPassageProvider);
+
     return GestureDetector(
-      onTap: () async {
-        // HapticFeedback.lightImpact();
-
-        await _showBookAndChapterBottomSheet(context);
-      },
-      child: Container(
-        alignment: Alignment.center,
-        constraints: BoxConstraints.expand(
-          height: Theme.of(context).textTheme.headline4!.fontSize!
-        ),
-
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
-          // color: Theme.of(context).inputDecorationTheme.fillColor,
-          color: Colors.blueAccent
-        ),
-        child: Text(
-          passage.book.name!,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-        ),
-      ),
+        onTap: () async {
+          // HapticFeedback.lightImpact();
+    
+          await _showBookAndChapterBottomSheet(context, ref);
+        },
+        child: button
     );
       
   }
 
-  Future<void> _showBookAndChapterBottomSheet(BuildContext context) async {
+  Future<void> _showBookAndChapterBottomSheet(BuildContext context, WidgetRef ref) async {
       
       Widget _bookCard(Book book) {
-        List chapters = List.generate(book.chapters!, (index) => index);
+        List chapters = List.generate(book.chapters!, (index) => index+1);
         Widget _chapterCard(int chapter) {
           return GestureDetector(
+            // Removed await from before { below
             onTap: () async {
               // HapticFeedback.lightImpact();
-              // await ref.read(bibleRepositoryProvider).changeChapter(ref, book.id!, chapter.id!);
-              // Navigator.of(context, rootNavigator: true).pop();
-              Provider.of<HebrewPassage>(context, listen: false).getPassageWordsByRef(book.id!, chapter);
-              print(Provider.of<HebrewPassage>(context, listen: false).book.name);
-              // print(passage.)
+              await ref.read(hebrewPassageProvider).getPassageWordsByRef(book.id!, chapter);
+              // Navigator.of(context).pushNamed(ReadScreen.routeName);
+              ref.read(tabManagerProvider).goToTab(Screens.read.index);
+              Navigator.of(context, rootNavigator: true).pop();
             },
             child: Container(
               decoration: BoxDecoration(
