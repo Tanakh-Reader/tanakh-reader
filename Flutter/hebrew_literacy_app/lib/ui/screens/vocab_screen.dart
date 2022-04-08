@@ -10,6 +10,8 @@ class VocabScreen extends ConsumerWidget {
   VocabScreen ({ Key? key }) : super(key: key);
 
   static const routeName = '/vocab';
+  // final x = HebrewDatabaseHelper().testyTest2(1, 400);
+  Future<List<Lexeme>> _someLex = HebrewDatabaseHelper().testyTest(1, 400);
   
   Future<List<Lexeme>> _allLexemes = HebrewDatabaseHelper().getAllLexemes();
 

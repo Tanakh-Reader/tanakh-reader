@@ -91,6 +91,24 @@ class HebrewDatabaseHelper {
     return Lexeme.fromJson(lexeme.first);
   }
 
+
+  Future<List<Lexeme>> getSomeLexemes(int startId, int endId, String col) async {
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    String? where = {
+      WordConstants.book: ' WHERE ${WordConstants.table}.${WordConstants.book} = $startId AND ${WordConstants.table}.${WordConstants.book} <= $endId',
+      WordConstants.id: 'WHERE ${WordConstants.table}.${WordConstants.id} >= $startId AND ${WordConstants.table}.${WordConstants.id} <= $endId'
+    }[col];
+    final lexemes = await db.rawQuery(
+      """SELECT *
+      FROM ${LexemeConstants.table}
+      INNER JOIN ${LexemeConstants.table} ON ${WordConstants.table}.${WordConstants.lexId}=${LexemeConstants.table}.${LexemeConstants.id}
+      $where"""
+      );
+    print('getSomeLexemes: ${stopwatch.elapsed} to query');
+    return lexemes.map((json) => Lexeme.fromJson(json)).toList();
+  }
+
   Future<List<Lexeme>> getAllLexemes() async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
@@ -126,22 +144,39 @@ class HebrewDatabaseHelper {
   }
 
   // Interacting with other DB tables
-  Future<List<Word>> testyTest(int startId, int endId) async {
+  Future<List<Lexeme>> testyTest(int startId, int endId) async {
     final stopwatch = Stopwatch()..start();
+    print('start');
     final db = await database;
     final words = await db.query(
         WordConstants.table, 
         where: "${WordConstants.id} >= ? AND ${WordConstants.id} <= ?", 
         whereArgs: [startId, endId],
         orderBy: "${WordConstants.id} ASC");
-    print('testyTest: ${stopwatch.elapsed} to query');
     var _words = words.map((json) => Word.fromJson(json)).toList();
+    List<Lexeme> lexemes = [];
     for (Word word in _words) {
       final lex = await db.query(
         LexemeConstants.table, 
-        where: "${LexemeConstants.id} = ${WordConstants.lexId}");
-      }
-      // _lex = w
-    return words.map((json) => Word.fromJson(json)).toList();
+        where: "${LexemeConstants.id} = ${word.lexId}");
+      lexemes.add(Lexeme.fromJson(lex.first));
+    }
+    print('testyTest: ${stopwatch.elapsed} to query');
+    return lexemes;
+  }
+
+  Future<void> getWordExamples(int startId, int endId) async {
+    final stopwatch = Stopwatch()..start();
+    print('start 2');
+    final db = await database;
+    final words = await db.rawQuery(
+      """SELECT *
+      FROM ${LexemeConstants.table}
+      INNER JOIN ${LexemeConstants.table} ON ${WordConstants.table}.${WordConstants.lexId}=${LexemeConstants.table}.${LexemeConstants.id}
+      WHERE ${WordConstants.table}.${WordConstants.id} >= $startId AND ${WordConstants.table}.${WordConstants.id} <= $endId"""
+      );
+    print(words);
+    print('testyTest: ${stopwatch.elapsed} to query');
+    // return lexemes;
   }
 }
