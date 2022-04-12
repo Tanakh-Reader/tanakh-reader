@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/providers/providers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -36,68 +37,21 @@ class PassageDisplay extends ConsumerWidget {
     return SingleChildScrollView(
       child: RichText(
         text: TextSpan(
-          children: _buildTextSpans(_hebrewPassage)
+          children: _buildTextSpans(_hebrewPassage, ref)
         ),
         textDirection: TextDirection.rtl,
       ),
       );
   }
 
-  /*sw
+  
   // Create a textspan for each word in the passage.
-  List<TextSpan> _buildTextSpans(HebrewPassage hebrewPassage) {
-
-    List<TextSpan> hebrewPassageTextSpans = [];
-    List<Word> hebrewWords = hebrewPassage.words;
-
-    // Iterate over hebrewWords, converting each word into a TextSpan.
-    for (int i = 0; i < hebrewWords.length; i++) {
-
-      Color wordColor = hebrewWords[i].speech == 'nmpr' ? Colors.grey : Colors.white;
-      String text = hebrewWords[i].text! + hebrewWords[i].trailer!;
-      TextSpan wordTextSpan;
-
-      // If there is a selected word
-      if (hebrewWords[i].isSelected == true) {
-        wordTextSpan = TextSpan(
-          text: text,
-          style:  TextStyle(
-            color: wordColor,
-            fontSize: 28,
-            fontWeight: FontWeight.bold
-          ),
-          recognizer: TapGestureRecognizer()
-          ..onTap = () {
-             hebrewPassage.toggleWordSelection(hebrewWords[i]);
-          }
-        );
-      // If there is not a selected word
-      } else {
-        wordTextSpan = TextSpan(
-          text: text,
-          style: TextStyle(
-            color: wordColor,
-            fontSize: 28,
-            fontWeight: FontWeight.normal
-          ),
-          recognizer: TapGestureRecognizer()
-          ..onTap = () {
-             hebrewPassage.toggleWordSelection(hebrewWords[i]);
-          }
-        );
-      } 
-
-      hebrewPassageTextSpans.add(wordTextSpan);
-    }
-
-    return hebrewPassageTextSpans;
-  }*/
-  // Create a textspan for each word in the passage.
-  List<TextSpan>? _buildTextSpans(HebrewPassage hebrewPassage) {
+  List<TextSpan>? _buildTextSpans(HebrewPassage hebrewPassage, ref) {
 
     List<TextSpan> hebrewPassageTextSpans = [];
     List<Verse> verses = hebrewPassage.verses;
-
+    var userVocab = ref.watch(userVocabProvider);
+    
     // Iterate over hebrewWords, converting each word into a TextSpan.
     for (int j = 0; j < verses.length; j++) {
       List<Word> words = verses[j].words!;
@@ -109,8 +63,10 @@ class PassageDisplay extends ConsumerWidget {
         );
       for (int i = 0; i < verses[j].words!.length; i++) {
 
-        Color wordColor = words[i].speech == 'nmpr' ? Colors.grey : Colors.white;
-        String text = words[i].text! + words[i].trailer!;
+        Lexeme lex = hebrewPassage.lex(words[i].lexId!);
+        Color wordColor = lex.speech == 'nmpr' ? Colors.grey : Colors.white;
+        TextDecoration decor = userVocab.isKnown(lex) ? TextDecoration.none : TextDecoration.underline;
+        String text = (words[i].text ?? '') + (words[i].trailer ?? '');
         TextSpan wordTextSpan;
 
         // If there is a selected word
@@ -120,7 +76,8 @@ class PassageDisplay extends ConsumerWidget {
             style:  TextStyle(
               color: wordColor,
               fontSize: 28,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
+              decoration: decor
             ),
             recognizer: TapGestureRecognizer()
             ..onTap = () {
@@ -134,7 +91,8 @@ class PassageDisplay extends ConsumerWidget {
             style: GoogleFonts.notoSerifHebrew(
               color: wordColor,
               fontSize: 28,
-              fontWeight: FontWeight.normal
+              fontWeight: FontWeight.normal,
+              decoration: decor
             ),
             recognizer: TapGestureRecognizer()
             ..onTap = () {

@@ -22,12 +22,12 @@ class Clause {
   factory Clause.fromRawJson(String str) => Clause.fromJson(json.decode(str));
   
   factory Clause.fromJson(Map<String, dynamic> json) => Clause(
-    id: json[ClauseConstants.id], 
+    id: json[ClauseConstants.clauseId], 
     domain: json[ClauseConstants.domain], 
     kind: json[ClauseConstants.kind], 
     number: json[ClauseConstants.number],
     relation: json[ClauseConstants.relation], 
-    type: json[ClauseConstants.type], 
+    type: json[ClauseConstants.clauseType], 
   );
   
 }

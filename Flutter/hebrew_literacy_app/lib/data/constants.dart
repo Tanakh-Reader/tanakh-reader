@@ -2,7 +2,7 @@ class WordConstants {
 
   static String table = 'word';
 
-  static String id = 'id';
+  static String wordId = 'wordId';
   static String book = 'book';
   static String chKJV = 'chKJV';
   static String vsKJV = 'vsKJV';
@@ -10,8 +10,8 @@ class WordConstants {
   static String chBHS = 'chBHS';
   static String vsBHS = 'vsBHS';
   static String vsIdBHS = 'vsIdBHS';
-  static String lang = 'lang';
-  static String speech = 'speech';
+  // static String lang = 'lang'; -- Getting data from Lexeme
+  // static String speech = 'speech';
   static String person = 'person';
   static String gender = 'gender';
   static String number = 'number';
@@ -29,7 +29,7 @@ class WordConstants {
   static String glossExt = 'glossExt';
   static String glossBSB = 'glossBSB';
   static String sortBSB = 'sortBSB';
-  static String strongs = 'strongs';
+  static String strongsId = 'strongsId';
   static String lexId = 'lexId';
   static String phraseId = 'phraseId';
   static String clauseAtomId = 'clauseAtomId';
@@ -40,8 +40,8 @@ class WordConstants {
   static String poetryMarker = 'poetryMarker';
   static String parMarker = 'parMarker';
 
-  List<String> cols = [
-    id,
+  static List<String> cols = [
+    wordId,
     book,
     chKJV,
     vsKJV,
@@ -49,8 +49,8 @@ class WordConstants {
     chBHS,
     vsBHS,
     vsIdBHS,
-    lang,
-    speech,
+    // lang,
+    // speech,
     person,
     gender,
     number,
@@ -68,7 +68,7 @@ class WordConstants {
     glossExt,
     glossBSB,
     sortBSB,
-    strongs,
+    strongsId,
     lexId,
     phraseId,
     clauseAtomId,
@@ -86,23 +86,23 @@ class LexemeConstants {
 
   static String table = 'lex';
 
-  static String id = 'id';
-  static String lang = 'lang';
+  static String lexId = 'lexId';
+  static String language = 'language';
   static String speech = 'speech';
   static String nameType = 'nameType';
   static String lexSet = 'lexSet';
-  static String text = 'lex'; // NOTE
+  static String lexText = 'lexText'; // NOTE
   static String gloss = 'gloss';
   static String freqLex = 'freqLex';
   static String rankLex = 'rankLex';
   
-  List<String> cols = [
-    id,
-    lang,
+  static List<String> cols = [
+    lexId,
+    language,
     speech,
     nameType,
     lexSet,
-    text,
+    lexText,
     gloss,
     freqLex,
     rankLex
@@ -114,18 +114,18 @@ class PhraseConstants {
 
   static String table = 'phrase';
 
-  static String id = 'id';
+  static String phraseId = 'phraseId';
   static String determined = 'determined';
   static String function = 'function';
-  static String number = 'number';
-  static String type = 'type';
+  static String phraseNumber = 'phraseNumber';
+  static String phraseType = 'phraseType';
   
-  List<String> cols = [
-    id,
+  static List<String> cols = [
+    phraseId,
     determined,
     function,
-    number,
-    type
+    phraseNumber,
+    phraseType
   ];
 }
 
@@ -134,18 +134,18 @@ class ClauseAtomConstants {
 
   static String table = 'clauseAtom';
 
-  static String id = 'id';
+  static String clauseAtomId = 'clauseAtomId';
   static String code = 'code';
   static String paragraph = 'paragraph';
   static String tab = 'tab';
-  static String type = 'type';
+  static String clauseAtomType = 'clauseAtomType';
   
-  List<String> cols = [
-    id,
+  static List<String> cols = [
+    clauseAtomId,
     code,
     paragraph,
     tab,
-    type
+    clauseAtomType
   ];
 }
 
@@ -154,43 +154,99 @@ class ClauseConstants {
 
   static String table = 'clause';
 
-  static String id = 'id';
+  static String clauseId = 'clauseId';
   static String domain = 'domain';
   static String kind = 'kind';
   static String number = 'number';
   static String relation = 'relation';
-  static String type = 'type';
+  static String clauseType = 'clauseType';
   
-  List<String> cols = [
-    id,
+  static List<String> cols = [
+    clauseId,
     domain,
     kind,
     number,
     relation,
-    type
+    clauseType
   ];
 }
 
+
+class LexClauseConstants {
+
+  static String table = 'lexClause';
+  
+  static String lexId = 'lexId';
+  static String clauseId = 'clauseId';
+  static String clauseWeight = 'clauseWeight';
+
+  static List<String> cols = [
+    lexId,
+    clauseId,
+    clauseWeight
+  ];
+}
+
+
+class StrongsConstants {
+  
+  static String table = 'strongs';
+
+  static String strongsId = 'strongsId';
+  static String lexeme = 'lexeme';
+  static String transliterationSTEP = 'transliterationSTEP';
+  static String morphCode = 'morphCode';
+  static String glossSTEP = 'glossSTEP';
+  static String definition = 'definition';
+
+  static List<String> cols = [
+    strongsId,
+    lexeme,
+    transliterationSTEP,
+    morphCode,
+    glossSTEP,
+    definition
+  ];
+}
+
+
+class PassageConstants {
+  static String table = 'passage';
+
+  static String passageId = 'passageId';
+  static String wordCount = 'wordCount';
+  static String weight = 'weight';
+  static String startWordId = 'startWordId';
+  static String endWordId = 'endWordId';
+
+  static List<String> cols = [
+    passageId,
+    wordCount,
+    weight,
+    startWordId,
+    endWordId
+  ];
+}
 
 class BookConstants {
 
   static String table = 'book';
 
-  static String id = 'id';
+  static String bookId = 'bookId';
   static String chapters = 'chapters';
   static String abbrOSIS = 'abbrOSIS';
   static String abbrLEB = 'abbrLEB';
-  static String name = 'name';
-  static String nameHeb = 'nameHeb';
+  static String bookName = 'bookName';
+  static String bookNameHeb = 'bookNameHeb';
   static String tanakhSort = 'tanakhSort';
 
-  List<String> cols = [
-    id,
+  static List<String> cols = [
+    bookId,
     chapters,
     abbrOSIS,
     abbrLEB,
-    name,
-    nameHeb,
+    bookName,
+    bookNameHeb,
     tanakhSort
   ];
 }

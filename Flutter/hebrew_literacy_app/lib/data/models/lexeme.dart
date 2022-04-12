@@ -4,7 +4,7 @@ import '../constants.dart';
 
 class Lexeme {
   int? id;
-  String? lang;
+  String? language;
   String? speech;
   String? nameType;
   String? lexSet;
@@ -17,7 +17,7 @@ class Lexeme {
 
   Lexeme({
     required this.id,
-    required this.lang,
+    required this.language,
     required this.speech,
     required this.nameType,
     required this.lexSet,
@@ -30,12 +30,12 @@ class Lexeme {
   factory Lexeme.fromRawJson(String str) => Lexeme.fromJson(json.decode(str));
   
   factory Lexeme.fromJson(Map<String, dynamic> json) => Lexeme(
-    id: json[LexemeConstants.id], 
-    lang: json[LexemeConstants.lang],
+    id: json[LexemeConstants.lexId], 
+    language: json[LexemeConstants.language],
     speech: json[LexemeConstants.speech],
     nameType: json[LexemeConstants.nameType],
     lexSet: json[LexemeConstants.lexSet],
-    text: json[LexemeConstants.text],
+    text: json[LexemeConstants.lexText],
     gloss: json[LexemeConstants.gloss],
     freqLex: json[LexemeConstants.freqLex],
     rankLex: json[LexemeConstants.rankLex],

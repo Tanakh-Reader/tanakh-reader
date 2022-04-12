@@ -15,8 +15,8 @@ class Word with ChangeNotifier {
   int? chBHS;
   int? vsBHS;
   int? vsIdBHS;
-  String? lang;
-  String? speech;
+  // String? lang;
+  // String? speech;
   String? person;
   String? gender;
   String? number;
@@ -34,7 +34,7 @@ class Word with ChangeNotifier {
   String? glossExt;
   String? glossBSB;
   num? sortBSB;
-  String? strongs;
+  String? strongsId;
   int? lexId;
   int? phraseId;
   int? clauseAtomId;
@@ -56,8 +56,8 @@ class Word with ChangeNotifier {
     required this.chBHS,
     required this.vsBHS,
     required this.vsIdBHS,
-    required this.lang,
-    required this.speech,
+    // required this.lang,
+    // required this.speech,
     required this.person,
     required this.gender,
     required this.number,
@@ -75,7 +75,7 @@ class Word with ChangeNotifier {
     required this.glossExt,
     required this.glossBSB,
     required this.sortBSB,
-    required this.strongs,
+    required this.strongsId,
     required this.lexId,
     required this.phraseId,
     required this.clauseAtomId,
@@ -116,7 +116,7 @@ class Word with ChangeNotifier {
   factory Word.fromRawJson(String str) => Word.fromJson(json.decode(str));
   
   factory Word.fromJson(Map<String, dynamic> json) => Word(
-    id: json[WordConstants.id], 
+    id: json[WordConstants.wordId], 
     book: json[WordConstants.book], 
     chKJV: json[WordConstants.chKJV],
     vsKJV: json[WordConstants.vsKJV],
@@ -124,8 +124,8 @@ class Word with ChangeNotifier {
     chBHS: json[WordConstants.chBHS],
     vsBHS: json[WordConstants.vsBHS],
     vsIdBHS: json[WordConstants.vsIdBHS],
-    lang: json[WordConstants.lang],
-    speech: json[WordConstants.speech],
+    // lang: json[WordConstants.lang],
+    // speech: json[WordConstants.speech],
     person: json[WordConstants.person],
     gender: json[WordConstants.gender],
     number: json[WordConstants.number],
@@ -143,7 +143,7 @@ class Word with ChangeNotifier {
     glossExt: json[WordConstants.glossExt],
     glossBSB: json[WordConstants.glossBSB],
     sortBSB: json[WordConstants.sortBSB],
-    strongs: json[WordConstants.strongs],
+    strongsId: json[WordConstants.strongsId],
     lexId: json[WordConstants.lexId],
     phraseId: json[WordConstants.phraseId],
     clauseAtomId: json[WordConstants.clauseAtomId],
@@ -155,4 +155,30 @@ class Word with ChangeNotifier {
     parMarker: json[WordConstants.parMarker]
   );
   
+}
+
+class Passage {
+  int? id;
+  int? wordCount;
+  num? weight;
+  int? startWordId;
+  int? endWordId;
+
+  Passage({
+    this.id,
+    this.wordCount,
+    this.weight,
+    this.startWordId,
+    this.endWordId
+  });
+
+  factory Passage.fromRawJson(String str) => Passage.fromJson(json.decode(str));
+  
+  factory Passage.fromJson(Map<String, dynamic> json) => Passage(
+    id: json[PassageConstants.passageId],
+    wordCount: json[PassageConstants.wordCount],
+    weight: json[PassageConstants.weight],
+    startWordId: json[PassageConstants.startWordId],
+    endWordId: json[PassageConstants.endWordId]
+  );
 }
