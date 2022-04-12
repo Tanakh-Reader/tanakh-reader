@@ -2,12 +2,33 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/constants.dart';
 
 import '../models/models.dart';
 import '../database/hb_db_helper.dart';
 
+class Passages {
+  
+  List<HebrewPassage> _passages = [];
+
+  List<HebrewPassage> get passages {
+    return [..._passages];
+  }
+  
+  Future<void> loadPassages() async {
+    var passages = await HebrewDatabaseHelper().getPassages();
+    for (var p in passages) {
+      var passage = HebrewPassage();
+      await passage.getPassageWordsById(p.startWordId!, p.endWordId!);
+      _passages.add(passage);
+    }
+  }
+
+}
+
 class HebrewPassage with ChangeNotifier {
   List<Word> _words = [];
+  List<Lexeme> _lexemes = [];
   List<Verse> _verses = [];
   List<Clause> _clauses = [];
   List<Phrase> _phrases = [];
@@ -18,8 +39,14 @@ class HebrewPassage with ChangeNotifier {
     return [..._words];
   }
 
+  List<Lexeme> get lexemes {
+    return [..._lexemes];
+  }
   
-  
+  Lexeme lex(int lexId) {
+    return _lexemes.firstWhere((lex) => lex.id == lexId);
+  }
+
   // Get all of the verses in the current passage. 
   List<Verse> get verses {
     // if (_verses.isEmpty && _words.isNotEmpty) {
@@ -75,6 +102,7 @@ class HebrewPassage with ChangeNotifier {
   // Convert SQL data to your Dart Object.
   Future<void> getPassageWordsByRef(int book, int ch) async {
     _words = await HebrewDatabaseHelper().getWordsByBookChapter(book, ch);
+    _lexemes = await HebrewDatabaseHelper().getSomeLexemes(book, ch, WordConstants.book);
     _verses = [];
     // _book = null;
     notifyListeners();
@@ -83,6 +111,8 @@ class HebrewPassage with ChangeNotifier {
   // Convert SQL data to your Dart Object.
   Future<void> getPassageWordsById(int startId, int endId) async {
     _words = await HebrewDatabaseHelper().getWordsByStartEndNode(startId, endId);
+    _lexemes = await HebrewDatabaseHelper().getSomeLexemes(startId, endId, WordConstants.wordId);
+    _verses = [];
     notifyListeners();
   }
 }

@@ -17,7 +17,7 @@ void main() async {
   await Hive.initFlutter();
   // Open the peopleBox
   Hive.registerAdapter(UserVocabAdapter());
-  await Hive.openBox<UserVocab>('userVocab');
+  // await Hive.openBox<UserVocab>('userVocab');
   Books.getBooks();
   runApp(ProviderScope(child: MyApp()));
 }

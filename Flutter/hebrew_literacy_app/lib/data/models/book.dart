@@ -24,12 +24,12 @@ class Book {
   factory Book.fromRawJson(String str) => Book.fromJson(json.decode(str));
   
   factory Book.fromJson(Map<String, dynamic> json) => Book(
-    id: json[BookConstants.id], 
+    id: json[BookConstants.bookId], 
     chapters: json[BookConstants.chapters],
     abbrOSIS: json[BookConstants.abbrOSIS],
     abbrLEB: json[BookConstants.abbrLEB],
-    name: json[BookConstants.name],
-    nameHeb: json[BookConstants.nameHeb],
+    name: json[BookConstants.bookName],
+    nameHeb: json[BookConstants.bookNameHeb],
     tanakhSort: json[BookConstants.tanakhSort],
   );
   

@@ -20,11 +20,11 @@ class ClauseAtom {
   factory ClauseAtom.fromRawJson(String str) => ClauseAtom.fromJson(json.decode(str));
   
   factory ClauseAtom.fromJson(Map<String, dynamic> json) => ClauseAtom(
-    id: json[ClauseAtomConstants.id], 
+    id: json[ClauseAtomConstants.clauseAtomId], 
     code: json[ClauseAtomConstants.code],
     paragraph: json[ClauseAtomConstants.paragraph],
     tab: json[ClauseAtomConstants.tab],
-    type: json[ClauseAtomConstants.type],
+    type: json[ClauseAtomConstants.clauseAtomType],
   );
   
 }
