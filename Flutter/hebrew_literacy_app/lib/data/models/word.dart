@@ -91,27 +91,6 @@ class Word with ChangeNotifier {
     isSelected = !isSelected;
   }
 
-  Map<String, String> stems = {
-    'qal':  'Qal',
-    'hif':  'Hiphil',
-    'piel': 'Piel',
-    'nif':  'Niphal',
-    'hit':  'Hitpael',
-    'pual': 'Pual',
-    'hof':  'Hophal'
-  };
-
-  Map<String, String> tenses = {
-      'perf': 'perfect',
-      'impf': 'imperfect',
-      'wayq': 'wayyiqtol',
-      'ptca': 'participle active',
-      'infc': 'infinitive construct',
-      'impv': 'imperative',
-      'ptcp': 'participle passive',
-      'infa': 'infinitive absolute'
-  };
-
   // https://blog.devgenius.io/adding-sqlite-db-file-from-the-assets-internet-in-flutter-3ec42c14cd44
   factory Word.fromRawJson(String str) => Word.fromJson(json.decode(str));
   

@@ -18,22 +18,19 @@ class ReadScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     print("Read built");
     final hebrewPassage = ref.watch(hebrewPassageProvider);
-    return Stack(
-      children: [
-        const PassageDisplay(),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: hebrewPassage.hasSelection
-            ? WordExpansionPanel(hebrewWord: hebrewPassage.selectedWord!)
-            : const SizedBox()
-            //     style: TextStyle(
-            //     color: Colors.white,
-            //     fontSize: 28,
-            //     fontWeight: FontWeight.normal
-            //   ),
-        ),
-        ReferencesExpansionPanel(button: ReferenceButton())
-      ],
+    return Scaffold(
+      body: Stack(
+        children: [
+          Expanded(child: PassageDisplay()),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: hebrewPassage.hasSelection
+              ? WordExpansionPanel()
+              : const SizedBox()
+          ),
+          ReferencesExpansionPanel(button: ReferenceButton())
+        ],
+      ),
     );
   }
 }
