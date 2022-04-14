@@ -250,3 +250,66 @@ class BookConstants {
     tanakhSort
   ];
 }
+
+Map<dynamic, String> MorphMap = {
+  // Catch
+  null: '',
+  'unknown': '',
+  'NA': '',
+  // Speech
+  'art':	'article',
+  'verb':	'verb',
+  'subs':	'noun',
+  'nmpr':	'proper noun',
+  'advb':	'adverb',
+  'prep':	'preposition',
+  'conj':	'conjunction',
+  'prps':	'personal pronoun',
+  'prde':	'demonstrative pronoun',
+  'prin':	'interrogative pronoun',
+  'intj':	'interjection',
+  'nega':	'negative particle',
+  'inrg':	'interrogative particle',
+  'adjv':	'adjective',
+  // Name Type
+  'pers':	'person',
+  'mens':	'measurement unit',
+  'gens':	'people',
+  'topo':	'place',
+  'ppde':	'demonstrative personal pronoun',
+  // Verb Stems
+  'hif':  'Hifil',
+  'hit':  'Hitpael',
+  'htpo': 'Hitpoel',
+  'hof':  'Hofal',
+  'nif':  'Nifal',
+  'piel': 'Piel',
+  'poal': 'Poal',
+  'poel': 'Poel',
+  'pual': 'Pual',
+  'qal':  'Qal',
+  // Verb Tenses
+  'perf': 'perfect',
+  'impf': 'imperfect',
+  'wayq': 'wayyiqtol',
+  'ptca': 'participle',
+  'infc': 'infinitive (construct)',
+  'impv': 'imperative',
+  'ptcp': 'participle (passive)',
+  'infa': 'infinitive (absolute)',
+  // Person
+  'p1': 'first person',
+  'p2': 'second person',
+  'p3': 'third person',
+  // Number
+  'sg': 'singular',
+  'du': 'dual',
+  'pl': 'plural',
+  // Gender
+  'm': 'masculine',
+  'f': 'feminine',
+  // State
+  'a': 'absolute',
+  'c': 'construct',
+  'e': 'emphatic'
+};

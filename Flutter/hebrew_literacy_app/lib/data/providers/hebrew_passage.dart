@@ -16,6 +16,7 @@ class Passages {
   }
   
   Future<void> loadPassages() async {
+    _passages = [];
     var passages = await HebrewDatabaseHelper().getPassages();
     for (var p in passages) {
       var passage = HebrewPassage();
@@ -34,6 +35,7 @@ class HebrewPassage with ChangeNotifier {
   List<Phrase> _phrases = [];
   Book? _book;
   bool hasSelection = false;
+  List<Word> _joinedWords = [];
 
   List<Word> get words {
     return [..._words];
@@ -49,7 +51,9 @@ class HebrewPassage with ChangeNotifier {
 
   // Get all of the verses in the current passage. 
   List<Verse> get verses {
-    // if (_verses.isEmpty && _words.isNotEmpty) {
+    if (_verses.isNotEmpty) {
+      return [..._verses];
+    } else {
       // Iterate over all words in passage from the first vsId to
       // the last vsId and group them into verses. 
       int currentVerseId = _words.first.vsIdBHS!;
@@ -64,9 +68,9 @@ class HebrewPassage with ChangeNotifier {
               words: verseWords
             )
         );
-        currentVerseId = currentVerseId + 1;
+        currentVerseId += 1;
       }
-    // }
+    }
     return [..._verses];
   }
 
@@ -84,12 +88,42 @@ class HebrewPassage with ChangeNotifier {
     );
   }
 
+  // TODO Make cleaner
+  List<Word> get joinedWords {
+    _joinedWords = [];
+    if (hasSelection) {
+      for (var i = 0; i < _words.length; i++) {
+        var j = i==0 ? i : i-1;
+        if (words[i].isSelected) {
+          while (words[j].trailer == null ) {
+            j -= 1;
+          }
+          while (words[j+1].trailer == null) {
+            _joinedWords.add(words[j+1]);
+            j += 1;
+          }
+          _joinedWords.add(words[j+1]);
+          break;
+        }
+      }
+    }
+    return [..._joinedWords];
+  }
+
   void toggleWordSelection(Word word) {
-    hasSelection = !hasSelection;
+    if (word.isSelected) {
+      hasSelection = false;
+    } else {
+      hasSelection = true;
+    }
     _words[
       _words.indexWhere((elem) => elem.id == word.id)
     ].toggleSelected();
-    
+    for (var w in _words) {
+      if (w.isSelected && w.id != word.id) {
+        w.toggleSelected();
+      }
+    }
     notifyListeners();
   }
 
