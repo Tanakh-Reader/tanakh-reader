@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/providers/providers.dart';
 import 'screens/screens.dart';
 
 class BottomNavBar extends ConsumerStatefulWidget {
@@ -17,6 +18,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
   @override
   void initState() {
     super.initState();
+    ref.read(hebrewPassageProvider);
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
   }
@@ -35,6 +37,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
 
   @override
   Widget build(BuildContext context) {
+    final hebrewPassage = ref.read(hebrewPassageProvider);
     // https://github.com/pinkeshdarji/flutter_bottom_navigation_bar/blob/master/lib/hide_on_scroll.dart
     return 
     // TODO - implement
@@ -50,7 +53,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
           // Sets the current index of BottomNavigationBar.
           currentIndex: widget.tabManager.selectedTab,
           onTap: (index) {
-      
+            // TODO - does this need to be here?
+            if (hebrewPassage.hasSelection) {
+              hebrewPassage.deselectWords();
+            }
             widget.tabManager.goToTab(index);
           },
           items: [

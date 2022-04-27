@@ -16,12 +16,15 @@ class ReferencesExpansionPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     
-    final passage = ref.watch(hebrewPassageProvider);
+    final hebrewPassage = ref.watch(hebrewPassageProvider);
 
     return GestureDetector(
         onTap: () async {
           // HapticFeedback.lightImpact();
-    
+          // TODO - does this need to be here?
+          if (hebrewPassage.hasSelection) {
+            hebrewPassage.deselectWords();
+          }
           await _showBookAndChapterBottomSheet(context, ref);
         },
         child: button

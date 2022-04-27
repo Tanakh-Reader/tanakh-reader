@@ -11,23 +11,18 @@ import '../../../data/models/models.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-/* PassageDisplay returns a RichText containing all of the word objects that will be displayed
-for a given passage. Each word is placed in a TextSpan such that its attributes can be accessed
-via a gesture detector. */
-
+/// Builds a RichText containing all of the word objects that will be displayed
+/// for a given passage. Each word is placed in a TextSpan such that its attributes 
+/// can be accessed via a gesture detector. 
 class PassageDisplay extends ConsumerWidget {
-
-  PassageDisplay({ 
-    Key? key ,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    /* If HebrewPassage.words is populated, generate a TextSpan
-    with all of the words -- otherwise display a message. */
+    // If HebrewPassage.words is populated, generate a TextSpan
+    // with all of the words -- otherwise display a message.
     final _hebrewPassage = ref.watch(hebrewPassageProvider);
-    // TODO REMOVE!
+    /// TODO REMOVE!
     return Column(
       children: [
         SizedBox(height: 65,),
@@ -45,118 +40,159 @@ class PassageDisplay extends ConsumerWidget {
     );
   }
 
-  
-  // Create a textspan for each word in the passage.
+
+  /// Takes a [HebrewPassage] instance and uses its data to construct
+  /// a list of [TextSpan] that construct the [RichText] in [PassageDisplay].
   List<TextSpan>? _buildTextSpans(HebrewPassage hebrewPassage, ref) {
 
     var textDisplay = ref.watch(textDisplayProvider);
     var userVocab = ref.watch(userVocabProvider);
     List<TextSpan> hebrewPassageTextSpans = [];
-    List<Verse> verses = hebrewPassage.verses;
-    
-    // Iterate over verses in passage, converting each word into a TextSpan.
-    for (int i = 0; i < verses.length; i++) {
-      List<Word> words = verses[i].words!;
-      // Add verse number.
-      hebrewPassageTextSpans.add(
-        TextSpan(
-          children:[
-            WidgetSpan(
-              alignment: PlaceholderAlignment.bottom,
-              child: Text(
-                " ${verses[i].number.toString()} ",
-                style: _wordStyle.copyWith(
-                  fontSize: TxtTheme.verseSize,    
-                  fontWeight: FontWeight.bold
+    List<Word> words = hebrewPassage.words;
+    // List to keep track of words that are joined, such as וְלַחֹ֖שֶׁךְ
+    List<Word> joinedWords = [];
+    // int curParagraph 
+    int curVerse = -1; //words.first.vsIdBHS!;
+    // int curSentence
+    int curClause = -1; 
+    int curPhrase = -1; 
+    var newLine = TextSpan(text: '\n');
+    var spacing = TextSpan(text: '      ');
+
+    // Iterate over all words in the passage. 
+    for (var i = 0; i < words.length; i++) {
+      // The current word.
+      var word = words[i];
+      bool newVerse = false;
+      bool newClause = false;
+      // Add verse divisions. 
+      if (textDisplay.verse && word.vsBHS != curVerse) {
+        if (curVerse != -1) {
+          hebrewPassageTextSpans.add(newLine);
+        }
+        newVerse = true;
+        curVerse = word.vsBHS!;
+        // Add verse number.
+        var verseNumText = TextSpan(
+            children:[
+              WidgetSpan(
+                alignment: PlaceholderAlignment.bottom,
+                child: Text(
+                  " ${word.vsBHS.toString()} ",
+                  style: _wordStyle.copyWith(
+                    fontSize: TxtTheme.verseSize,    
+                    fontWeight: FontWeight.bold
+                  )
                 )
               )
-            )
-           ]
-        )
-      );
-      List<Word> joinedWords = [];
-      // Iterate over words.
-      int clauseId = verses[0].words!.first.clauseId!;
-      for (int k = 0; k < verses[i].words!.length; k++) {
-        Word word = words[k];
-        if (word.trailer == null) {
-          joinedWords.add(word);
-          continue;
-        } else if (k > 0 && words[k-1].trailer == null) {
-          joinedWords.add(word);
-          for (var _word in joinedWords) {
-            Lexeme lex = hebrewPassage.lex(_word.lexId!);
-            Color wordColor = (lex.speech == 'nmpr' && lex.freqLex! < 100) ? TxtTheme.propNounColor : TxtTheme.normColor;
-            if (lex.speech != 'nmpr' && !userVocab.isKnown(lex)) {
-              wordColor = TxtTheme.unknownColor!;
-            }
-            // TextDecoration decor = userVocab.isKnown(lex) ? TxtTheme.normDecor : TxtTheme.unknownDecor;
-            FontWeight weight = joinedWords.any((w) => w.isSelected) ? TxtTheme.selWeight : TxtTheme.normWeight;
-            var _wordSpan = TextSpan(
-              text: _word.text ?? '',
-              style:_wordStyle.copyWith(
-                color: wordColor,
-                fontWeight: weight,
-                // decoration: decor
-              ),
-              recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                hebrewPassage.toggleWordSelection(word);
-              }
-            );
-            hebrewPassageTextSpans.add(_wordSpan);
-          }
-          var _trailerSpan = TextSpan(
-            text: word.trailer,
-            style: _wordStyle
+            ]
           );
-          hebrewPassageTextSpans.add(_trailerSpan);
-          joinedWords = [];
-        } else {
-          var _wordSpan = _createWordSpan(word, userVocab, hebrewPassage);
-          var _trailerSpan = TextSpan(
-            text: word.trailer,
-            style: _wordStyle
-          ); 
-          hebrewPassageTextSpans.add(_wordSpan);
-          hebrewPassageTextSpans.add(_trailerSpan);
-        }
-        if (word.id == verses[i].words!.last.id) {
-          hebrewPassageTextSpans.add(TextSpan(text: '\n'));
-        }
-        // if (textDisplay.grouping == TextGroup.clause) {
-        //   if (word.clauseId != clauseId) {
-        //     clauseId += 1;
-        //     hebrewPassageTextSpans.add(TextSpan(text: '\n'));
-        //   }
-        // }
+        hebrewPassageTextSpans.add(verseNumText);
       }
+
+      // Add clause divisions. 
+      if (textDisplay.clause && word.clauseId != curClause) {
+        if (curClause != -1 && !newVerse) {
+          hebrewPassageTextSpans.add(newLine);
+          // hebrewPassageTextSpans.add(spacing);
+        }
+        curClause = word.clauseId!;
+        // Maybe add other clause data. 
+        // hebrewPassageTextSpans.add(TextSpan(text: "clause"));
+        // hebrewPassageTextSpans.add(newLine);
+      }
+
+      // Add clause divisions. 
+      if (textDisplay.phrase && word.phraseId != curPhrase) {
+        if (curPhrase != -1) {
+          hebrewPassageTextSpans.add(newLine);
+        }
+        curPhrase = word.phraseId!;
+        // Maybe add other phrase data. 
+        hebrewPassageTextSpans.add(TextSpan(text: "phrase"));
+        hebrewPassageTextSpans.add(newLine);
+      }
+
+      // The following conditional evaluates if the current word stands alone or is 
+      // part of a compound. If it is a compound, we continue iterating over words until
+      // joinedWords is filled and then generate a TextSpan for each word, so that if
+      // a word in the compound is selected, the whole compound will be affected. 
+
+      // We are in a compound, therefore store the word and skip to the next iteration.
+      if (word.trailer == null) {
+        joinedWords.add(word);
+        continue;
+
+      // If the previous word has no trailer, we've reached the end of a compound.
+      } else if (i > 0 && words[i-1].trailer == null) {
+        // Add the current word as the last in the compound.
+        joinedWords.add(word);
+        // Create a TextSpan for each word in the compound. 
+        for (var _word in joinedWords) {
+          var _wordSpan = _createWordSpan(_word, userVocab, hebrewPassage, joinedWords);
+          hebrewPassageTextSpans.add(_wordSpan);
+        }
+        // Add the compound's trailer. 
+        var _trailerSpan = TextSpan(
+          text: word.trailer,
+          style: _wordStyle
+        );
+        hebrewPassageTextSpans.add(_trailerSpan);
+        // Reset joinedWords.
+        joinedWords = [];
+
+      // Otherwise, the current word is not a compound, so we build it's TextSpan. 
+      } else {
+        // Build the word's text. 
+        var _wordSpan = _createWordSpan(word, userVocab, hebrewPassage, [word]);
+        // Build the word's trailer. 
+        var _trailerSpan = TextSpan(
+          text: word.trailer,
+          style: _wordStyle
+        ); 
+        hebrewPassageTextSpans.add(_wordSpan);
+        hebrewPassageTextSpans.add(_trailerSpan);
+      }
+      
     }
     return hebrewPassageTextSpans;
   }
 
+
+  // The default styling for a word, changed via copyWith. 
   var _wordStyle = GoogleFonts.notoSerifHebrew(
       color: TxtTheme.normColor,
       fontSize: TxtTheme.normSize,
       fontWeight: TxtTheme.normWeight,
-      decoration: TxtTheme.normDecor,
-      decorationColor: TxtTheme.decorColor,
   );
 
-  TextSpan _createWordSpan(word, userVocab, hebrewPassage) {
+  /// Takes a [Word], [UserVocab], [HebrewPassage] instance, and 
+  /// [joinedWords], signifying if it's a single or compound word.
+  /// If it isn't a compund word, then joinedWords = [\word].
+  /// Returns a [TextSpan] formatted according to data in the 
+  /// UserVocab and HebrewPassage providers. 
+  TextSpan _createWordSpan(word, userVocab, hebrewPassage, List joinedWords) {
+    // Current word's lexeme.
     Lexeme lex = hebrewPassage.lex(word.lexId!);
-    Color wordColor = (lex.speech == 'nmpr' && lex.freqLex! < 100) ? TxtTheme.propNounColor : TxtTheme.normColor;
+    // Change the word's color if it is a proper noun.
+    // TODO: get user feedback on a good frequency for coloring proper nouns. 
+    Color wordColor = (lex.speech == 'nmpr' && lex.freqLex! < 100) 
+      ? TxtTheme.propNounColor 
+      : TxtTheme.normColor;
+    // Color the word differently if it's unknown and not a proper noun. 
     if (lex.speech != 'nmpr' && !userVocab.isKnown(lex)) {
       wordColor = TxtTheme.unknownColor!;
     }
-    TextDecoration decor = userVocab.isKnown(lex) ? TxtTheme.normDecor : TxtTheme.unknownDecor;
-    FontWeight weight = word.isSelected ? TxtTheme.selWeight : TxtTheme.normWeight;
+    // Change the word's weight if it is selected.
+    FontWeight weight = joinedWords.any((w) => w.isSelected) 
+      ? TxtTheme.selWeight 
+      : TxtTheme.normWeight;
+    // Return a text span with the customized word formatting. 
     return TextSpan(
       text: word.text ?? '',
       style:_wordStyle.copyWith(
         color: wordColor,
         fontWeight: weight,
-        // decoration: decor
       ),
       recognizer: TapGestureRecognizer()
       ..onTap = () {

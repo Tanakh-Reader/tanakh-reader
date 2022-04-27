@@ -156,6 +156,17 @@ class HebrewDatabaseHelper {
     return words.map((json) => Word.fromJson(json)).toList();
   }
 
+  // Get all words present between two nodes (inclusive). 
+  Future<List<Word>> getAllWords() async {
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    final words = await db.query(
+        WordConstants.table, 
+        orderBy: "${WordConstants.wordId} ASC");
+    print('getAllWords: ${stopwatch.elapsed} to query');
+    return words.map((json) => Word.fromJson(json)).toList();
+  }
+
   // Interacting with other DB tables
   Future<List<Lexeme>> testyTest(int startId, int endId) async {
     final stopwatch = Stopwatch()..start();

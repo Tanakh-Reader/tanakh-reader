@@ -3,13 +3,9 @@ import 'models.dart';
 import '../database/hb_db_helper.dart';
 
 class Books {
-  static List<Book> _books = [];
-
-  static List<Book> get books {
-    return [..._books];
-  } 
+  static late final List<Book> books;
 
   static Future<void> getBooks() async {
-    _books = await HebrewDatabaseHelper().getBooks();
+    books = await HebrewDatabaseHelper().getBooks();
   }
 }
