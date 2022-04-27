@@ -7,12 +7,6 @@ import 'package:hebrew_literacy_app/data/constants.dart';
 import '../models/models.dart';
 import '../database/hb_db_helper.dart';
 
-// How the text is to be grouped. 
-enum TextGroup {
-  verse,
-  clause,
-  phrase
-}
 
 class TxtTheme {
   static var normColor = Colors.white;
@@ -20,18 +14,18 @@ class TxtTheme {
   static var unknownColor = Colors.blue[200];
   static var normWeight = FontWeight.normal;
   static var selWeight = FontWeight.bold;
-  static var normDecor = TextDecoration.none;
-  static var unknownDecor = TextDecoration.underline;
-  static var decorColor = Colors.blue[200];
   static var normSize = 28.0;
   static var verseSize = 16.0;
 }
 
 class TextDisplay with ChangeNotifier{
-  var grouping = TextGroup.clause;
+  bool paragraph = true;
+  bool verse = true;
+  bool clause = true;
+  bool phrase = false;
 
   void updateGrouping(var group) {
-    grouping = group;
+    // grouping = group;
     notifyListeners();
   }
 }

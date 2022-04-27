@@ -21,7 +21,7 @@ class ReadScreen extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Expanded(child: PassageDisplay()),
+          Column(children: [Expanded(child: PassageDisplay())]),
           Align(
             alignment: Alignment.bottomCenter,
             child: hebrewPassage.hasSelection

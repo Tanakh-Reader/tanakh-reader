@@ -9,9 +9,6 @@ import '../../../data/models/word.dart';
 
 
 class WordExpansionPanel extends ConsumerStatefulWidget {
-  const WordExpansionPanel({ 
-    Key? key,
-  }) : super(key: key);
 
   @override
   _WordExpansionPanelState createState() => _WordExpansionPanelState();
@@ -38,6 +35,7 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
     final lex = hebrewPassage.lex(word!.lexId!);
     // var temp = HebrewDatabaseHelper().getLexClauses(word!);
     var joinedWords = hebrewPassage.joinedWords;
+    print(joinedWords.first.text);
 
 
     TextStyle textColor = const TextStyle(color: Colors.white);
@@ -50,7 +48,7 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
             // Word summary
             GestureDetector(
               onTap: () {
-                hebrewPassage.toggleWordSelection(word);
+                hebrewPassage.deselectWords();
               },
               child: Container(
                 color: tileColor,

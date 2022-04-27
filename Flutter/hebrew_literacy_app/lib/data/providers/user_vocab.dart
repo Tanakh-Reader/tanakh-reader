@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
+import 'package:hebrew_literacy_app/data/providers/providers.dart';
 
 import '../models/models.dart';
 import '../database/hb_db_helper.dart';
@@ -27,13 +28,12 @@ class Vocab {
 
 class UserVocab with ChangeNotifier {
   Map<int, Map<String,dynamic>> _vocab = {};
-  var _allLex = [];
   bool loaded = false;
   String saved = "saved";
   String status = "status";
 
   Lexeme lex(int lexId) {
-    return _allLex.firstWhere((lex) => lex.id == lexId);
+    return AllLexemes.lexemes.firstWhere((lex) => lex.id == lexId);
   }
   
   get vocab {
@@ -82,8 +82,7 @@ class UserVocab with ChangeNotifier {
 
 
   Future<void> setUserVocab(int freqLex) async {
-    List<Lexeme> allLexemes = await HebrewDatabaseHelper().getAllLexemes();
-    for (var lex in allLexemes) {
+    for (var lex in AllLexemes.lexemes) {
       _vocab[lex.id!] = {status:VocabStatus.unkown.index, saved:false};
       if (lex.freqLex! >= freqLex) {
         _vocab[lex.id!]![status] = VocabStatus.known.index;
@@ -92,9 +91,6 @@ class UserVocab with ChangeNotifier {
     // notifyListeners();
   }
 
-  Future<void> getLex() async {
-    _allLex = await HebrewDatabaseHelper().getAllLexemes();
-  }
 }
 
 final userVocabProvider = ChangeNotifierProvider<UserVocab>((ref) {

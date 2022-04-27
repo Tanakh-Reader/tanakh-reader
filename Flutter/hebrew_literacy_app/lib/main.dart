@@ -18,6 +18,7 @@ void main() async {
   // Open the peopleBox
   Hive.registerAdapter(UserVocabAdapter());
   // await Hive.openBox<UserVocab>('userVocab');
-  Books.getBooks();
+  await Books.getBooks();
+  await AllLexemes.loadAllLexemes();
   runApp(ProviderScope(child: MyApp()));
 }

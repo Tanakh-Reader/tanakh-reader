@@ -47,7 +47,7 @@ class HomeScreen extends ConsumerWidget {
         // ),
     );
   }
-
+ 
   Widget setVocab(context, userVocab) {
     return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,7 +65,6 @@ class HomeScreen extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   await userVocab.setUserVocab(freqLex);
-                  userVocab.getLex();
                   userVocab.load();
                 },
                 child: const Text('Submit'),
@@ -137,7 +136,7 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
                             },
                             child: Container(
                               padding: EdgeInsets.all(5),
-                              width: 120,
+                              width: 200,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -166,6 +165,9 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
                                       Text("${((1 - unknown.length / passage.lexemes.length) * 100).toInt()}%")
                                     ]
                                   ),
+                                  // Flexible(
+                                  //   child: Text('$morph', softWrap:true, maxLines: 2,)
+                                  // )
                                 ],
                               ),
                             ),
