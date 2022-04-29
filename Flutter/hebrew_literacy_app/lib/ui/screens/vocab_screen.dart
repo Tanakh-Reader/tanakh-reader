@@ -57,7 +57,8 @@ class VocabScreen extends ConsumerWidget {
                       SizedBox(width: 100,),
                       GestureDetector(
                         onTap: () {
-                          userVocab.toggleSaved(userVocab.savedVocab[index]);
+                          var lex = userVocab.lex(userVocab.savedVocab[index]);
+                          userVocab.toggleSaved(lex);
                         },
                         child: Text("Toggle")
                       )

@@ -72,6 +72,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
               icon: Icon(Icons.school),
               label: 'Vocab',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
           ],     
         // ),
     );

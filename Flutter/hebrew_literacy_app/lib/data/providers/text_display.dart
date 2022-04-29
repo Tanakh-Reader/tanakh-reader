@@ -24,6 +24,18 @@ class TextDisplay with ChangeNotifier{
   bool clause = true;
   bool phrase = false;
 
+  void toggleVerse() {
+    verse = !verse;
+    notifyListeners();
+  }
+  void toggleClause() {
+    clause = !clause;
+    notifyListeners();
+  }
+  void togglePhrase() {
+    phrase = !phrase;
+    notifyListeners();
+  }
   void updateGrouping(var group) {
     // grouping = group;
     notifyListeners();

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/providers/user.dart';
+import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
 import 'package:hebrew_literacy_app/ui/screens/screens.dart';
 import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart' as pro;
 
+import '../../data/database/user_data/user.dart';
 import '../bottom_nav.dart';
 import 'read_screen.dart';
 import '../../data/providers/providers.dart';
@@ -18,61 +22,67 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    var userVocab = ref.watch(userVocabProvider);
+    // TODO -- this rebuilds any time a function
+    // is called from anywhere in the app. 
+    var userVocab = ref.read(userVocabProvider);
+    var userData = ref.watch(userDataProvider);
+    // TODO: temp
+    ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
 
     print("Home built");
-    return SizedBox(
-      height: 600,
-      width: double.infinity,
-      // child: SingleChildScrollView(
-      //     child: ConstrainedBox(
-      //       constraints: BoxConstraints(minHeight: 200),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                setVocab(context, userVocab),
-                userVocab.loaded ?
-                DisplayPassages()
-                : Container()
-                ,
-                // ReferencesExpansionPanel(
-                  // button: Center(
-                  //   child: Icon(Icons.menu_book_rounded),
-                  // )
-                // ),
-              ]
-            ),
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        height: 800,
+        width: double.infinity,
+        // child: SingleChildScrollView(
+        //     child: ConstrainedBox(
+        //       constraints: BoxConstraints(minHeight: 200),
+              child: userData.initialized ?
+              Container(height: 450, child:
+            
+                  DisplayPassages()
+                  
+              )
+              : RegisterScreen()
+                  // ReferencesExpansionPanel(
+                    // button: Center(
+                    //   child: Icon(Icons.menu_book_rounded),
+                    // )
+                  // ),
+                
+              ),
+            // ),
           // ),
-        // ),
+      
     );
   }
  
-  Widget setVocab(context, userVocab) {
-    return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 60,),
-            Text('Enter the lexical range you have memorized.'),
-            SizedBox(
-              width: 200,
-              child: TextField(
-                onChanged: (newText) {freqLex = int.parse(newText);}
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  await userVocab.setUserVocab(freqLex);
-                  userVocab.load();
-                },
-                child: const Text('Submit'),
-              ),
-            ),
-          ],
-    );
-  }
+  // Widget setVocab(context, userVocab) {
+  //   return Column(
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: <Widget>[
+  //           SizedBox(height: 60,),
+  //           Text('Enter the lexical range you have memorized.'),
+  //           SizedBox(
+  //             width: 200,
+  //             child: TextField(
+  //               onChanged: (newText) {freqLex = int.parse(newText);}
+  //             ),
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 16.0),
+  //             child: ElevatedButton(
+  //               onPressed: () async {
+  //                 await userVocab.initializeVocab(freqLex);
+  //                 userVocab.load();
+  //               },
+  //               child: const Text('Submit'),
+  //             ),
+  //           ),
+  //         ],
+  //   );
+  // }
 }
 
 var passages = Passages();
@@ -94,16 +104,28 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
     // "ref" can be used in all life-cycles of a StatefulWidget.
     ref.read(hebrewPassageProvider);
     ref.read(userVocabProvider);
+    ref.read(userDataProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     print("Entering Display P");
-    var vocab = ref.read(userVocabProvider).knownVocab;
+    var userVocab = ref.read(userVocabProvider);
+    var userData = ref.read(userDataProvider);
+    var vocab = userVocab.knownVocab;
     return SizedBox(
       // height: 420,
       child: Column(
         children: [
+          Text("Welcome back, ${userData.name}!"),
+          SizedBox(height: 10,),
+          ElevatedButton(
+            onPressed: () {
+              userData.clearData();
+              userVocab.clearData();
+            },
+            child: const Text('Clear User Data'),
+          ),
           ElevatedButton(
             onPressed: () async {
               await passages.loadPassages();
@@ -178,7 +200,8 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
             // )
             ),
           )
-          : Container()
+          : Container(),
+
         ]
       ),
     );

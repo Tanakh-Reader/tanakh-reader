@@ -11,6 +11,7 @@ import '../../../data/models/models.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
+
 /// Builds a RichText containing all of the word objects that will be displayed
 /// for a given passage. Each word is placed in a TextSpan such that its attributes 
 /// can be accessed via a gesture detector. 
@@ -65,6 +66,7 @@ class PassageDisplay extends ConsumerWidget {
       var word = words[i];
       bool newVerse = false;
       bool newClause = false;
+      bool newPhrase = false;
       // Add verse divisions. 
       if (textDisplay.verse && word.vsBHS != curVerse) {
         if (curVerse != -1) {
@@ -92,6 +94,7 @@ class PassageDisplay extends ConsumerWidget {
 
       // Add clause divisions. 
       if (textDisplay.clause && word.clauseId != curClause) {
+        newClause = true;
         if (curClause != -1 && !newVerse) {
           hebrewPassageTextSpans.add(newLine);
           // hebrewPassageTextSpans.add(spacing);
@@ -104,13 +107,14 @@ class PassageDisplay extends ConsumerWidget {
 
       // Add clause divisions. 
       if (textDisplay.phrase && word.phraseId != curPhrase) {
-        if (curPhrase != -1) {
+        newPhrase = true;
+        if (curPhrase != -1 && !newClause && !newVerse) {
           hebrewPassageTextSpans.add(newLine);
         }
         curPhrase = word.phraseId!;
         // Maybe add other phrase data. 
-        hebrewPassageTextSpans.add(TextSpan(text: "phrase"));
-        hebrewPassageTextSpans.add(newLine);
+        // hebrewPassageTextSpans.add(TextSpan(text: "phrase"));
+        // hebrewPassageTextSpans.add(newLine);
       }
 
       // The following conditional evaluates if the current word stands alone or is 
@@ -119,7 +123,7 @@ class PassageDisplay extends ConsumerWidget {
       // a word in the compound is selected, the whole compound will be affected. 
 
       // We are in a compound, therefore store the word and skip to the next iteration.
-      if (word.trailer == null) {
+      if (word.trailer == null && ((!textDisplay.phrase || !newPhrase))) {
         joinedWords.add(word);
         continue;
 
