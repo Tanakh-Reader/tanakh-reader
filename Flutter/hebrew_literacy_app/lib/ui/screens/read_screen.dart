@@ -10,8 +10,6 @@ import '../widgets/read_screen/reference_button.dart';
 
 
 class ReadScreen extends ConsumerWidget {
-  const ReadScreen({ Key? key}) : super(key: key);
-
   static const routeName = '/read';
 
   @override
