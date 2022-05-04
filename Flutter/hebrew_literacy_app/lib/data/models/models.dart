@@ -5,6 +5,8 @@ export 'clause.dart';
 export 'clause_atom.dart';
 export 'verse.dart';
 export 'chapter.dart';
+export 'all_lexemes.dart';
+export 'passage.dart';
 
 
 export 'book.dart';

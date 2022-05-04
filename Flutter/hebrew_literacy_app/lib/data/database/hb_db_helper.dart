@@ -93,16 +93,16 @@ class HebrewDatabaseHelper {
     return Lexeme.fromJson(lexeme.first);
   }
 
-  // Get some lexemes. 
+  /// Takes arg1 and arg1 and col
   // startId and endId may be a book and chapter. 
-  Future<List<Lexeme>> getSomeLexemes(int startId, int endId, String col) async {
+  Future<List<Lexeme>> getSomeLexemes(int arg1, int arg2, String col) async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
     // A dictionary that maps a column input to a WHERE statement.
     // If the input is book, then get the whole chapter, otherwise if wordId, get the result between two nodes. 
     String? where = {
-      WordConstants.book: 'WHERE ${WordConstants.table}.${WordConstants.book} = $startId AND ${WordConstants.table}.${WordConstants.chBHS} = $endId',
-      WordConstants.wordId: 'WHERE ${WordConstants.table}.${WordConstants.wordId} >= $startId AND ${WordConstants.table}.${WordConstants.wordId} <= $endId'
+      WordConstants.book: 'WHERE ${WordConstants.table}.${WordConstants.book} = $arg1 AND ${WordConstants.table}.${WordConstants.chBHS} = $arg2',
+      WordConstants.wordId: 'WHERE ${WordConstants.table}.${WordConstants.wordId} >= $arg1 AND ${WordConstants.table}.${WordConstants.wordId} <= $arg2'
     }[col];
     // Lexeme columns to return from the joined lex-word table. 
     String columns = LexemeConstants.cols.map((col) => LexemeConstants.table + '.' + col).toList().join(', ');
@@ -119,7 +119,9 @@ class HebrewDatabaseHelper {
     return lexemes;
   }
 
-  // Return all the lexemes. 
+
+  /// Load all lexemes from the database in a [List] of 
+  /// [Lexeme] objects. 
   Future<List<Lexeme>> getAllLexemes() async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
@@ -153,6 +155,19 @@ class HebrewDatabaseHelper {
         whereArgs: [startId, endId],
         orderBy: "${WordConstants.wordId} ASC");
     print('getWordsByStartEndNode: ${stopwatch.elapsed} to query');
+    return words.map((json) => Word.fromJson(json)).toList();
+  }
+
+  // Get all words present between two verses (inclusive). 
+  Future<List<Word>> getWordsByStartEndVsNode(int startId, int endId, int pre, int post) async {
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    final words = await db.query(
+        WordConstants.table, 
+        where: "${WordConstants.vsIdBHS} >= ? AND ${WordConstants.vsIdBHS} <= ?", 
+        whereArgs: [startId-pre, endId+post],
+        orderBy: "${WordConstants.wordId} ASC");
+    print('getWordsByStartEndVsNode: ${stopwatch.elapsed} to query');
     return words.map((json) => Word.fromJson(json)).toList();
   }
 
@@ -190,16 +205,16 @@ class HebrewDatabaseHelper {
   }
 
   // Get lex clause examples for a selected word.
-  Future<List<List<Word>>?> getLexClauses(Word word) async {
+  Future<List<List<Word>>?> getLexSentences(Word word) async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
     String columns = WordConstants.cols.map((col) => WordConstants.table + '.' + col).toList().join(', ');
     final _words = await db.rawQuery(
       """SELECT $columns
-      FROM ${LexClauseConstants.table}
-      INNER JOIN ${WordConstants.table} ON ${LexClauseConstants.table}.${LexClauseConstants.clauseId}=${WordConstants.table}.${WordConstants.clauseId}
-      WHERE ${LexClauseConstants.table}.${LexClauseConstants.lexId} = ${word.lexId}
-      ORDER BY ${LexClauseConstants.clauseWeight} ASC""");
+      FROM ${LexSentenceConstants.table}
+      INNER JOIN ${WordConstants.table} ON ${LexSentenceConstants.table}.${LexSentenceConstants.sentenceId}=${WordConstants.table}.${WordConstants.sentenceId}
+      WHERE ${LexSentenceConstants.table}.${LexSentenceConstants.lexId} = ${word.lexId}
+      ORDER BY ${LexSentenceConstants.sentenceWeight} ASC""");
     print('getLexClauses: ${stopwatch.elapsed} to query');
     if (_words.isEmpty) {
       return null;

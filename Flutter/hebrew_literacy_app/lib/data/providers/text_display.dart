@@ -21,7 +21,7 @@ class TxtTheme {
 class TextDisplay with ChangeNotifier{
   bool paragraph = true;
   bool verse = true;
-  bool clause = true;
+  bool clause = false;
   bool phrase = false;
 
   void toggleVerse() {

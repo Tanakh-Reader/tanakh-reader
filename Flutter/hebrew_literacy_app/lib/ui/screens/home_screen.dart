@@ -26,7 +26,6 @@ class HomeScreen extends ConsumerWidget {
     // is called from anywhere in the app. 
     var userVocab = ref.read(userVocabProvider);
     var userData = ref.watch(userDataProvider);
-    // TODO: temp
     ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
 
     print("Home built");
@@ -41,7 +40,7 @@ class HomeScreen extends ConsumerWidget {
               child: userData.initialized ?
               Container(height: 450, child:
             
-                  DisplayPassages()
+                  Text("HELLO!")
                   
               )
               : RegisterScreen()
@@ -85,128 +84,3 @@ class HomeScreen extends ConsumerWidget {
   // }
 }
 
-var passages = Passages();
-
-class DisplayPassages extends ConsumerStatefulWidget {
-  DisplayPassages({ Key? key}) : super(key: key);
-
-  @override
-  _DisplayPassagesState createState() => _DisplayPassagesState();
-}
-
-class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
-    
-  // final passages = Passages();
-  bool showWidget = false;
-  @override
-  void initState() {
-    super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
-    ref.read(hebrewPassageProvider);
-    ref.read(userVocabProvider);
-    ref.read(userDataProvider);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print("Entering Display P");
-    var userVocab = ref.read(userVocabProvider);
-    var userData = ref.read(userDataProvider);
-    var vocab = userVocab.knownVocab;
-    return SizedBox(
-      // height: 420,
-      child: Column(
-        children: [
-          Text("Welcome back, ${userData.name}!"),
-          SizedBox(height: 10,),
-          ElevatedButton(
-            onPressed: () {
-              userData.clearData();
-              userVocab.clearData();
-            },
-            child: const Text('Clear User Data'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await passages.loadPassages();
-              setState(() {
-                showWidget = !showWidget;
-                print("LOADED");
-              });
-            },
-            child: const Text('Load Passages'),
-          ),
-          showWidget 
-          ? Container(height: 300,
-            child: SingleChildScrollView(
-            // child: ConstrainedBox(
-            //   constraints: BoxConstraints(minHeight: 200, maxHeight: 300),
-            // SizedBox(height: 450,
-              child: Column(
-                    children: 
-                      passages.passages.map((passage) {
-                        var unknown = passage.lexemes.where((l) => !vocab.contains(l.id)).toList();
-                        var word = passage.words.first;
-                        print("${unknown.length} / ${passage.lexemes.length}");
-                        return Card(
-                          child: InkWell(
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () async {
-                              debugPrint('Card tapped.');
-                              await ref.read(hebrewPassageProvider).getPassageWordsById(passage.words.first.id!, passage.words.last.id!);
-                              ref.read(tabManagerProvider).goToTab(Screens.read.index);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              width: 200,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('${passage.book.abbrOSIS} ${word.chBHS}:${word.vsBHS}-${passage.words.last.vsBHS}',
-                                  textAlign: TextAlign.left,),
-                                  SizedBox(height: 5,),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                        child:  Text("Words:")
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Text("${passage.words.length}"),
-                                    ]
-                                  ),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                        child:  Text("Match:")
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Text("${((1 - unknown.length / passage.lexemes.length) * 100).toInt()}%")
-                                    ]
-                                  ),
-                                  // Flexible(
-                                  //   child: Text('$morph', softWrap:true, maxLines: 2,)
-                                  // )
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList()
-              ),
-            // )
-            ),
-          )
-          : Container(),
-
-        ]
-      ),
-    );
-  }
-}
-
-
-  

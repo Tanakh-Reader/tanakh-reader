@@ -78,7 +78,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   )
                 
               ),
-            
+             ElevatedButton(
+              onPressed: () {
+                userData.clearData();
+                userVocab.clearData();
+              },
+              child: const Text('Clear User Data'),
+            ),
             SizedBox(height: 20,),
             Text("Current Level: ${READING_LEVELS[userData.user.readingLevel]}"),
             DropdownButton<String>(

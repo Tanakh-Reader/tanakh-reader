@@ -23,17 +23,53 @@ class PassageDisplay extends ConsumerWidget {
     // If HebrewPassage.words is populated, generate a TextSpan
     // with all of the words -- otherwise display a message.
     final _hebrewPassage = ref.watch(hebrewPassageProvider);
+    bool isChapter = _hebrewPassage.isChapter;
     /// TODO REMOVE!
     return Column(
       children: [
         SizedBox(height: 65,),
         Expanded(
           child: SingleChildScrollView(
-          child: RichText(
-            text: TextSpan(
-              children: _buildTextSpans(_hebrewPassage, ref)
-            ),
-            textDirection: TextDirection.rtl,
+            
+          child: Column(
+            children: 
+              !isChapter
+                ? [
+                  RichText(
+                    text: TextSpan(
+                      children: 
+                      _buildEnglishSpans(_hebrewPassage, ref, true)
+                    ),
+                    textDirection: TextDirection.ltr,
+                  ),
+                  RichText(
+                    text: TextSpan(text: '\n')),
+                  RichText(
+                    text: TextSpan(
+                      children: 
+                      _buildTextSpans(_hebrewPassage, ref)
+                    ),
+                    textDirection: TextDirection.rtl,
+                  ),
+                  RichText(
+                    text: TextSpan(text: '\n')),
+                  RichText(
+                    text: TextSpan(
+                      children: 
+                      _buildEnglishSpans(_hebrewPassage, ref, false)
+                    ),
+                    textDirection: TextDirection.ltr,
+                  )
+                ]
+                : [
+                  RichText(
+                    text: TextSpan(
+                      children: 
+                      _buildTextSpans(_hebrewPassage, ref)
+                    ),
+                    textDirection: TextDirection.rtl,
+                  )
+                ],
           ),
       ),
         ),
@@ -42,9 +78,9 @@ class PassageDisplay extends ConsumerWidget {
   }
 
 
-  /// Takes a [HebrewPassage] instance and uses its data to construct
+  /// Takes a [HebrewTextController] instance and uses its data to construct
   /// a list of [TextSpan] that construct the [RichText] in [PassageDisplay].
-  List<TextSpan>? _buildTextSpans(HebrewPassage hebrewPassage, ref) {
+  List<TextSpan>? _buildTextSpans(hebrewPassage, ref) {
 
     var textDisplay = ref.watch(textDisplayProvider);
     var userVocab = ref.watch(userVocabProvider);
@@ -170,7 +206,7 @@ class PassageDisplay extends ConsumerWidget {
       fontWeight: TxtTheme.normWeight,
   );
 
-  /// Takes a [Word], [UserVocab], [HebrewPassage] instance, and 
+  /// Takes a [Word], [UserVocab], [HebrewTextController] instance, and 
   /// [joinedWords], signifying if it's a single or compound word.
   /// If it isn't a compund word, then joinedWords = [\word].
   /// Returns a [TextSpan] formatted according to data in the 
@@ -205,4 +241,43 @@ class PassageDisplay extends ConsumerWidget {
     );
   }
 
+
+
+  List<TextSpan>? _buildEnglishSpans(hebrewPassage, ref, bool pre) {
+    var textDisplay = ref.read(textDisplayProvider);
+    List<TextSpan> englishTextSpans = [];
+    List<Word> words = pre ? hebrewPassage.englishPre : hebrewPassage.englishPost;
+    words.removeWhere((w) => w.sortBSB == null);
+    words.sort((a, b) => a.sortBSB!.compareTo(b.sortBSB!));
+    int curVerse = -1; //words.first.vsIdBHS!;
+    var newLine = TextSpan(text: '\n');
+
+    // Iterate over all words in the passage. 
+    for (var i = 0; i < words.length; i++) {
+      // The current word.
+      var word = words[i];
+      // Add verse divisions. 
+      if (textDisplay.verse && word.vsBHS != curVerse) {
+        curVerse = word.vsBHS!;
+        // Add verse number.
+        var verseNumText = TextSpan(
+          text: " ${word.vsBHS.toString()} ",
+          style: _wordStyle.copyWith(
+             fontSize: TxtTheme.verseSize-4,    
+          )
+        ); 
+        englishTextSpans.add(verseNumText);
+      }
+
+      englishTextSpans.add(
+        TextSpan(
+          text: word.glossBSB! + ' ',
+          style: _wordStyle.copyWith(
+            fontSize: 16
+          )
+      ));
+  
+    }
+    return englishTextSpans;
+  }
 }

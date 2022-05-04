@@ -1,0 +1,20 @@
+TODO
+
+Passages with English before and after
+^ Top 100 easiest
+Strong's English data
+Examples of use 
+Look in to audio
+Verbs with 3rd person
+
+-- SELECT * FROM word 
+-- JOIN lex on word.lexId = lex.lexId 
+-- WHERE vStem = 'pasq'
+-- AND language = 'hbo';
+-- 
+-- -- SELECT COUNT(*) FROM lex WHERE speech = 'verb' and freqLex > 9 and freqLex < 100 and language = 'hbo';
+-- SELECT COUNT(*) FROM lex WHERE freqLex > 9 and freqLex < 100 ;
+
+SELECT wordId, vsBHS, text, lexText FROM word 
+JOIN lex ON word.lexId = lex.lexId
+WHERE word.book = 13 AND word.chBHS = 2 AND word.vsBHS >= 1 LIMIT 1000;

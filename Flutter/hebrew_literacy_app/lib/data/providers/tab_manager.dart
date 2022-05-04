@@ -5,6 +5,7 @@ enum Screens {
   home,
   read,
   vocab,
+  passages,
   profile,
 }
 

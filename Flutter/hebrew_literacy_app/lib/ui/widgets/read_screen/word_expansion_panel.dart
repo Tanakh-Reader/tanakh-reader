@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:hebrew_literacy_app/data/providers/user.dart';
 import 'package:path/path.dart';
 import '../../../data/database/hb_db_helper.dart';
 import '../../../data/models/models.dart';
@@ -23,7 +22,6 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
     // "ref" can be used in all life-cycles of a StatefulWidget.
     ref.read(hebrewPassageProvider);
     ref.read(userVocabProvider);
-    // ref.watch(userDataProvider);
   }
 
   bool _expanded = false;
