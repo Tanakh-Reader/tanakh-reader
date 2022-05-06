@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
+import 'package:expandable/expandable.dart';
 import 'package:path/path.dart';
 import '../../../data/database/hb_db_helper.dart';
 import '../../../data/models/models.dart';
 import '../../../data/models/word.dart';
 
+// TODO
+// Use https://pub.dev/packages/expandable to make a better expansionPanel
+
+class MyTheme {
+  var bgColor = Colors.grey[800];
+
+}
 
 class WordExpansionPanel extends ConsumerStatefulWidget {
 
@@ -24,25 +32,79 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
     ref.read(userVocabProvider);
   }
 
-  bool _expanded = false;
   // List<String> nouns = ['subs', 'nmpr', 'prps', 'prde', 'prin', 'adkv'];
 
   @override
   Widget build(BuildContext context) {
+    // Providers.
     final hebrewPassage = ref.read(hebrewPassageProvider);
     final userVocab = ref.watch(userVocabProvider);
+    // Word data.
     final word = hebrewPassage.selectedWord;
     final lex = hebrewPassage.lex(word!.lexId!);
-    // var temp = HebrewDatabaseHelper().getLexClauses(word!);
     var joinedWords = hebrewPassage.joinedWords;
-    print(joinedWords.first.text);
-
 
     TextStyle textColor = const TextStyle(color: Colors.white);
 
-    return SizedBox(
-      // height: 400,
-      child: SingleChildScrollView(
+    return 
+    /*
+    FutureBuilder(
+      future: wordPanelSheet(context),
+      builder: (context, snapshot) =>
+        snapshot.connectionState == ConnectionState.waiting 
+        ? Container(child: CircularProgressIndicator(),)
+        : snapshot.data as Widget
+    );
+  }
+    
+    Future<Widget> wordPanelSheet(context) => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        elevation: 0,
+        useRootNavigator: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(17)),
+        ),
+        builder: (context) {
+          return FractionallySizedBox(
+            // TODO CHANGE!
+            heightFactor: 0.4,
+            // widthFactor: Responsive.isTablet(context) ? 0.75 : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 27),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Books',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 7),
+                
+              ],
+            ),
+          );
+        },
+    ) as Future<Widget>;
+*/
+    DraggableScrollableSheet(
+      initialChildSize: 0.4,
+      
+      maxChildSize: 0.8,
+      // height: MediaQuery.of(context).size.height * 0.4,
+      builder: (BuildContext context, ScrollController scrollController) {
+            return 
+      //       Container(
+      // child: 
+      SingleChildScrollView(
+        controller: scrollController,
         child: Column(
           children: [
             // Word summary
@@ -59,8 +121,11 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
               ),
             ),
             Container(height: 1.5, color: Colors.black,),
-            // examplesTile(temp),
-            translationTile(word, hebrewPassage),
+            // examplesTile(context, word, hebrewPassage),
+            Container(height: 1.5, color: Colors.black,),
+            // translationTile(word, hebrewPassage),
+            Container(height: 1.5, color: Colors.black,),
+            // strongsTile(context, word, hebrewPassage),
             Container(height: 1.5, color: Colors.black,),
             GestureDetector(
               onTap: () {
@@ -98,7 +163,8 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
             Container(height: 1.5, color: Colors.black,),
           ],
         ),
-      ),
+      );
+      }
     );
   }
 
@@ -168,31 +234,27 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
   }
   
   var tileColor = Colors.grey[800];
-  Widget examplesTile(temp) => ExpansionTile(
+  Widget examplesTile(context, word, hebrewPassage) => ExpansionTile(
       backgroundColor: tileColor,
       collapsedBackgroundColor: tileColor,
       title: Text('Example Sentences'),
       children: [
         Container(
           height: 200,
+          padding: EdgeInsets.symmetric(horizontal: 15),
           child: SingleChildScrollView(
             child: FutureBuilder(
-              future: temp,
+              future: hebrewPassage.getLexSentences(word),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: Text('Please wait its loading...'));
+                  return Center(child: Text('Please wait, its loading...'));
                 } else if (snapshot.hasData) {
-                  var data = snapshot.data as List<List<Word>>;
-                  return Column(
-                    children: data.map((clause) => 
-                    Column(children: [
-                      Text("${clause.first.book}:${clause.first.chBHS}:${clause.first.vsBHS}"),
-                      Text(clause.map((e) => (e.text?? '') + (e.trailer?? '')).toList().join(''))
-                    ])
-                    ).toList()
-                  );
+                  return RichText(
+                    text: _buildExamplesText(word, snapshot.data!, hebrewPassage),
+                    textDirection: TextDirection.rtl,
+                    );
                 } else {
-                  return Text("No examples");
+                  return Text("No other examples for ${word.text}");
                 }
               }
             ),
@@ -200,6 +262,82 @@ class _WordExpansionPanelState extends ConsumerState<WordExpansionPanel> {
         ),
       ]
   );
+
+  TextSpan _buildExamplesText(word, examplesData, hebrewPassage) {
+    List<TextSpan> examples = [];
+    for (var example in examplesData) {
+      var book = hebrewPassage.getBook(example.first);
+      examples.add( 
+        TextSpan(
+          text: "${book.name} ${example.first.chBHS}:${example.first.vsBHS}\n"
+        )
+      );
+      // TODO : add logic to shorten super long sentences. 
+      for (var i = 0; i < example.length; i++) {
+        var _word = example[i];
+        examples.add(
+          TextSpan(
+            text: _word.text?? '',
+            style: TextStyle(
+              fontWeight: _word.lexId == word.lexId ? FontWeight.bold : FontWeight.normal
+            )
+          )
+        );
+        examples.add(
+          TextSpan(
+            text: _word.trailer?? '',
+          )
+        );
+      }
+      examples.add(
+          TextSpan(
+            text: " ... " + '\n\n',
+          )
+        );
+    }
+    return TextSpan(children: examples);
+  }
+  
+  Widget strongsTile(context, word, hebrewPassage) {
+    return ExpansionTile(
+      backgroundColor: tileColor,
+      collapsedBackgroundColor: tileColor,
+      title: Text('Strongs Informations'),
+      children: [
+        Container(
+          height: 100,
+          padding: EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: FutureBuilder<List<Strongs>>( 
+              future: hebrewPassage.getStrongs(word),
+              builder: (context, snapshot) => 
+                snapshot.connectionState == ConnectionState.done
+                ? RichText(text: _buildStrongsText(snapshot.data!))
+                : CircularProgressIndicator()
+            ),
+          )
+        )
+      ]
+    );
+  }
+
+  TextSpan _buildStrongsText(List<Strongs> strongsData) {
+    List<TextSpan> allDefinitions = [];
+    allDefinitions.add( 
+      TextSpan(text: "Strongs: ${strongsData.first.strongsId}\n")
+    );
+    for (var strongs in strongsData) {
+      if (strongs != null) {
+        var definitions = strongs.definition!.split('<br>');
+        for (var def in definitions) {
+          allDefinitions.add( 
+            TextSpan(text: def + '\n')
+          );
+        }
+      }
+    }
+    return TextSpan(children: allDefinitions);
+  }
 
   Widget translationTile(word, hebrewPassage) {
 
