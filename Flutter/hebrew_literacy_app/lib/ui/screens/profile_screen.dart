@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 

@@ -16,11 +16,11 @@ class Passages {
   }
   
   Future<void> loadPassages() async {
+    int limit = 20;
     _passages = [];
-    var passages = await HebrewDatabaseHelper().getPassages();
+    var passages = await HebrewDatabaseHelper().getPassages(limit);
     // TODO -- Fix DATA LATER nodes are misaligned
     for (var p in passages) {
-      print(p.startVsId);
       var passage = HebrewPassage();
       await passage.getPassageWordsByVsId(p);
       _passages.add(passage);
@@ -57,6 +57,11 @@ class HebrewPassage with ChangeNotifier {
     return _passage;
   }
 
+  /// True if the passage has [Word] data. 
+  get loaded {
+    return _words.isNotEmpty;
+  }
+
   /// Get all words in the current passage. 
   List<Word> get words {
     if (isChapter) {
@@ -78,6 +83,11 @@ class HebrewPassage with ChangeNotifier {
   /// Takes a lexeme id and returns a [Lexeme] instance.
   Lexeme lex(int lexId) {
     return _lexemes.firstWhere((lex) => lex.id == lexId);
+  }
+
+  /// Takes a word and returns a book.
+  Book getBook(Word word) {
+    return Books.books.firstWhere((book) => book.id == word.book);
   }
   
   /// Get all words before the passage's start verse, used
@@ -243,6 +253,19 @@ class HebrewPassage with ChangeNotifier {
 
   // #############################################################################
   // Methods dealing the Hebrew Database.
+
+  /// Takes a [Word]'s strongId and returns an instance of [Strongs]
+  Future<List<Strongs>> getStrongs(Word word) async {
+    List<Strongs> strongs = await HebrewDatabaseHelper().getStrongs(word);
+    return strongs;
+  }
+
+  /// Takes a [Word]'s lexId and returns an example sentences with that lexeme. 
+  Future<List<List<Word>>?> getLexSentences(Word word) async {
+    List<List<Word>>? sentences = await HebrewDatabaseHelper().getLexSentences(word);
+    return sentences;
+  }
+
 
   /// Takes a book and chapter number and populates the [HebrewPassage]'s
   /// data. 

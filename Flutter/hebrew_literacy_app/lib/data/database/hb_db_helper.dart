@@ -1,4 +1,5 @@
 import 'dart:io' as io;
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
@@ -214,43 +215,102 @@ class HebrewDatabaseHelper {
       FROM ${LexSentenceConstants.table}
       INNER JOIN ${WordConstants.table} ON ${LexSentenceConstants.table}.${LexSentenceConstants.sentenceId}=${WordConstants.table}.${WordConstants.sentenceId}
       WHERE ${LexSentenceConstants.table}.${LexSentenceConstants.lexId} = ${word.lexId}
-      ORDER BY ${LexSentenceConstants.sentenceWeight} ASC""");
-    print('getLexClauses: ${stopwatch.elapsed} to query');
+      ORDER BY ${LexSentenceConstants.sentenceWeight} ASC
+      LIMIT 600""");
+    print('getLexSentences: ${stopwatch.elapsed} to query');
+
     if (_words.isEmpty) {
       return null;
     }
     // Create a list of lists, each list being a clause.
     List<Word> words = _words.map((json) => Word.fromJson(json)).toList();
-    List<List<Word>> lexClauses = [];
-    List<Word> lexClause = [];
-    int clauseId = words.first.clauseId!;
+    print(words.length);
+    List<List<Word>> lexSentences = [];
+    List<Word> lexSentence = [];
+    // Deal with duplicates
+    Set visited = {};
+    int sentenceId = words.first.sentenceId!;
     for (var _word in words) {
       // Don't add the clause of the indexed word.
-      if (word.clauseId == clauseId) {
+      if (word.sentenceId == _word.sentenceId || visited.contains(_word.id)) {
+        // print("0 ${_word.text??"NULL"}");
         continue;
       }
-      else if (_word.clauseId == clauseId) {
-        lexClause.add(_word);
+      else if (_word.sentenceId == sentenceId) {
+        // print("1 ${_word.text??"NULL"}");
+        lexSentence.add(_word);
       } else {
-        lexClauses.add(lexClause);
-        lexClause = [];
-        clauseId = _word.clauseId!;
+        // print("2 ${_word.text??"NULL"}");
+        if (lexSentence.isNotEmpty) {
+          // print("2 GO");
+          lexSentences.add(shortenedSentence(lexSentence, word));
+          lexSentence = [];
+        }
+        // print("2 NOGO");
+        sentenceId = _word.sentenceId!;
+        lexSentence.add(_word);
       }
+      visited.add(_word.id);
     }
-    // print(lexClauses.first.map((e) => (e.text?? '') + (e.trailer?? '')).toList().join(''));
-    return lexClauses;
+    // Add the last sentence
+    if (lexSentence.first.sentenceId != word.sentenceId) {
+      lexSentences.add(shortenedSentence(lexSentence, word));
+    }
+    int maxExamples = min(lexSentences.length, 10);
+    return lexSentences.sublist(0, maxExamples);
+  }
+
+  List<Word> shortenedSentence(sentence, word) {
+    int maxLength = 20;
+    if (sentence.length <= maxLength) {
+      return sentence;
+    }
+    int lexIndex = sentence.indexWhere((w) => w.lexId == word.lexId);
+    int start = max(0, lexIndex - maxLength ~/ 2);
+    int end = min(start+maxLength, sentence.length);
+    return sentence.sublist(start, end);
   }
 
   // Get passages
-  Future<List<Passage>> getPassages() async {
+  Future<List<Passage>> getPassages(int limit) async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
-    final passages = await db.rawQuery(
+    final passages = await 
+    db.rawQuery(
         """SELECT *
         FROM ${PassageConstants.table}
-        LIMIT 5""");
+        LIMIT $limit""");
     print('getPassage: ${stopwatch.elapsed} to query');
     return passages.map((json) => Passage.fromJson(json)).toList();
+  }
+
+  /// Take a [Word]'s strongsId and get the strong's data.
+  Future<List<Strongs>> getStrongs(Word word) async {
+    String strongsId = word.strongsId!;
+    // Reformat string: H996 in the strongs table is H0996.
+    switch (strongsId.length) {
+      case 2: {
+        strongsId = 'H000' + strongsId.substring(1,2);
+        break;
+      }
+      case 3: {
+        strongsId = 'H00' + strongsId.substring(1,3);
+        break;
+      }
+      case 4: {
+        strongsId = 'H0' + strongsId.substring(1,4);
+        break;
+      }
+    }
+
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    final strongs = await db.query(
+        StrongsConstants.table, 
+        where: "${StrongsConstants.strongsId} LIKE ?", 
+        whereArgs: ['${strongsId}%']);
+    print('getStrongs: ${stopwatch.elapsed} to query');
+    return strongs.map((json) => Strongs.fromJson(json)).toList();
   }
 
 }

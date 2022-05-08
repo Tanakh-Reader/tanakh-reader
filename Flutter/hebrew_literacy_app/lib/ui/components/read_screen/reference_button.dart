@@ -18,19 +18,14 @@ class ReferenceButton extends ConsumerWidget {
       final passage = ref.watch(hebrewPassageProvider);
 
       return Container(
-        width: 100,
-        height: 15,
-        alignment: Alignment.center,
-        constraints: BoxConstraints.expand(
-          height: Theme.of(context).textTheme.headline4!.fontSize!
-        ),
-  
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: Theme.of(context).textTheme.headline4!.fontSize!,
+        alignment: Alignment.center,  
         padding: const EdgeInsets.all(8.0),
         margin: EdgeInsets.only(top: 25.0),
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
-          // color: Theme.of(context).inputDecorationTheme.fillColor,
-          color: Colors.blueAccent,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          color: Colors.grey[800],
         ),
         child: Text(
           passage.book.name! + ' ' + passage.words[0].chBHS.toString(),

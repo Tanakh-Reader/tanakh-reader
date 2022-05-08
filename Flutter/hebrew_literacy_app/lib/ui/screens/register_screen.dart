@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
-import 'package:provider/provider.dart';
+
 import 'package:hive/hive.dart';
 
 import '../../data/providers/user.dart';
-import '../widgets/read_screen/read_screen.dart';
-import '../../data/providers/hebrew_passage.dart';
-import '../../data/models/models.dart';
-import '../widgets/read_screen/reference_button.dart';
+
 import '../../data/database/user_data/user.dart';
 
 var NAME = 'user';

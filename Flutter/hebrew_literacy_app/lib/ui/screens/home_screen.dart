@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/providers/user.dart';
 import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
 import 'package:hebrew_literacy_app/ui/screens/screens.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart' as pro;
 
@@ -26,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
     // is called from anywhere in the app. 
     var userVocab = ref.read(userVocabProvider);
     var userData = ref.watch(userDataProvider);
-    ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
+    // ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
 
     print("Home built");
     return Scaffold(

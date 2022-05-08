@@ -7,6 +7,7 @@ export 'verse.dart';
 export 'chapter.dart';
 export 'all_lexemes.dart';
 export 'passage.dart';
+export 'strongs.dart';
 
 
 export 'book.dart';

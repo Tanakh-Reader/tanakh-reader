@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/providers/user.dart';
 import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
 import 'package:hebrew_literacy_app/ui/screens/screens.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart' as pro;
 
 import '../../data/database/user_data/user.dart';
 import '../bottom_nav.dart';
-import '../widgets/passages_screen/passage_card.dart';
+import '../components/passages_screen/passage_card.dart';
 import 'read_screen.dart';
 import '../../data/providers/providers.dart';
 import '../../data/models/models.dart';
@@ -26,9 +26,7 @@ class PassagesScreen extends ConsumerWidget {
     // is called from anywhere in the app. 
     var userVocab = ref.read(userVocabProvider);
     var userData = ref.watch(userDataProvider);
-    ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
 
-    print("Home built");
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -56,32 +54,6 @@ class PassagesScreen extends ConsumerWidget {
       
     );
   }
- 
-  // Widget setVocab(context, userVocab) {
-  //   return Column(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: <Widget>[
-  //           SizedBox(height: 60,),
-  //           Text('Enter the lexical range you have memorized.'),
-  //           SizedBox(
-  //             width: 200,
-  //             child: TextField(
-  //               onChanged: (newText) {freqLex = int.parse(newText);}
-  //             ),
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 16.0),
-  //             child: ElevatedButton(
-  //               onPressed: () async {
-  //                 await userVocab.initializeVocab(freqLex);
-  //                 userVocab.load();
-  //               },
-  //               child: const Text('Submit'),
-  //             ),
-  //           ),
-  //         ],
-  //   );
-  // }
 }
 
 var passages = Passages();
@@ -117,11 +89,10 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
       // height: 420,
       child: Column(
         children: <Widget>[
+          SizedBox(height: 30,),
           ElevatedButton(
             onPressed: () async {
               await passages.loadPassages();
-              print('--------------------');
-              print(passages.passages);
               passageCards = passages.passages.map<Widget>((passage) {
                       // return FutureBuilder(
                       //   future: passage.getPassageWordsByVsId(passage.passage),
@@ -145,12 +116,18 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
             child: const Text('Load Passages'),
           ),
           showWidget 
-          ? Container(height: 550,
-            child: ListView.builder(
+          ? Container(
+            height: 550, 
+            width: MediaQuery.of(context).size.width * 0.85,
+            child: ListView.separated(
               itemCount: passageCards.length,
               itemBuilder: (context, index) {
                 return passageCards[index];
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(height: 10);
               }
+              
             ),
           )
           : Container(),
