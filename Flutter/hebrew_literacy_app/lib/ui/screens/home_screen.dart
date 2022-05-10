@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/constants.dart';
+import 'package:hebrew_literacy_app/data/providers/passage.dart';
 import 'package:hebrew_literacy_app/data/providers/user.dart';
 import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
 import 'package:hebrew_literacy_app/ui/screens/screens.dart';
@@ -26,7 +28,15 @@ class HomeScreen extends ConsumerWidget {
     // is called from anywhere in the app. 
     var userVocab = ref.read(userVocabProvider);
     var userData = ref.watch(userDataProvider);
-    // ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
+    var hebrewPassage = ref.read(hebrewPassageProvider);
+    var passageData = ref.read(passageDataProvider);
+    if (!hebrewPassage.isLoaded) {
+      ref.read(hebrewPassageProvider).getPassageWordsByRef(1, 1);
+    }
+
+    String welcomeText = userData.justRegistered() 
+      ? "Hello ${userData.name},\n\nWelcome to ${APP_NAME}!"
+      : "Welcome back, ${userData.name}";
 
     print("Home built");
     return Scaffold(
@@ -37,18 +47,20 @@ class HomeScreen extends ConsumerWidget {
         // child: SingleChildScrollView(
         //     child: ConstrainedBox(
         //       constraints: BoxConstraints(minHeight: 200),
-              child: userData.initialized ?
-              Container(height: 450, child:
+              child: Container(height: 450, child:
             
-                  Text("HELLO!")
+                  GestureDetector(
+                    onTap: () async { 
+                      await passageData.initializePassages(20); print('tapped');
+                      },
+                    child: Text(welcomeText,
+                    style: Theme.of(context).textTheme.headline5, 
+                    textAlign: TextAlign.center,
+                    ),
+                  )
                   
               )
-              : RegisterScreen()
-                  // ReferencesExpansionPanel(
-                    // button: Center(
-                    //   child: Icon(Icons.menu_book_rounded),
-                    // )
-                  // ),
+        
                 
               ),
             // ),
@@ -57,30 +69,5 @@ class HomeScreen extends ConsumerWidget {
     );
   }
  
-  // Widget setVocab(context, userVocab) {
-  //   return Column(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: <Widget>[
-  //           SizedBox(height: 60,),
-  //           Text('Enter the lexical range you have memorized.'),
-  //           SizedBox(
-  //             width: 200,
-  //             child: TextField(
-  //               onChanged: (newText) {freqLex = int.parse(newText);}
-  //             ),
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 16.0),
-  //             child: ElevatedButton(
-  //               onPressed: () async {
-  //                 await userVocab.initializeVocab(freqLex);
-  //                 userVocab.load();
-  //               },
-  //               child: const Text('Submit'),
-  //             ),
-  //           ),
-  //         ],
-  //   );
-  // }
 }
 

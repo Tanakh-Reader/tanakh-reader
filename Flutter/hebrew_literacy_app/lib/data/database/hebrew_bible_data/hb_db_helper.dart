@@ -6,8 +6,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-import '../constants.dart';
-import '../models/models.dart';
+import '../../constants.dart';
+import '../../models/models.dart';
 
 // https://blog.devgenius.io/adding-sqlite-db-file-from-the-assets-internet-in-flutter-3ec42c14cd44
 class HebrewDatabaseHelper {
@@ -160,15 +160,20 @@ class HebrewDatabaseHelper {
   }
 
   // Get all words present between two verses (inclusive). 
-  Future<List<Word>> getWordsByStartEndVsNode(int startId, int endId, int pre, int post) async {
+  Future<List<Word>> getWordsByStartEndVsNode(
+    {required int startId, 
+    required int endId, 
+    int? pre, 
+    int? post}) async {
+
     final stopwatch = Stopwatch()..start();
     final db = await database;
     final words = await db.query(
         WordConstants.table, 
         where: "${WordConstants.vsIdBHS} >= ? AND ${WordConstants.vsIdBHS} <= ?", 
-        whereArgs: [startId-pre, endId+post],
+        whereArgs: [startId-pre!, endId+post!],
         orderBy: "${WordConstants.wordId} ASC");
-    print('getWordsByStartEndVsNode: ${stopwatch.elapsed} to query');
+    // print('getWordsByStartEndVsNode: ${stopwatch.elapsed} to query');
     return words.map((json) => Word.fromJson(json)).toList();
   }
 
@@ -183,27 +188,51 @@ class HebrewDatabaseHelper {
     return words.map((json) => Word.fromJson(json)).toList();
   }
 
+
   // Interacting with other DB tables
-  Future<List<Lexeme>> testyTest(int startId, int endId) async {
+  Future<List<WeightedPassage>> loadPassagesData(int limit) async {
     final stopwatch = Stopwatch()..start();
-    print('start');
-    final db = await database;
-    final words = await db.query(
-        WordConstants.table, 
-        where: "${WordConstants.wordId} >= ? AND ${WordConstants.wordId} <= ?", 
-        whereArgs: [startId, endId],
-        orderBy: "${WordConstants.wordId} ASC");
-    var _words = words.map((json) => Word.fromJson(json)).toList();
-    List<Lexeme> lexemes = [];
-    for (Word word in _words) {
-      final lex = await db.query(
-        LexemeConstants.table, 
-        where: "${LexemeConstants.lexId} = ${word.lexId}");
-      lexemes.add(Lexeme.fromJson(lex.first));
+    final db = await database;  
+    final passages = await getPassages(limit);
+
+    final int sampleTextLen = 100;
+
+    for (var p in passages) {
+      var words = await getWordsByStartEndVsNode(
+        startId: p.startVsId!, endId: p.endVsId!, pre:1, post:1);
+      Word pre = words.first;
+      Word post = words.last;
+      words.retainWhere(
+        (w) => w.vsIdBHS! >= p.startVsId! && w.vsIdBHS! <= p.endVsId!);
+      p.bookId = words.first.book;
+      p.chapters.add(words.first.chBHS!);
+      p.chapters.add(words.last.chBHS!);
+      p.startVs = words.first.vsBHS;
+      p.endVs = words.last.vsBHS;
+      p.isChapter = isChapter(words, pre, post);
+      p.lexIds = words.map((w) => w.lexId!).toSet();
+      p.sampleText = words.sublist(0, min(words.length, sampleTextLen)).map(
+        (w) => (w.text ?? '') + (w.trailer ?? '')).toList();
+      
+      // print(
+      //   "${p.bookId}:${p.startVs}-${p.endVs} ${p.isChapter} ${p.chapters} ${p.lexIds}"
+      // );
     }
-    print('testyTest: ${stopwatch.elapsed} to query');
-    return lexemes;
+    print('loadPassagesData: ${stopwatch.elapsed} to query');
+
+    return passages;
   }
+
+  bool isChapter(List<Word> words, Word pre, Word post) {
+    int preCh = pre.chBHS!;
+    int postCh = post.chBHS!;
+    int firstVsCh = words.first.chBHS!;
+    int lastVsCh = words.last.chBHS!;
+    // TODO -- this won't work for Genesis 1 & Malachi 4
+    return preCh != firstVsCh && postCh != lastVsCh;
+  }
+
+
 
   // Get lex clause examples for a selected word.
   Future<List<List<Word>>?> getLexSentences(Word word) async {
@@ -271,8 +300,10 @@ class HebrewDatabaseHelper {
     return sentence.sublist(start, end);
   }
 
+
+
   // Get passages
-  Future<List<Passage>> getPassages(int limit) async {
+  Future<List<WeightedPassage>> getPassages(int limit) async {
     final stopwatch = Stopwatch()..start();
     final db = await database;
     final passages = await 
@@ -280,9 +311,11 @@ class HebrewDatabaseHelper {
         """SELECT *
         FROM ${PassageConstants.table}
         LIMIT $limit""");
-    print('getPassage: ${stopwatch.elapsed} to query');
-    return passages.map((json) => Passage.fromJson(json)).toList();
+    print('getPassages: ${stopwatch.elapsed} to query');
+    return passages.map((json) => WeightedPassage.fromJson(json)).toList();
   }
+
+
 
   /// Take a [Word]'s strongsId and get the strong's data.
   Future<List<Strongs>> getStrongs(Word word) async {

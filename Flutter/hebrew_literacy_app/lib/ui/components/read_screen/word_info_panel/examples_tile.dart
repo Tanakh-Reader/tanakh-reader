@@ -34,7 +34,9 @@ class _ExamplesTileState extends ConsumerState<ExamplesTile> {
         title: Text('EXAMPLES'),
         children: [
           Container(
-            height: 200,
+            alignment: Alignment.topRight,
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.25,
             padding: EdgeInsets.symmetric(horizontal: 15),
             margin: EdgeInsets.only(bottom: 10),
             child: SingleChildScrollView(
@@ -42,7 +44,7 @@ class _ExamplesTileState extends ConsumerState<ExamplesTile> {
                   future: examplesData,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator());
+                      return Align(alignment: Alignment.bottomCenter, child: CircularProgressIndicator());
                     } else if (snapshot.hasData) {
                       return RichText(
                         text: _buildExamplesText(
@@ -50,7 +52,11 @@ class _ExamplesTileState extends ConsumerState<ExamplesTile> {
                         textDirection: TextDirection.rtl,
                       );
                     } else {
-                      return Text("No other examples for ${word!.text}");
+                      int freq = hebrewPassage.lex(word!.lexId!).freqLex!;
+                      String msg = freq > 1000
+                      ? "Examples not provided for words this common"
+                      : "No other examples for ${word.text}";
+                      return Text(msg);
                     }
                   }),
             ),
@@ -63,6 +69,7 @@ class _ExamplesTileState extends ConsumerState<ExamplesTile> {
     for (var example in examplesData) {
       var book = hebrewPassage.getBook(example.first);
       examples.add(TextSpan(
+        style: Theme.of(context).textTheme.bodyLarge,
           text:
               "${book.name} ${example.first.chBHS}:${example.first.vsBHS}\n"));
       // TODO : add logic to shorten super long sentences.
@@ -70,11 +77,18 @@ class _ExamplesTileState extends ConsumerState<ExamplesTile> {
         var _word = example[i];
         examples.add(TextSpan(
             text: _word.text ?? '',
-            style: TextStyle(
+            style: TxtTheme.hebrewStyle.copyWith(
+              color: _word.lexId == word.lexId 
+                ? Colors.blue[200]
+                : Colors.white,
+              fontSize: TxtTheme.normSize - 6,
                 fontWeight: _word.lexId == word.lexId
-                    ? FontWeight.bold
-                    : FontWeight.normal)));
+                    ? TxtTheme.selWeight
+                    : TxtTheme.normWeight)));
         examples.add(TextSpan(
+          style: TxtTheme.hebrewStyle.copyWith(
+            fontSize: TxtTheme.normSize - 6
+          ),
           text: _word.trailer ?? '',
         ));
       }

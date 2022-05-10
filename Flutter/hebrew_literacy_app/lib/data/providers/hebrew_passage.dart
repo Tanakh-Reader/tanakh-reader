@@ -4,30 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
 
+import '../database/user_data/passage.dart';
 import '../models/models.dart';
-import '../database/hb_db_helper.dart';
+import '../database/hebrew_bible_data/hb_db_helper.dart';
 
-class Passages {
-  
-  List<HebrewPassage> _passages = [];
-
-  List<HebrewPassage> get passages {
-    return [..._passages];
-  }
-  
-  Future<void> loadPassages() async {
-    int limit = 20;
-    _passages = [];
-    var passages = await HebrewDatabaseHelper().getPassages(limit);
-    // TODO -- Fix DATA LATER nodes are misaligned
-    for (var p in passages) {
-      var passage = HebrewPassage();
-      await passage.getPassageWordsByVsId(p);
-      _passages.add(passage);
-    }
-  }
-
-}
 
 /// A class that holds all of the data for a passage.
 /// It is used primarily with widgets in the read screen
@@ -36,6 +16,7 @@ class Passages {
 class HebrewPassage with ChangeNotifier {
 
   List<Word> _words = [];
+  // TODO --- consider where to implement sets instead of lists. 
   List<Lexeme> _lexemes = [];
   List<Verse> _verses = [];
   List<Clause> _clauses = [];
@@ -58,7 +39,7 @@ class HebrewPassage with ChangeNotifier {
   }
 
   /// True if the passage has [Word] data. 
-  get loaded {
+  get isLoaded {
     return _words.isNotEmpty;
   }
 
@@ -291,20 +272,26 @@ class HebrewPassage with ChangeNotifier {
 
   /// Takes a [Passage] instance and populates the [HebrewPassage]'s
   /// data. 
-  Future<void> getPassageWordsByVsId(Passage passage) async {
+  Future<void> getPassageWordsByVsId({required Passage passage, withEnglish}) async {
     isChapter = false;
     // Save the passed in [Passage] in the HebrewPassage.
     _passage = passage; 
-    // Check for < Genesis 1:7 and > Malachi 4:1.
-    if (passage.startVsId! - pre < 1) {
-      pre = passage.startVsId! - 1;
-    }
-    if (passage.endVsId! + post > maxVsId) {
-      post = maxVsId - passage.endVsId!;
+    int _pre = 0;
+    int _post = 0;
+    if (withEnglish) {
+      // Check for < Genesis 1:7 and > Malachi 4:1.
+      _pre = pre;
+      _post = post;
+      if (passage.startVsId! - pre < 1) {
+        _pre = passage.startVsId! - 1;
+      }
+      if (passage.endVsId! + post > maxVsId) {
+        _post = maxVsId - passage.endVsId!;
+      }
     }
     // Query the SQL database for word nodes. 
     _words = await HebrewDatabaseHelper().getWordsByStartEndVsNode(
-      passage.startVsId!, passage.endVsId!, pre, post);
+    startId: passage.startVsId!, endId: passage.endVsId!, pre: _pre, post: _post);
     _lexemes = AllLexemes.getLexemesInPassage(words);
     _verses = [];
     notifyListeners();

@@ -28,14 +28,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
-  @override
-  void initState() {
-    super.initState();
-    ref.read(userDataProvider);
-    ref.read(userVocabProvider);
-    ref.read(textDisplayProvider);
-  }
-
   String dropdownValue = DROPDOWN;
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -113,7 +105,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       (k) => READING_LEVELS[k] == dropdownValue);
                     user.readingLevel = level;
                     user.save();
-                    userVocab.reInitializeVocab();
+                    userVocab.reinitializeVocab();
                     userVocab.load();
                 }
 

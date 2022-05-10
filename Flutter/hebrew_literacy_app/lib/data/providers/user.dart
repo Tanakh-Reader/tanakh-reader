@@ -5,7 +5,7 @@ import 'package:hebrew_literacy_app/data/providers/providers.dart';
 import 'package:hive/hive.dart';
 
 import '../models/models.dart';
-import '../database/hb_db_helper.dart';
+import '../database/hebrew_bible_data/hb_db_helper.dart';
 
 import '../database/user_data/user.dart';
 
@@ -17,7 +17,7 @@ class UserData with ChangeNotifier {
   bool loaded = false;
   
   /// Return true if the [Vocab] database is initialized.
-  bool get initialized {
+  bool get isInitialized {
     return box.isNotEmpty;
   }
   
@@ -25,8 +25,23 @@ class UserData with ChangeNotifier {
     return user.firstName;
   }
 
+  String get email {
+    return user.email;
+  }
+
+  DateTime get dateRegistered {
+    return user.dateRegistered;
+  }
+
   User get user {
     return box.values.first;
+  }
+
+  // See if the user has just signed up.
+  bool justRegistered() {
+    var minutesSinceRegistered = DateTime.now()
+      .difference(dateRegistered).inMinutes;
+    return minutesSinceRegistered <= 1;
   }
 
   void clearData() {

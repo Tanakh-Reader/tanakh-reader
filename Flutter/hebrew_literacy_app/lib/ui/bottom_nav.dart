@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../data/providers/providers.dart';
 import 'screens/screens.dart';
 
@@ -57,7 +58,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
             if (hebrewPassage.hasSelection) {
               hebrewPassage.deselectWords();
             }
-            widget.tabManager.goToTab(index);
+            widget.tabManager.goToTabIndex(index);
           },
           items: [
             BottomNavigationBarItem(
@@ -68,8 +69,9 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
               icon: Icon(Icons.book),
               label: 'Read',
             ),
+            // TODO implement custom Hebrew Icon
             BottomNavigationBarItem(
-              icon: Icon(Icons.abc),
+              icon: FaIcon(FontAwesomeIcons.font),
               label: 'Vocab',
             ),
             BottomNavigationBarItem(

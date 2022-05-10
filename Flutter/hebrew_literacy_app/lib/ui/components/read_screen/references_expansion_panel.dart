@@ -80,7 +80,7 @@ class ReferencesExpansionPanel extends ConsumerWidget {
               // HapticFeedback.lightImpact();
               await ref.read(hebrewPassageProvider).getPassageWordsByRef(book.id!, chapter);
               // Navigator.of(context).pushNamed(ReadScreen.routeName);
-              ref.read(tabManagerProvider).goToTab(Screens.read.index);
+              ref.read(tabManagerProvider).goToTab(Screens.read);
               Navigator.of(context, rootNavigator: true).pop();
             },
             child: Container(
@@ -91,7 +91,7 @@ class ReferencesExpansionPanel extends ConsumerWidget {
               child: Center(
                 child: Text(
                   chapter.toString(),
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),

@@ -18,11 +18,12 @@ class ReadScreen extends ConsumerWidget {
     final hebrewPassage = ref.watch(hebrewPassageProvider);
     return Scaffold(
       body: 
-        hebrewPassage.loaded ?
+        hebrewPassage.isLoaded ?
         Stack(
           children: [
             // Column(children: [Expanded(child: 
-            PassageDisplay(),
+            Align(alignment: Alignment.centerRight,
+              child: PassageDisplay()),
             // )]),
             // Align(
             //   alignment: Alignment.bottomCenter,

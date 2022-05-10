@@ -1,3 +1,5 @@
+final String APP_NAME = "Tanakh Reader";
+
 class WordConstants {
 
   static String table = 'word';
@@ -251,7 +253,7 @@ class BookConstants {
   ];
 }
 
-Map<dynamic, String> MorphMap = {
+Map<dynamic, String> MORPH_MAP = {
   // Catch
   null: '',
   'unknown': '',

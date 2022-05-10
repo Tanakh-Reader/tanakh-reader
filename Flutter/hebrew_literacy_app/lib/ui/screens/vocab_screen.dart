@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../components/vocab_screen/vocab_screen.dart';
 import 'home_screen.dart';
 import '../../data/providers/providers.dart';
 import '../../data/models/models.dart';
+
 
 class VocabScreen extends ConsumerWidget {
   VocabScreen ({ Key? key }) : super(key: key);
@@ -17,61 +20,36 @@ class VocabScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     var userVocab = ref.watch(userVocabProvider);
-    return Column(
-      children: [
-
-        // FutureBuilder(
-        //   future: _allLexemes,
-        //   builder: (ctx, snapshot) {
-        //     List<Lexeme> _lexemes = snapshot.data as List<Lexeme>;
-        //     return snapshot.connectionState == ConnectionState.waiting 
-        //     ? const Center(
-        //       child: CircularProgressIndicator()
-        //     )
-        //     : 
-            // SizedBox(
-            //   height: 500,
-            //   child: 
-            SizedBox(height: 100,),
-            Center(child: Text("Saved Vocab"),),
-            SizedBox(height: 10),
-            userVocab.savedVocab.isNotEmpty
-            ?
-            Expanded(
-              child: ListView.builder(
-                itemCount: userVocab.savedVocab.length,
-                itemBuilder: (ctx, int index) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 60,
-                        child: Text('${userVocab.lex(userVocab.savedVocab[index]).text}',
-                        textAlign: TextAlign.right, textDirection: TextDirection.rtl,),
-                      ),
-                      SizedBox(width: 20,),
-                      SizedBox(
-                        width: 80,
-                        child: Text('${userVocab.lex(userVocab.savedVocab[index]).gloss}')
-                      ),
-                      SizedBox(width: 100,),
-                      GestureDetector(
-                        onTap: () {
-                          var lex = userVocab.lex(userVocab.savedVocab[index]);
-                          userVocab.toggleSaved(lex);
-                        },
-                        child: Text("Toggle")
-                      )
-                    ]
-                    );
-                  // );
-                }
-              ),
-              // ),
-            )
-            : Center(child: Text("Nothing Saved..."),)
-          // }
-        // )
+    final savedVocab = userVocab.savedVocab;
+    return Stack(
+      children:[ Column(
+        children: [
+              SizedBox(height: 40,),
+              Center(child: Text("Saved Vocab", style: Theme.of(context).textTheme.headline5,)),
+              SizedBox(height: 10),
+              savedVocab.isNotEmpty
+              ?
+              Expanded(
+                  child: ListView.builder(
+                    itemCount: savedVocab.length,
+                    itemBuilder: (ctx, int index) {
+                      var lex = userVocab.lex(savedVocab[index]);
+                      return Center(child: VocabCard(vocabWord: lex,));
+                    }
+                  ),
+              )
+              : Center(child: Text("Nothing Saved..."),)
+        ]
+      ),
+      Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: IconButton(
+            onPressed: () async => exportVocab(ref),
+            icon: FaIcon(FontAwesomeIcons.shareFromSquare)),
+        ),
+      )
       ]
     );
   }

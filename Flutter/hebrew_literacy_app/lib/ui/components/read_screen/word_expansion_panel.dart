@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:expandable/expandable.dart';
+// import 'package:expandable/expandable.dart';
 import 'package:hebrew_literacy_app/ui/screens/passages_screen.dart';
 import 'package:path/path.dart';
 
 import 'word_info_panel/word_info_panel.dart';
-import '../../../data/database/hb_db_helper.dart';
+import '../../../data/database/hebrew_bible_data/hb_db_helper.dart';
 import '../../../data/models/models.dart';
 import '../../../data/models/word.dart';
 
@@ -46,6 +46,14 @@ wordPanelSheet(context) => showModalBottomSheet(
       },
     );
 
+// If the space outside of the display data is tapped, exit ModalBottomSheet.
+// https://www.youtube.com/watch?v=AjAQglJKcb4&t=394s&ab_channel=JohannesMilke
+Widget makeDismissible({required Widget child, required context}) => GestureDetector(
+  behavior: HitTestBehavior.opaque,
+  onTap: () => Navigator.of(context).pop(),
+  child: GestureDetector(onTap: () {}, child: child)
+);
+
 /// Used to construct the view of [wordPanelSheet].
 class SelectedWordDisplay extends ConsumerWidget {
   @override
@@ -58,110 +66,80 @@ class SelectedWordDisplay extends ConsumerWidget {
     if (!hebrewPassage.hasSelection) {
       return Container();
     }
-    // If the space outside of the display data is tapped, exit ModalBottomSheet.
-    return GestureDetector(
-      // TODO : find a better way to deal with closing out the
-      // menu by clicking outside of it.
-      // https://stackoverflow.com/questions/43937841/how-do-i-get-tap-locations-gesturedetector
-      onTapDown: (details) {
-        var position = details.globalPosition;
-        if (position.dy < MediaQuery.of(context).size.height / 2) {
-          // Navigator.pop(context);
-        }
-      },
-      child: Container(
-        // Make the clickable are invisible.
-        color: Colors.transparent,
+
+    return makeDismissible(
+      context: context,
+      child: GestureDetector(
         child: Column(
-          children: [
-            Expanded(
-              // Content can be scrolled to the full height of ModalBottomSheet.
-              // This is the main visible data displayed for a selected word.
-              child: DraggableScrollableSheet(
-                  initialChildSize: 0.4,
-                  minChildSize: 0.3,
-                  maxChildSize: 1,
-                  builder: (BuildContext context,
-                      ScrollController scrollController) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          // Give the display an outline.
-                          border: Border.all(color: MyTheme.lineColor!),
-                          color: MyTheme.bgColor,
-                          // Make the top of the display rounded.
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(15))),
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          child: Stack(
-                            children: [
-                            Column(
+            children: [
+              Expanded(
+                // Content can be scrolled to the full height of ModalBottomSheet.
+                // This is the main visible data displayed for a selected word.
+                child: DraggableScrollableSheet(
+                    initialChildSize: 0.4,
+                    minChildSize: 0.3,
+                    maxChildSize: 1,
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            // Give the display an outline.
+                            border: Border.all(color: MyTheme.lineColor!),
+                            color: MyTheme.bgColor,
+                            // Make the top of the display rounded.
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(15))),
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            child: Stack(
                               children: [
-                                // Grey bar to indicate the panel is draggable.
-                                Container(
-                                  margin: EdgeInsets.only(top: 2),
-                                  height: 6,
-                                  width: 100,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[500],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15))),
-                                ),
-                                // Word summary
-                                WordDisplay(),
-                                Container(height: 1, color: MyTheme.lineColor),
-                                ExamplesTile(),
-                                Container(height: 1, color: MyTheme.lineColor),
-                                TranslationTile(),
-                                Container(height: 1, color: MyTheme.lineColor),
-                                StrongsTile(),
-                                Container(height: 1, color: MyTheme.lineColor),
-                              ],
-                            ),
-                            // Button to exit.
-                            Positioned(
-                              top: -5,
-                              right: -5,
-                              child: IconButton(
-                                onPressed: () => Navigator.pop(context),
-                                icon: Icon(Icons.close_rounded),
-                                iconSize: 24,
+                              Column(
+                                children: [
+                                  // Grey bar to indicate the panel is draggable.
+                                  Container(
+                                    margin: EdgeInsets.only(top: 2),
+                                    height: 6,
+                                    width: 100,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey[500],
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                  ),
+                                  // Word summary
+                                  WordDisplay(),
+                                  Container(height: 1, color: MyTheme.lineColor),
+                                  ExamplesTile(),
+                                  Container(height: 1, color: MyTheme.lineColor),
+                                  TranslationTile(),
+                                  Container(height: 1, color: MyTheme.lineColor),
+                                  StrongsTile(),
+                                  Container(height: 1, color: MyTheme.lineColor),
+                                ],
                               ),
-                            )
-                          ]),
-                        ),
-                    );
-                  }),
-            ),
-            Container(height: 1, color: Colors.grey[700]),
-            SaveWordTile()
-          ],
+                              // Button to exit.
+                              Positioned(
+                                top: -5,
+                                right: -5,
+                                child: IconButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  icon: Icon(Icons.close_rounded),
+                                  iconSize: 24,
+                                ),
+                              )
+                            ]),
+                          ),
+                      );
+                    }),
+              ),
+              Container(height: 1, color: Colors.grey[700]),
+              SaveWordTile()
+            ],
+          ),
         ),
-      ),
     );
   }
 }
-
-// GestureDetector(
-//             onTap: () {
-//               if (userVocab.isKnown(lex)) {
-//                 userVocab.setToUnknown(lex);
-//               } else {
-//                 userVocab.setToKnown(lex);
-//               }
-//             },
-//             child: Container(
-//                 padding: EdgeInsets.all(10),
-//                 height: 40,
-//                 width: double.infinity,
-//                 color: MyTheme.bgColor,
-//                 child: userVocab.isKnown(lex)
-//                     ? Text('Don\'t know this word?', style: textColor)
-//                     : Text('Know this word?', style: textColor)),
-//           ),
-
-
 
 
 

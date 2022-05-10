@@ -2,10 +2,11 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
 
 import '../models/models.dart';
-import '../database/hb_db_helper.dart';
+import '../database/hebrew_bible_data/hb_db_helper.dart';
 
 
 class TxtTheme {
@@ -16,6 +17,14 @@ class TxtTheme {
   static var selWeight = FontWeight.bold;
   static var normSize = 28.0;
   static var verseSize = 16.0;
+
+
+  // The default styling for a word, changed via copyWith. 
+  static var hebrewStyle = GoogleFonts.notoSerifHebrew(
+      color: TxtTheme.normColor,
+      fontSize: TxtTheme.normSize,
+      fontWeight: TxtTheme.normWeight,
+  );
 }
 
 class TextDisplay with ChangeNotifier{

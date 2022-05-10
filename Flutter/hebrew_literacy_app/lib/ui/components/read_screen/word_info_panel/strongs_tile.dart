@@ -39,9 +39,10 @@ class _StrongsTileState extends ConsumerState<StrongsTile> {
         title: Text('DEFINITION'),
         children: [
           Container(
-              height: 100,
+            width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.25,
               padding: EdgeInsets.all(10),
-              margin: EdgeInsets.only(bottom: 10),
+              margin: EdgeInsets.only(bottom: 10,),
               child: SingleChildScrollView(
                 child: FutureBuilder<List<Strongs>>(
                     future: strongsData,
@@ -57,7 +58,8 @@ class _StrongsTileState extends ConsumerState<StrongsTile> {
   TextSpan _buildStrongsText(List<Strongs> strongsData) {
     List<TextSpan> allDefinitions = [];
     allDefinitions
-        .add(TextSpan(text: "Strongs: ${strongsData.first.strongsId}\n"));
+        .add(TextSpan(text: "Strongs: ${strongsData.first.strongsId}\n\n",
+        style: Theme.of(context).textTheme.bodyLarge));
     for (var strongs in strongsData) {
       if (strongs != null) {
         var definitions = strongs.definition!.split('<br>');

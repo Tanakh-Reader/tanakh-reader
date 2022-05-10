@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hebrew_literacy_app/data/providers/user.dart';
 import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
 import 'package:hebrew_literacy_app/ui/screens/screens.dart';
@@ -8,6 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart' as pro;
 
 import '../../data/database/user_data/user.dart';
+import '../../data/providers/passage.dart';
 import '../bottom_nav.dart';
 import '../components/passages_screen/passage_card.dart';
 import 'read_screen.dart';
@@ -26,6 +28,7 @@ class PassagesScreen extends ConsumerWidget {
     // is called from anywhere in the app. 
     var userVocab = ref.read(userVocabProvider);
     var userData = ref.watch(userDataProvider);
+    var passageData = ref.read(passageDataProvider);
 
     return Scaffold(
       body: Container(
@@ -35,13 +38,13 @@ class PassagesScreen extends ConsumerWidget {
         // child: SingleChildScrollView(
         //     child: ConstrainedBox(
         //       constraints: BoxConstraints(minHeight: 200),
-              child: userData.initialized ?
-              Container(height: 800, child:
+              child: passageData.isInitialized ?
+              // Container(height: 800, child:
             
                   DisplayPassages()
                   
-              )
-              : RegisterScreen()
+              // )
+              : Center(child: Text("No Passages"))
                   // ReferencesExpansionPanel(
                     // button: Center(
                     //   child: Icon(Icons.menu_book_rounded),
@@ -56,7 +59,6 @@ class PassagesScreen extends ConsumerWidget {
   }
 }
 
-var passages = Passages();
 var passageCards;
 
 class DisplayPassages extends ConsumerStatefulWidget {
@@ -70,70 +72,78 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
     
   // final passages = Passages();
   bool showWidget = false;
-  @override
-  void initState() {
-    super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
-    ref.read(hebrewPassageProvider);
-    ref.read(userVocabProvider);
-    ref.read(userDataProvider);
+ 
+  _loadPassages(var passages) {
+    passageCards = passages.map<Widget>(
+                (passage) => PassageCard(passage: passage)
+              ).toList();
+              setState(() {
+                showWidget = passageCards.length > 0;
+              });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextpassageData) {
     print("Entering Display P");
     var userVocab = ref.read(userVocabProvider);
     var userData = ref.read(userDataProvider);
+    var passageData = ref.read(passageDataProvider);
     var vocab = userVocab.knownVocab;
+    if (!showWidget) {
+      _loadPassages(passageData.passages);
+    }
     return SizedBox(
       // height: 420,
       child: Column(
         children: <Widget>[
+          
           SizedBox(height: 30,),
-          ElevatedButton(
-            onPressed: () async {
-              await passages.loadPassages();
-              passageCards = passages.passages.map<Widget>((passage) {
-                      // return FutureBuilder(
-                      //   future: passage.getPassageWordsByVsId(passage.passage),
-                      //   builder: (context, snapshot) {
-                      //     return snapshot.hasData 
-                      //     ? PassageCard(hebrewPassage: passage)
-                      //     : CircularProgressIndicator();
-                      //   }
-                      // );
-                      return PassageCard(hebrewPassage: passage);
-                      }
-                      ).toList();
-              // );/
-              // print(pa)
-              setState(() {
-                showWidget = passageCards.length > 0;
-
-                print("LOADED");
-              });
-            },
-            child: const Text('Load Passages'),
-          ),
+          Text("Hebrew Passages",
+                  style: Theme.of(context).textTheme.headline5,
+                  ),
+          SizedBox(height: 20,),
           showWidget 
           ? Container(
-            height: 550, 
-            width: MediaQuery.of(context).size.width * 0.85,
+            height: MediaQuery.of(context).size.height * 0.75, 
+            margin: EdgeInsets.only(top: 0),
+            width: MediaQuery.of(context).size.width * 0.75,
             child: ListView.separated(
               itemCount: passageCards.length,
               itemBuilder: (context, index) {
-                return passageCards[index];
+                return 
+                // Consumer(
+                //   builder: ((context, ref, child) {
+                    
+                //   }
+                    
+                // );
+                completedPassageWrapper(
+                  passageCards[index]);
               },
               separatorBuilder: (context, index) {
                 return SizedBox(height: 10);
               }
-              
             ),
           )
           : Container(),
 
         ]
       ),
+    );
+  }
+
+  Widget completedPassageWrapper(Widget child) {
+    return Stack(
+      children: [
+        child, 
+        Align( 
+          alignment: Alignment.topLeft,
+          child: Padding( 
+            padding: EdgeInsets.fromLTRB(24, 16, 16, 16),
+            child: FaIcon(FontAwesomeIcons.check, color: Colors.greenAccent,),
+          ),
+        )
+      ]
     );
   }
 }

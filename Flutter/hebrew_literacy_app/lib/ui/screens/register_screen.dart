@@ -28,13 +28,6 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
-  @override
-  void initState() {
-    super.initState();
-    ref.read(userDataProvider);
-    ref.read(userVocabProvider);
-  }
-
   String dropdownValue = DROPDOWN;
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -103,6 +96,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
             ),
             SizedBox(height: 20,),
+            Padding(
+              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+              padding: EdgeInsets.symmetric(horizontal: 70),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                ),
+                controller: emailController,
+              ),
+            ),
+            SizedBox(height: 20,),
             DropdownButton<String>(
               value: dropdownValue,
               icon: const Icon(Icons.arrow_drop_down_rounded),
@@ -126,6 +131,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 print(dropdownValue);
                 if (firstNameController.text.isNotEmpty 
                   && lastNameController.text.isNotEmpty
+                  && emailController.text.isNotEmpty
                   && dropdownValue != DROPDOWN) {
                     box.deleteAll(box.keys);
                     var level = READING_LEVELS.keys.firstWhere(
@@ -133,13 +139,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     var user = User(
                       firstName: firstNameController.text,
                       lastName: lastNameController.text,
-                      email: '',
-                      readingLevel: level
+                      email: emailController.text,
+                      readingLevel: level,
+                      dateRegistered: DateTime.now()
                     );
                     box.add(user);
                     userData.load();
                     await userVocab.initializeVocab();
                     userVocab.load();
+
+                    ref.read(tabManagerProvider).goToTab(Screens.home);
                 }
 
               },

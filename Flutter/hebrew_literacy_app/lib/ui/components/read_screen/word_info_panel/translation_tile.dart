@@ -28,6 +28,9 @@ class _TranslationTileState extends ConsumerState<TranslationTile> {
       textSpan.add(TextSpan(
           text: _word.glossBSB! + ' ',
           style: TextStyle(
+            color: _word.id == word.id 
+                ? Colors.blue[200]
+                : Colors.white,
               fontWeight:
                   _word.id == word.id ? FontWeight.bold : FontWeight.normal)));
     }

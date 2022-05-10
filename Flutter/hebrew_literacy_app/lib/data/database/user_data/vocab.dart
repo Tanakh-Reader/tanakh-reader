@@ -22,20 +22,47 @@ class Vocab extends HiveObject {
   @HiveField(1)
   late VocabStatus status;
 
+  // True if the user updated the lexeme's status. 
+  // Used to track user-updated vocab vs auto-updated vocab. 
   @HiveField(2)
-  late bool saved;
+  bool? userUpdated;
 
+
+  // *** Saved vocabulary data.
   @HiveField(3)
-  late int tapCount;
+  bool saved = false;
 
   @HiveField(4)
+  DateTime? dateSaved;
+
+  // Word ids saved with this lexeme.
+  @HiveField(5)
+  List<int> wordInstanceIds = [];
+
+  // English definitions save with this lexeme.
+  @HiveField(6)
+  List<String> definitions = [];
+
+  // True if this lexeme has been exported. 
+  @HiveField(7)
+  bool exported = false;
+
+
+  // *** Misc data.
+  // How many times a user tapped this vocab word. 
+  @HiveField(8)
+  int tapCount = 0;
+
+  @HiveField(9)
   DateTime? latestTap;
+
+  // How many times a user accessed gloss for a known word.
+  @HiveField(10)
+  int glossTapCount = 0;
+
 
   Vocab({
     required this.lexId,
     required this.status,
-    required this.saved,
-    required this.tapCount,
-    this.latestTap
   });
 }

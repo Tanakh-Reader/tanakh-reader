@@ -2,14 +2,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-class Passage {
+class WeightedPassage {
   int? id;
   int? wordCount;
   num? weight;
   int? startVsId;
   int? endVsId;
+  int? bookId;
+  Set<int> chapters = {};
+  int? startVs;
+  int? endVs;
+  bool? isChapter;
+  Set<int>? lexIds;
+  List<String>? sampleText;
 
-  Passage({
+  
+
+
+  WeightedPassage({
     this.id,
     this.wordCount,
     this.weight,
@@ -17,9 +27,9 @@ class Passage {
     this.endVsId
   });
 
-  factory Passage.fromRawJson(String str) => Passage.fromJson(json.decode(str));
+  factory WeightedPassage.fromRawJson(String str) => WeightedPassage.fromJson(json.decode(str));
   
-  factory Passage.fromJson(Map<String, dynamic> json) => Passage(
+  factory WeightedPassage.fromJson(Map<String, dynamic> json) => WeightedPassage(
     id: json[PassageConstants.passageId],
     wordCount: json[PassageConstants.wordCount],
     weight: json[PassageConstants.weight],

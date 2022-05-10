@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/providers/user.dart';
 import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +13,12 @@ import 'ui/views.dart';
 import 'data/database/user_data/user.dart';
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
 
   @override
-  Widget build(BuildContext context) {
-    // vocabBox = 
+  Widget build(BuildContext context, ref) {
+    final userData = ref.watch(userDataProvider);
+    final tabManager = ref.read(tabManagerProvider);
     return MaterialApp(
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Colors.black,
@@ -23,8 +26,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(
-            // child: RegisterScreen()
-            child: Views(),
+            child: userData.isInitialized
+              ? Views()
+              : RegisterScreen()
           ),
         ),
         routes: {

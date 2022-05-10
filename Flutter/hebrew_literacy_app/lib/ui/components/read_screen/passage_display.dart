@@ -47,6 +47,11 @@ class PassageDisplay extends ConsumerWidget {
                     ),
                     textDirection: TextDirection.rtl,
                   ),
+                  TextButton(
+                    onPressed: () {
+
+                    },
+                    child: Text("Completed"),),
                 ]
                 : [
                   RichText(
@@ -56,7 +61,8 @@ class PassageDisplay extends ConsumerWidget {
                     ),
                     // textAlign: TextAlign.justify,
                     textDirection: TextDirection.rtl,
-                  )
+                  ),
+                  SizedBox(height: 20,)
                 ],
           ),
       ),
@@ -105,7 +111,7 @@ class PassageDisplay extends ConsumerWidget {
                 alignment: PlaceholderAlignment.bottom,
                 child: Text(
                   " ${word.vsBHS.toString()} ",
-                  style: _wordStyle.copyWith(
+                  style: TxtTheme.hebrewStyle.copyWith(
                     fontSize: TxtTheme.verseSize,    
                     fontWeight: FontWeight.bold
                   )
@@ -163,7 +169,7 @@ class PassageDisplay extends ConsumerWidget {
         // Add the compound's trailer. 
         var _trailerSpan = TextSpan(
           text: word.trailer,
-          style: _wordStyle
+          style: TxtTheme.hebrewStyle
         );
         hebrewPassageTextSpans.add(_trailerSpan);
         // Reset joinedWords.
@@ -176,7 +182,7 @@ class PassageDisplay extends ConsumerWidget {
         // Build the word's trailer. 
         var _trailerSpan = TextSpan(
           text: word.trailer,
-          style: _wordStyle
+          style: TxtTheme.hebrewStyle
         ); 
         hebrewPassageTextSpans.add(_wordSpan);
         hebrewPassageTextSpans.add(_trailerSpan);
@@ -185,14 +191,6 @@ class PassageDisplay extends ConsumerWidget {
     }
     return hebrewPassageTextSpans;
   }
-
-
-  // The default styling for a word, changed via copyWith. 
-  var _wordStyle = GoogleFonts.notoSerifHebrew(
-      color: TxtTheme.normColor,
-      fontSize: TxtTheme.normSize,
-      fontWeight: TxtTheme.normWeight,
-  );
 
   /// Takes a [Word], [UserVocab], [HebrewTextController] instance, and 
   /// [joinedWords], signifying if it's a single or compound word.
@@ -220,7 +218,7 @@ class PassageDisplay extends ConsumerWidget {
     // Return a text span with the customized word formatting. 
     return TextSpan(
       text: word.text ?? '',
-      style:_wordStyle.copyWith(
+      style:TxtTheme.hebrewStyle.copyWith(
         color: wordColor,
         fontWeight: weight,
       ),
@@ -229,6 +227,7 @@ class PassageDisplay extends ConsumerWidget {
         hebrewPassage.toggleWordSelection(word);
         // Open the word panel if there is a selection. 
         if (hebrewPassage.hasSelection) {
+          userVocab.updateLexTap(lex);
           // https://stackoverflow.com/questions/51565524/flutter-onclosing-callback-for-showmodalbottomsheet
           var future = await wordPanelSheet(context);
           // Deselect all words when the panel is closed. 
@@ -260,7 +259,7 @@ class PassageDisplay extends ConsumerWidget {
         // Add verse number.
         var verseNumText = TextSpan(
           text: " ${word.vsBHS.toString()} ",
-          style: _wordStyle.copyWith(
+          style: TxtTheme.hebrewStyle.copyWith(
              fontSize: TxtTheme.verseSize-4,    
           )
         ); 
@@ -270,7 +269,7 @@ class PassageDisplay extends ConsumerWidget {
       englishTextSpans.add(
         TextSpan(
           text: word.glossBSB! + ' ',
-          style: _wordStyle.copyWith(
+          style: TxtTheme.hebrewStyle.copyWith(
             fontSize: 16
           )
       ));
@@ -283,6 +282,7 @@ class PassageDisplay extends ConsumerWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            scrollable: true,
             shape: RoundedRectangleBorder( 
               borderRadius: BorderRadius.all(Radius.circular(20))
             ),
@@ -290,7 +290,6 @@ class PassageDisplay extends ConsumerWidget {
             content: Container(
               alignment: Alignment.center,
               // height: MediaQuery.of(context).size.height * 0.8,
-              child: SingleChildScrollView(
                 child: Column(
                   children: [
                     RichText(
@@ -301,9 +300,9 @@ class PassageDisplay extends ConsumerWidget {
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.justify,
                     ),
-                    SizedBox(height: 15,),
-                    Text("... HEBREW PASSAGE ..."),
-                    SizedBox(height: 15,),
+                    SizedBox(height: 20,),
+                    Text("... HEBREW PASSAGE ...", style: TextStyle(fontWeight: FontWeight.bold),),
+                    SizedBox(height: 20,),
                     RichText(
                       text: TextSpan(
                         children: 
@@ -319,7 +318,6 @@ class PassageDisplay extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
         );
       }
     );
