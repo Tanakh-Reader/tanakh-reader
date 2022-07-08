@@ -13,6 +13,7 @@ class Views extends ConsumerWidget {
     HomeScreen(),
     ReadScreen(),
     VocabScreen(),
+    PassagesScreen(),
     ProfileScreen(),
   ];
 

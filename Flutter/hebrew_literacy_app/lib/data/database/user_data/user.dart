@@ -19,17 +19,24 @@ enum ReadingLevel {
 class User extends HiveObject {
   @HiveField(0)
   String firstName = '';
+
   @HiveField(1)
   String lastName = '';
+
   @HiveField(2)
   String email = '';
+
   @HiveField(3)
   ReadingLevel readingLevel = ReadingLevel.elementary;
+
+  @HiveField(4)
+  late DateTime dateRegistered;
 
   User({
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.readingLevel
+    required this.readingLevel,
+    required this.dateRegistered
   });
 }

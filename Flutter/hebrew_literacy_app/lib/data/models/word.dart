@@ -135,29 +135,3 @@ class Word with ChangeNotifier {
   );
   
 }
-
-class Passage {
-  int? id;
-  int? wordCount;
-  num? weight;
-  int? startWordId;
-  int? endWordId;
-
-  Passage({
-    this.id,
-    this.wordCount,
-    this.weight,
-    this.startWordId,
-    this.endWordId
-  });
-
-  factory Passage.fromRawJson(String str) => Passage.fromJson(json.decode(str));
-  
-  factory Passage.fromJson(Map<String, dynamic> json) => Passage(
-    id: json[PassageConstants.passageId],
-    wordCount: json[PassageConstants.wordCount],
-    weight: json[PassageConstants.weight],
-    startWordId: json[PassageConstants.startWordId],
-    endWordId: json[PassageConstants.endWordId]
-  );
-}

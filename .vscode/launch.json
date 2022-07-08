@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "hebrew_literacy_app",
+            "cwd": "Flutter/hebrew_literacy_app",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "hebrew_literacy_app (profile mode)",
+            "cwd": "Flutter/hebrew_literacy_app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "hebrew_literacy_app (release mode)",
+            "cwd": "Flutter/hebrew_literacy_app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "python_backend",
+            "cwd": "Flutter/python_backend",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "python_backend (profile mode)",
+            "cwd": "Flutter/python_backend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "python_backend (release mode)",
+            "cwd": "Flutter/python_backend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

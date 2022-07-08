@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/constants.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
-import 'package:provider/provider.dart';
+
 import 'package:hive/hive.dart';
 
 import '../../data/providers/user.dart';
-import '../widgets/read_screen/read_screen.dart';
-import '../../data/providers/hebrew_passage.dart';
-import '../../data/models/models.dart';
-import '../widgets/read_screen/reference_button.dart';
+
 import '../../data/database/user_data/user.dart';
 
 var NAME = 'user';
@@ -31,13 +28,6 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(userDataProvider);
-    ref.read(userVocabProvider);
-  }
 
   String dropdownValue = DROPDOWN;
   final firstNameController = TextEditingController();
@@ -76,7 +66,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       width: 250,
                       height: 150,
                       child: Column(children: [
-                        Text('Hebrew Literacy App', style: TextStyle(fontSize: 25),),
+                        Text(APP_NAME, style: TextStyle(fontSize: 25),),
                         SizedBox(height: 20,),
                         Icon(Icons.menu_book_rounded, size: 50,),
                       ])
@@ -107,6 +97,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
             ),
             SizedBox(height: 20,),
+            Padding(
+              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+              padding: EdgeInsets.symmetric(horizontal: 70),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                ),
+                controller: emailController,
+              ),
+            ),
+            SizedBox(height: 20,),
             DropdownButton<String>(
               value: dropdownValue,
               icon: const Icon(Icons.arrow_drop_down_rounded),
@@ -130,6 +132,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 print(dropdownValue);
                 if (firstNameController.text.isNotEmpty 
                   && lastNameController.text.isNotEmpty
+                  && emailController.text.isNotEmpty
                   && dropdownValue != DROPDOWN) {
                     box.deleteAll(box.keys);
                     var level = READING_LEVELS.keys.firstWhere(
@@ -137,19 +140,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     var user = User(
                       firstName: firstNameController.text,
                       lastName: lastNameController.text,
-                      email: '',
-                      readingLevel: level
+                      email: emailController.text,
+                      readingLevel: level,
+                      dateRegistered: DateTime.now()
                     );
                     box.add(user);
                     userData.load();
                     await userVocab.initializeVocab();
                     userVocab.load();
+
+                    ref.read(tabManagerProvider).goToTab(Screens.home);
                 }
 
               },
+              
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(10),
+                backgroundColor: Colors.deepPurpleAccent),
               child: Text(
                 'Register',
-                style: TextStyle(color: Colors.blue, fontSize: 15),
+                style: TextStyle( fontSize: 15, color: Colors.white),
               ),
             ),
             // User Settings

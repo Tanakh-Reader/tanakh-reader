@@ -5,7 +5,7 @@ import 'package:hebrew_literacy_app/data/providers/providers.dart';
 import 'package:hive/hive.dart';
 
 import '../models/models.dart';
-import '../database/hb_db_helper.dart';
+import '../database/hebrew_bible_data/hb_db_helper.dart';
 
 import '../database/user_data/vocab.dart';
 
@@ -20,6 +20,17 @@ Map<ReadingLevel, int> LEX_MAP = {
   ReadingLevel.expert: 30 // 1162 lexemes
 };
 
+/// Used for adding words to the dictinary. 
+class TextItem {
+  int id;
+  String text;
+
+  TextItem({
+    required this.id,
+    required this.text
+  });
+}
+
 /// A provider for the Hive [Vocab] database. 
 /// This allows the app to dynamically track user vocabulary
 /// and to rebuild specified widgets when vocab data updates. 
@@ -27,9 +38,10 @@ class UserVocab with ChangeNotifier {
   static final _boxName = 'vocab';
   var vocabBox = Hive.box<Vocab>(_boxName);
   bool loaded = false;
+
   
   /// Return true if the [Vocab] database is initialized.
-  get initialized {
+  get isInitialized {
     return vocabBox.isNotEmpty;
   }
 
@@ -54,28 +66,30 @@ class UserVocab with ChangeNotifier {
         var vocab = Vocab(
           lexId: lex.id!,
           status: _status,
-          saved: false,
-          tapCount: 0
         );
         vocabBox.put(lex.id!, vocab);
       }
     }
-    reInitializeVocab();
+    // Otherwise, reinitialized
+    reinitializeVocab();
   }
 
   /// Function for user to reset the default known vocab.
   /// Same as [initializeVocab], but updates values rather than creating them. 
-  void reInitializeVocab() {
+  void reinitializeVocab() {
     var user = Hive.box<User>('user').values.first;
     int freqLex = LEX_MAP[user.readingLevel]!;
     if (vocabBox.isNotEmpty) {
       for (var lex in AllLexemes.lexemes) {
         var _vocab = vocabBox.get(lex.id);
-        var _status = lex.freqLex! >= freqLex
-          ? VocabStatus.known
-          : _vocab!.status;
-        _vocab!.status = _status;
-        _vocab.save();
+        // Only update words that the user hasn't toggled.
+        if (!(_vocab!.userUpdated == true)) {
+          var _status = lex.freqLex! >= freqLex
+            ? VocabStatus.known
+            : _vocab.status;
+          _vocab.status = _status;
+          _vocab.save();
+        }
       }
     } else {
       print('Vocab not initialized');
@@ -113,6 +127,27 @@ class UserVocab with ChangeNotifier {
     return _savedVocab;
   }
 
+  List<int> wordInstanceIds(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    return _vocab!.wordInstanceIds;
+  }
+
+  List<String> definitions(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    return _vocab!.definitions;
+  }
+
+  DateTime dateSaved(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    return _vocab!.dateSaved!;
+  }
+
+  /// Given a set of lexeme Ids, return lexeme objects.
+  List<Lexeme> lexemesByIds(List<int> lexIds) {
+    final _lexIds = lexIds.toSet();
+    return AllLexemes.lexemes.where((lex) => _lexIds.contains(lex.id)).toList();
+  }
+
   /// Take a [Lexeme] instance and return [true] if its 
   /// stored [status] attribute is set to known.
   bool isKnown (Lexeme lex) {
@@ -121,16 +156,27 @@ class UserVocab with ChangeNotifier {
   }
 
   /// Take a [Lexeme] instance and return [true] if its 
-  /// stored [saved] attribute is set to known.
+  /// stored [saved] attribute is set to true.
   bool isSaved (Lexeme lex) {
     var _vocab = vocabBox.get(lex.id!);
     return _vocab!.saved;
   }
 
+  /// Take a [Lexeme] instance and return [true] if its 
+  /// stored [exported] attribute is set to true.
+  bool isExported (Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    return _vocab!.exported;
+  }
+
   /// Toggle a [Lexeme]'s [saved] attribute in the database and save it. 
   void toggleSaved(Lexeme lex) {
     var _vocab = vocabBox.get(lex.id!);
-    _vocab!.saved = !_vocab.saved;
+    // If toggling to true, then update dateSaved
+    if (_vocab!.saved == false) {
+      _vocab.dateSaved = DateTime.now();
+    }
+    _vocab.saved = !_vocab.saved;
     _vocab.save();
     notifyListeners();
   }
@@ -138,7 +184,8 @@ class UserVocab with ChangeNotifier {
   /// Set a [Lexeme]'s [status] attribute to known in the database and save it. 
   void setToKnown(Lexeme lex) {
     var _vocab = vocabBox.get(lex.id!);
-    _vocab!.status = VocabStatus.known;
+    _vocab!.userUpdated = true;
+    _vocab.status = VocabStatus.known;
     _vocab.save();
     notifyListeners();
   }
@@ -146,9 +193,56 @@ class UserVocab with ChangeNotifier {
   /// Set a [Lexeme]'s [status] attribute to unknown in the database and save it. 
   void setToUnknown(Lexeme lex) {
     var _vocab = vocabBox.get(lex.id!);
-    _vocab!.status = VocabStatus.unkown;
+    _vocab!.userUpdated = true;
+    _vocab.status = VocabStatus.unkown;
     _vocab.save();
     notifyListeners();
+  }
+
+  /// Toggle between unknown and known. 
+  void toggleKnown(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    _vocab!.userUpdated = true;
+    isKnown(lex) 
+    ? _vocab.status = VocabStatus.unkown
+    : _vocab.status = VocabStatus.known;
+    _vocab.save();
+    notifyListeners();
+  }
+
+  void setToExported(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    _vocab!.exported = true;
+  }
+
+  void updateLexTap(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    _vocab!.tapCount += 1;
+    _vocab.latestTap = DateTime.now();
+    _vocab.save();
+  }
+
+  void updateGlossTap(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    _vocab!.glossTapCount += 1;
+    _vocab.save();
+  }
+
+  Future<void> addDefinitions(Lexeme lex, List<String> definitions) async {
+    var _vocab = vocabBox.get(lex.id!);
+    _vocab!.definitions += definitions;
+    _vocab.save();
+  }
+
+  List<String> getDefinitions(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    return _vocab!.definitions;
+  }
+
+  void addWordInstanceIds(Lexeme lex, List<int> wordInstanceIds) {
+    var _vocab = vocabBox.get(lex.id!);
+    _vocab!.wordInstanceIds += wordInstanceIds;
+    _vocab.save();
   }
 
   // TODO: why is this still here?

@@ -19,26 +19,44 @@ class VocabAdapter extends TypeAdapter<Vocab> {
     return Vocab(
       lexId: fields[0] as int,
       status: fields[1] as VocabStatus,
-      saved: fields[2] as bool,
-      tapCount: fields[3] as int,
-      latestTap: fields[4] as DateTime?,
-    );
+    )
+      ..userUpdated = fields[2] as bool?
+      ..saved = fields[3] as bool
+      ..dateSaved = fields[4] as DateTime?
+      ..wordInstanceIds = (fields[5] as List).cast<int>()
+      ..definitions = (fields[6] as List).cast<String>()
+      ..exported = fields[7] as bool
+      ..tapCount = fields[8] as int
+      ..latestTap = fields[9] as DateTime?
+      ..glossTapCount = fields[10] as int;
   }
 
   @override
   void write(BinaryWriter writer, Vocab obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.lexId)
       ..writeByte(1)
       ..write(obj.status)
       ..writeByte(2)
-      ..write(obj.saved)
+      ..write(obj.userUpdated)
       ..writeByte(3)
-      ..write(obj.tapCount)
+      ..write(obj.saved)
       ..writeByte(4)
-      ..write(obj.latestTap);
+      ..write(obj.dateSaved)
+      ..writeByte(5)
+      ..write(obj.wordInstanceIds)
+      ..writeByte(6)
+      ..write(obj.definitions)
+      ..writeByte(7)
+      ..write(obj.exported)
+      ..writeByte(8)
+      ..write(obj.tapCount)
+      ..writeByte(9)
+      ..write(obj.latestTap)
+      ..writeByte(10)
+      ..write(obj.glossTapCount);
   }
 
   @override

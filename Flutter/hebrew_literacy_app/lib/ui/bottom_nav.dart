@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../data/providers/providers.dart';
 import 'screens/screens.dart';
 
@@ -48,8 +49,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
     //     child: 
         BottomNavigationBar(
           // Set the selection color of an item when tapped.
-          selectedItemColor: Theme.of(context)
-            .textSelectionTheme.selectionColor,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
+          // Theme.of(context)
+            // .textSelectionTheme.selectionColor,
           // Sets the current index of BottomNavigationBar.
           currentIndex: widget.tabManager.selectedTab,
           onTap: (index) {
@@ -57,7 +60,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
             if (hebrewPassage.hasSelection) {
               hebrewPassage.deselectWords();
             }
-            widget.tabManager.goToTab(index);
+            widget.tabManager.goToTabIndex(index);
           },
           items: [
             BottomNavigationBarItem(
@@ -68,9 +71,14 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
               icon: Icon(Icons.book),
               label: 'Read',
             ),
+            // TODO implement custom Hebrew Icon
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.font),
+              label: 'Vocab',
+            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.school),
-              label: 'Vocab',
+              label: 'Passages',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

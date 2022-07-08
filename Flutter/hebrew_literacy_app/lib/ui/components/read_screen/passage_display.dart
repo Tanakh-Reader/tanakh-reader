@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/providers/passage.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/completion_button.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/word_expansion_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 
@@ -22,18 +25,45 @@ class PassageDisplay extends ConsumerWidget {
 
     // If HebrewPassage.words is populated, generate a TextSpan
     // with all of the words -- otherwise display a message.
-    final _hebrewPassage = ref.watch(hebrewPassageProvider);
+    final hebrewPassage = ref.watch(hebrewPassageProvider);
+    final passageData = ref.read(passageDataProvider);
+    bool isChapter = hebrewPassage.isChapter;
     /// TODO REMOVE!
     return Column(
       children: [
-        SizedBox(height: 65,),
+        SizedBox(height: 80,),
         Expanded(
           child: SingleChildScrollView(
-          child: RichText(
-            text: TextSpan(
-              children: _buildTextSpans(_hebrewPassage, ref)
-            ),
-            textDirection: TextDirection.rtl,
+            
+          child: Column(
+            children: 
+              !isChapter
+                ? [
+                  TextButton(
+                    onPressed: () => englishContextDialogue(context, ref),
+                    child: Text("Show English Context"),),
+                  SizedBox(height:5),
+                  RichText(
+                    text: TextSpan(
+                      children: 
+                      _buildTextSpans(context, ref)
+                    ),
+                    textDirection: TextDirection.rtl,
+                  ),
+                  CompletionButton(passage: hebrewPassage.passage),
+                  SizedBox(height: 20,)
+                ]
+                : [
+                  RichText(
+                    text: TextSpan(
+                      children: 
+                      _buildTextSpans(context, ref)
+                    ),
+                    // textAlign: TextAlign.justify,
+                    textDirection: TextDirection.rtl,
+                  ),
+                  SizedBox(height: 20,)
+                ],
           ),
       ),
         ),
@@ -42,17 +72,17 @@ class PassageDisplay extends ConsumerWidget {
   }
 
 
-  /// Takes a [HebrewPassage] instance and uses its data to construct
+  /// Takes a [HebrewTextController] instance and uses its data to construct
   /// a list of [TextSpan] that construct the [RichText] in [PassageDisplay].
-  List<TextSpan>? _buildTextSpans(HebrewPassage hebrewPassage, ref) {
-
-    var textDisplay = ref.watch(textDisplayProvider);
-    var userVocab = ref.watch(userVocabProvider);
+  List<TextSpan>? _buildTextSpans(context, ref) {
+    final hebrewPassage = ref.read(hebrewPassageProvider);
+    final textDisplay = ref.watch(textDisplayProvider);
+    final userVocab = ref.watch(userVocabProvider);
     List<TextSpan> hebrewPassageTextSpans = [];
     List<Word> words = hebrewPassage.words;
     // List to keep track of words that are joined, such as וְלַחֹ֖שֶׁךְ
     List<Word> joinedWords = [];
-    // int curParagraph 
+    int curParagraph = -1;
     int curVerse = -1; //words.first.vsIdBHS!;
     // int curSentence
     int curClause = -1; 
@@ -64,12 +94,21 @@ class PassageDisplay extends ConsumerWidget {
     for (var i = 0; i < words.length; i++) {
       // The current word.
       var word = words[i];
+      bool newParagraph = false;
       bool newVerse = false;
       bool newClause = false;
       bool newPhrase = false;
+      // Add paragraph divisions.
+      if (textDisplay.paragraph && word.parMarker != null) {
+        if (curParagraph != -1) {
+          hebrewPassageTextSpans.add(newLine);
+          hebrewPassageTextSpans.add(newLine);
+        }
+        curParagraph +=1;
+      }
       // Add verse divisions. 
       if (textDisplay.verse && word.vsBHS != curVerse) {
-        if (curVerse != -1) {
+        if (curVerse != -1 && !newParagraph) {
           hebrewPassageTextSpans.add(newLine);
         }
         newVerse = true;
@@ -81,7 +120,7 @@ class PassageDisplay extends ConsumerWidget {
                 alignment: PlaceholderAlignment.bottom,
                 child: Text(
                   " ${word.vsBHS.toString()} ",
-                  style: _wordStyle.copyWith(
+                  style: TxtTheme.hebrewStyle.copyWith(
                     fontSize: TxtTheme.verseSize,    
                     fontWeight: FontWeight.bold
                   )
@@ -133,13 +172,13 @@ class PassageDisplay extends ConsumerWidget {
         joinedWords.add(word);
         // Create a TextSpan for each word in the compound. 
         for (var _word in joinedWords) {
-          var _wordSpan = _createWordSpan(_word, userVocab, hebrewPassage, joinedWords);
+          var _wordSpan = _createWordSpan(context, ref, _word, joinedWords);
           hebrewPassageTextSpans.add(_wordSpan);
         }
         // Add the compound's trailer. 
         var _trailerSpan = TextSpan(
           text: word.trailer,
-          style: _wordStyle
+          style: TxtTheme.hebrewStyle
         );
         hebrewPassageTextSpans.add(_trailerSpan);
         // Reset joinedWords.
@@ -148,11 +187,11 @@ class PassageDisplay extends ConsumerWidget {
       // Otherwise, the current word is not a compound, so we build it's TextSpan. 
       } else {
         // Build the word's text. 
-        var _wordSpan = _createWordSpan(word, userVocab, hebrewPassage, [word]);
+        var _wordSpan = _createWordSpan(context, ref, word, [word]);
         // Build the word's trailer. 
         var _trailerSpan = TextSpan(
           text: word.trailer,
-          style: _wordStyle
+          style: TxtTheme.hebrewStyle
         ); 
         hebrewPassageTextSpans.add(_wordSpan);
         hebrewPassageTextSpans.add(_trailerSpan);
@@ -162,20 +201,14 @@ class PassageDisplay extends ConsumerWidget {
     return hebrewPassageTextSpans;
   }
 
-
-  // The default styling for a word, changed via copyWith. 
-  var _wordStyle = GoogleFonts.notoSerifHebrew(
-      color: TxtTheme.normColor,
-      fontSize: TxtTheme.normSize,
-      fontWeight: TxtTheme.normWeight,
-  );
-
-  /// Takes a [Word], [UserVocab], [HebrewPassage] instance, and 
+  /// Takes a [Word], [UserVocab], [HebrewTextController] instance, and 
   /// [joinedWords], signifying if it's a single or compound word.
   /// If it isn't a compund word, then joinedWords = [\word].
   /// Returns a [TextSpan] formatted according to data in the 
   /// UserVocab and HebrewPassage providers. 
-  TextSpan _createWordSpan(word, userVocab, hebrewPassage, List joinedWords) {
+  TextSpan _createWordSpan(context, ref, word, List joinedWords) {
+    final hebrewPassage = ref.read(hebrewPassageProvider);
+    final userVocab = ref.read(userVocabProvider);
     // Current word's lexeme.
     Lexeme lex = hebrewPassage.lex(word.lexId!);
     // Change the word's color if it is a proper noun.
@@ -194,15 +227,109 @@ class PassageDisplay extends ConsumerWidget {
     // Return a text span with the customized word formatting. 
     return TextSpan(
       text: word.text ?? '',
-      style:_wordStyle.copyWith(
+      style:TxtTheme.hebrewStyle.copyWith(
         color: wordColor,
         fontWeight: weight,
       ),
       recognizer: TapGestureRecognizer()
-      ..onTap = () {
+      ..onTap = () async {
         hebrewPassage.toggleWordSelection(word);
+        // Open the word panel if there is a selection. 
+        if (hebrewPassage.hasSelection) {
+          userVocab.updateLexTap(lex);
+          // https://stackoverflow.com/questions/51565524/flutter-onclosing-callback-for-showmodalbottomsheet
+          var future = await wordPanelSheet(context);
+          // Deselect all words when the panel is closed. 
+          future.then(hebrewPassage.deselectWords());
+        }
       }
     );
   }
+
+
+
+  List<TextSpan>? _buildEnglishSpans(ref, bool pre) {
+    final hebrewPassage = ref.read(hebrewPassageProvider);
+    final textDisplay = ref.read(textDisplayProvider);
+    List<TextSpan> englishTextSpans = [];
+    List<Word> words = pre ? hebrewPassage.englishPre : hebrewPassage.englishPost;
+    words.removeWhere((w) => w.sortBSB == null);
+    words.sort((a, b) => a.sortBSB!.compareTo(b.sortBSB!));
+    int curVerse = -1; //words.first.vsIdBHS!;
+    var newLine = TextSpan(text: '\n');
+
+    // Iterate over all words in the passage. 
+    for (var i = 0; i < words.length; i++) {
+      // The current word.
+      var word = words[i];
+      // Add verse divisions. 
+      if (textDisplay.verse && word.vsBHS != curVerse) {
+        curVerse = word.vsBHS!;
+        // Add verse number.
+        var verseNumText = TextSpan(
+          text: " ${word.vsBHS.toString()} ",
+          style: TxtTheme.hebrewStyle.copyWith(
+             fontSize: TxtTheme.verseSize-4,    
+          )
+        ); 
+        englishTextSpans.add(verseNumText);
+      }
+
+      englishTextSpans.add(
+        TextSpan(
+          text: word.glossBSB! + ' ',
+          style: TxtTheme.hebrewStyle.copyWith(
+            fontSize: 16
+          )
+      ));
+  
+    }
+    return englishTextSpans;
+  }
+
+  englishContextDialogue(context, ref) => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            scrollable: true,
+            shape: RoundedRectangleBorder( 
+              borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+            // contentPadding: EdgeInsets.all(0),
+            content: Container(
+              alignment: Alignment.center,
+              // height: MediaQuery.of(context).size.height * 0.8,
+                child: Column(
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: 
+                        _buildEnglishSpans(ref, true)
+                      ),
+                      textDirection: TextDirection.ltr,
+                      textAlign: TextAlign.justify,
+                    ),
+                    SizedBox(height: 20,),
+                    Text("... HEBREW PASSAGE ...", style: TextStyle(fontWeight: FontWeight.bold),),
+                    SizedBox(height: 20,),
+                    RichText(
+                      text: TextSpan(
+                        children: 
+                        _buildEnglishSpans(ref, false)
+                      ),
+                      textDirection: TextDirection.ltr,
+                      textAlign: TextAlign.justify,
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Dismiss'),
+                    )
+                  ],
+                ),
+              ),
+        );
+      }
+    );
+
 
 }

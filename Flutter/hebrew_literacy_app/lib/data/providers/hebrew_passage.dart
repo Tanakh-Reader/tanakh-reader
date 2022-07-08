@@ -4,29 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hebrew_literacy_app/data/constants.dart';
 
+import '../database/user_data/passage.dart';
 import '../models/models.dart';
-import '../database/hb_db_helper.dart';
-
-class Passages {
-  
-  List<HebrewPassage> _passages = [];
-
-  List<HebrewPassage> get passages {
-    return [..._passages];
-  }
-  
-  Future<void> loadPassages() async {
-    _passages = [];
-    var passages = await HebrewDatabaseHelper().getPassages();
-    // TODO -- Fix DATA LATER nodes are misaligned
-    for (var p in passages) {
-      var passage = HebrewPassage();
-      await passage.getPassageWordsById(p.startWordId!, p.endWordId!);
-      _passages.add(passage);
-    }
-  }
-
-}
+import '../database/hebrew_bible_data/hb_db_helper.dart';
 
 
 /// A class that holds all of the data for a passage.
@@ -34,25 +14,87 @@ class Passages {
 /// where the user can engage with the data of the current
 /// passage they are reading. 
 class HebrewPassage with ChangeNotifier {
+
   List<Word> _words = [];
+  // TODO --- consider where to implement sets instead of lists. 
   List<Lexeme> _lexemes = [];
   List<Verse> _verses = [];
   List<Clause> _clauses = [];
   List<Phrase> _phrases = [];
   Book? _book;
+  Passage? _passage;
   bool hasSelection = false;
+  bool isChapter = true;
+
+  // Last verseId in the Hebrew bible. 
+  int maxVsId = 23213;
+  // Number of English verses to come before and after a
+  // non-chapter passage.
+  int pre = 3;
+  int post = 2;
+
+  /// Get the [Passage] instance.
+  get passage {
+    return _passage;
+  }
+
+  /// True if the passage has [Word] data. 
+  get isLoaded {
+    return _words.isNotEmpty;
+  }
 
   /// Get all words in the current passage. 
   List<Word> get words {
-    return [..._words];
+    if (isChapter) {
+      return [..._words];
+    // If not a chapter, only return the words between the start
+    // and end verse of the passage. 
+    } else {
+      return _words.where((w) => 
+        w.vsIdBHS! >= _passage!.startVsId!
+        && w.vsIdBHS! <= _passage!.endVsId!).toList();
+    }
   }
   
+  /// Get all unique [Lexeme] instances in the passage.
   List<Lexeme> get lexemes {
     return [..._lexemes];
   }
-  
+
+  /// Takes a lexeme id and returns a [Lexeme] instance.
   Lexeme lex(int lexId) {
     return _lexemes.firstWhere((lex) => lex.id == lexId);
+  }
+
+  /// Takes a word and returns a book.
+  Book getBook(Word word) {
+    return Books.books.firstWhere((book) => book.id == word.book);
+  }
+  
+  /// Get all words before the passage's start verse, used
+  /// to construct the English pre in the passage display. 
+  List<Word>? get englishPre {
+    if (!isChapter) {
+      return _words.where((w) => 
+        w.vsIdBHS! < _passage!.startVsId!).toList();
+    }
+  }
+  
+
+  /// Get all words after the passage's end verse, used
+  /// to construct the English post in the passage display. 
+  List<Word>? get englishPost {
+    if (!isChapter) {
+      return _words.where((w) => 
+        w.vsIdBHS! > _passage!.endVsId!).toList();
+    }
+  }
+
+  // TODO fix these places where I use !!
+  Book get book {
+    _book = Books.books.firstWhereOrNull(
+        (bk) => bk.id == _words.first.book);
+    return _book!;
   }
 
   /// Get all verses in the current passage. 
@@ -78,14 +120,6 @@ class HebrewPassage with ChangeNotifier {
       }
     }
     return [..._verses];
-  }
-
-
-  // TODO fix these places where I use !!
-  Book get book {
-    _book = Books.books.firstWhereOrNull(
-        (bk) => bk.id == _words.first.book);
-    return _book!;
   }
 
 
@@ -201,44 +235,73 @@ class HebrewPassage with ChangeNotifier {
   // #############################################################################
   // Methods dealing the Hebrew Database.
 
-  // Convert SQL data to your Dart Object.
+  /// Takes a [Word]'s strongId and returns an instance of [Strongs]
+  Future<List<Strongs>> getStrongs(Word word) async {
+    List<Strongs> strongs = await HebrewDatabaseHelper().getStrongs(word);
+    return strongs;
+  }
+
+  /// Takes a [Word]'s lexId and returns an example sentences with that lexeme. 
+  Future<List<List<Word>>?> getLexSentences(Word word) async {
+    List<List<Word>>? sentences = await HebrewDatabaseHelper().getLexSentences(word);
+    return sentences;
+  }
+
+
+  /// Takes a book and chapter number and populates the [HebrewPassage]'s
+  /// data. 
   Future<void> getPassageWordsByRef(int book, int ch) async {
+    _passage = null;
+    isChapter = true;
+    // Query the SQL database for word nodes.
     _words = await HebrewDatabaseHelper().getWordsByBookChapter(book, ch);
-    _lexemes = await HebrewDatabaseHelper().getSomeLexemes(book, ch, WordConstants.book);
+    _lexemes = AllLexemes.getLexemesInPassage(words);
     _verses = [];
-    // _book = null;
     notifyListeners();
   }
 
-  // Convert SQL data to your Dart Object.
+  /// Takes a start and end word id and populates the [HebrewPassage]'s
+  /// data. 
   Future<void> getPassageWordsById(int startId, int endId) async {
+    // Query the SQL database for word nodes.
     _words = await HebrewDatabaseHelper().getWordsByStartEndNode(startId, endId);
-    _lexemes = await HebrewDatabaseHelper().getSomeLexemes(startId, endId, WordConstants.wordId);
+    _lexemes = AllLexemes.getLexemesInPassage(words);
+    _verses = [];
+    notifyListeners();
+  }
+
+  /// Takes a [Passage] instance and populates the [HebrewPassage]'s
+  /// data. 
+  Future<void> getPassageWordsByVsId({required Passage passage, withEnglish}) async {
+    isChapter = false;
+    // Save the passed in [Passage] in the HebrewPassage.
+    _passage = passage; 
+    int _pre = 0;
+    int _post = 0;
+    if (withEnglish) {
+      // Check for < Genesis 1:7 and > Malachi 4:1.
+      _pre = pre;
+      _post = post;
+      if (passage.startVsId! - pre < 1) {
+        _pre = passage.startVsId! - 1;
+      }
+      if (passage.endVsId! + post > maxVsId) {
+        _post = maxVsId - passage.endVsId!;
+      }
+    }
+    // Query the SQL database for word nodes. 
+    _words = await HebrewDatabaseHelper().getWordsByStartEndVsNode(
+    startId: passage.startVsId!, endId: passage.endVsId!, pre: _pre, post: _post);
+    _lexemes = AllLexemes.getLexemesInPassage(words);
     _verses = [];
     notifyListeners();
   }
 }
 
 
-
-
+/// A provider to track [HebrewPassage] data and update widget
+/// displays when notified. 
 final hebrewPassageProvider = ChangeNotifierProvider<HebrewPassage>((ref) {
   return HebrewPassage();
 });
 
-final passageTextProvider = FutureProvider.autoDispose.family<HebrewPassage, Future>((ref, fxn) async {
-  // final hebrewPassage = ref.watch(hebrewPassageProvider);
-  await fxn;
-  print("Finished");
-  return ref.watch(hebrewPassageProvider);
-});
-
-
-
-class AllLexemes {
-  static late final List<Lexeme> lexemes;
-
-  static Future<void> loadAllLexemes() async {
-    lexemes = await HebrewDatabaseHelper().getAllLexemes();
-  }
-}

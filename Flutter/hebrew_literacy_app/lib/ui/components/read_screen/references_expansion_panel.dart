@@ -9,6 +9,43 @@ import '../../screens/read_screen.dart';
 
 // Code inspired by https://github.com/31Carlton7/elisha/blob/master/lib/src/ui/views/bible_view/bible_view.dart
 
+wordPanelSheet(context) => showModalBottomSheet(
+  context: context,
+  isScrollControlled: true,
+  elevation: 0,
+  useRootNavigator: true,
+  shape: const RoundedRectangleBorder(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(17)),
+  ),
+  builder: (context) {
+    return FractionallySizedBox(
+      // TODO CHANGE!
+      heightFactor: 0.8,
+      // widthFactor: Responsive.isTablet(context) ? 0.75 : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 27),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Books',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 7),
+          
+        ],
+      ),
+    );
+  },
+);
+
 class ReferencesExpansionPanel extends ConsumerWidget {
   Widget? button;
   ReferencesExpansionPanel ({ Key? key, required this.button}) : super(key: key);
@@ -16,7 +53,7 @@ class ReferencesExpansionPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     
-    final hebrewPassage = ref.watch(hebrewPassageProvider);
+    final hebrewPassage = ref.read(hebrewPassageProvider);
 
     return GestureDetector(
         onTap: () async {
@@ -43,7 +80,7 @@ class ReferencesExpansionPanel extends ConsumerWidget {
               // HapticFeedback.lightImpact();
               await ref.read(hebrewPassageProvider).getPassageWordsByRef(book.id!, chapter);
               // Navigator.of(context).pushNamed(ReadScreen.routeName);
-              ref.read(tabManagerProvider).goToTab(Screens.read.index);
+              ref.read(tabManagerProvider).goToTab(Screens.read);
               Navigator.of(context, rootNavigator: true).pop();
             },
             child: Container(
@@ -54,7 +91,7 @@ class ReferencesExpansionPanel extends ConsumerWidget {
               child: Center(
                 child: Text(
                   chapter.toString(),
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),
@@ -95,7 +132,8 @@ class ReferencesExpansionPanel extends ConsumerWidget {
         ),
         builder: (context) {
           return FractionallySizedBox(
-            heightFactor: 0.95,
+            // TODO CHANGE!
+            heightFactor: 0.85,
             // widthFactor: Responsive.isTablet(context) ? 0.75 : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/read_screen/read_screen.dart';
+import '../components/read_screen/read_screen.dart';
 import '../../data/providers/hebrew_passage.dart';
 import '../../data/models/models.dart';
-import '../widgets/read_screen/reference_button.dart';
+import '../components/read_screen/reference_button.dart';
 
 
 class ReadScreen extends ConsumerWidget {
@@ -17,18 +17,27 @@ class ReadScreen extends ConsumerWidget {
     print("Read built");
     final hebrewPassage = ref.watch(hebrewPassageProvider);
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(children: [Expanded(child: PassageDisplay())]),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: hebrewPassage.hasSelection
-              ? WordExpansionPanel()
-              : const SizedBox()
-          ),
-          ReferencesExpansionPanel(button: ReferenceButton())
-        ],
-      ),
+      body: 
+        hebrewPassage.isLoaded ?
+        Stack(
+          children: [
+            // Column(children: [Expanded(child: 
+            Align(alignment: Alignment.centerRight,
+              child: PassageDisplay()),
+            // )]),
+            // Align(
+            //   alignment: Alignment.bottomCenter,
+            //   child: hebrewPassage.hasSelection
+            //     ? WordExpansionPanel()
+            //     : const SizedBox()
+            // ),
+            Align( 
+              alignment: Alignment.topCenter,
+              child: ReferencesExpansionPanel(button: ReferenceButton())
+            )
+          ],
+        )
+        : Center(child: Text("No passages loaded..."))
     );
   }
 }

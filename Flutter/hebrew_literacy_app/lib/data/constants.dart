@@ -1,3 +1,5 @@
+final String APP_NAME = "Tanakh Reader";
+
 class WordConstants {
 
   static String table = 'word';
@@ -172,18 +174,18 @@ class ClauseConstants {
 }
 
 
-class LexClauseConstants {
+class LexSentenceConstants {
 
-  static String table = 'lexClause';
+  static String table = 'lexSentence';
   
   static String lexId = 'lexId';
-  static String clauseId = 'clauseId';
-  static String clauseWeight = 'clauseWeight';
+  static String sentenceId = 'sentenceId';
+  static String sentenceWeight = 'sentenceWeight';
 
   static List<String> cols = [
     lexId,
-    clauseId,
-    clauseWeight
+    sentenceId,
+    sentenceWeight
   ];
 }
 
@@ -216,15 +218,15 @@ class PassageConstants {
   static String passageId = 'passageId';
   static String wordCount = 'wordCount';
   static String weight = 'weight';
-  static String startWordId = 'startWordId';
-  static String endWordId = 'endWordId';
+  static String startVsId = 'startVsId';
+  static String endVsId = 'endVsId';
 
   static List<String> cols = [
     passageId,
     wordCount,
     weight,
-    startWordId,
-    endWordId
+    startVsId,
+    endVsId
   ];
 }
 
@@ -251,7 +253,7 @@ class BookConstants {
   ];
 }
 
-Map<dynamic, String> MorphMap = {
+Map<dynamic, String> MORPH_MAP = {
   // Catch
   null: '',
   'unknown': '',

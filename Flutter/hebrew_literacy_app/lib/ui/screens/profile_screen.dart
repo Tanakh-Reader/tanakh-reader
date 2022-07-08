@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/providers/passage.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:hebrew_literacy_app/ui/widgets/read_screen/references_expansion_panel.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 
@@ -27,14 +28,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(userDataProvider);
-    ref.read(userVocabProvider);
-    ref.read(textDisplayProvider);
-  }
 
   String dropdownValue = DROPDOWN;
   final firstNameController = TextEditingController();
@@ -78,7 +71,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   )
                 
               ),
-            
+             ElevatedButton(
+              onPressed: () {
+                userData.clearData();
+                userVocab.clearData();
+                ref.read(passageDataProvider).resetData();
+              },
+              child: const Text('Clear User Data'),
+            ),
             SizedBox(height: 20,),
             Text("Current Level: ${READING_LEVELS[userData.user.readingLevel]}"),
             DropdownButton<String>(
@@ -107,7 +107,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       (k) => READING_LEVELS[k] == dropdownValue);
                     user.readingLevel = level;
                     user.save();
-                    userVocab.reInitializeVocab();
+                    userVocab.reinitializeVocab();
                     userVocab.load();
                 }
 
@@ -117,35 +117,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   style: TextStyle(color: Colors.blue, fontSize: 15),
                 ),
               ),
-              Text('verse'),
-              Checkbox(
-                value: textDisplay.verse,
-                onChanged: (bool? value) {
-                  setState(() {
-                    textDisplay.toggleVerse();
-                  });
-                },
-              ),
-              Text('clause'),
-              Checkbox(
-                // checkColor: Colors.white,
-                // fillColor: MaterialStateProperty.resolveWith(getColor),
-                value: textDisplay.clause,
-                onChanged: (bool? value) {
-                  setState(() {
-                    textDisplay.toggleClause();
-                  });
-                },
-              ),
-              Text('phrase'),
-              Checkbox(
-                value: textDisplay.phrase,
-                onChanged: (bool? value) {
-                  setState(() {
-                    textDisplay.togglePhrase();
-                  });
-                },
-              )
+              
             // User Settings
           ],
         ),
