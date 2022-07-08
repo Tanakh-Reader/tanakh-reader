@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/constants.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
 
 import 'package:hive/hive.dart';
@@ -65,7 +66,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       width: 250,
                       height: 150,
                       child: Column(children: [
-                        Text('Hebrew Literacy App', style: TextStyle(fontSize: 25),),
+                        Text(APP_NAME, style: TextStyle(fontSize: 25),),
                         SizedBox(height: 20,),
                         Icon(Icons.menu_book_rounded, size: 50,),
                       ])
@@ -152,9 +153,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 }
 
               },
+              
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(10),
+                backgroundColor: Colors.deepPurpleAccent),
               child: Text(
                 'Register',
-                style: TextStyle(color: Colors.blue, fontSize: 15),
+                style: TextStyle( fontSize: 15, color: Colors.white),
               ),
             ),
             // User Settings

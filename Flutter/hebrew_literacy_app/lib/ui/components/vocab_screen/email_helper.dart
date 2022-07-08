@@ -26,6 +26,10 @@ void exportVocab(ref) async {
   List<Lexeme> newExports = savedVocab.where(
     (lex) => !userVocab.isExported(lex)).toList();
 
+  if (newExports.isEmpty) {
+    return null;
+  }
+
   // final String directory = (await getApplicationSupportDirectory()).path;
   // final path = "$directory/vocabExport.csv";
   // final File file = File(path);
@@ -39,10 +43,30 @@ void exportVocab(ref) async {
   // await file.writeAsString(csv);
 
   String vocabString = "";
-  for (Lexeme vocab in newExports.sublist(0, newExports.length - 1)) {
-    vocabString += vocab.text! + ',' + vocab.gloss! + '|';
+  for (Lexeme vocab in newExports.sublist(0, newExports.length-1)) {
+    var defs = userVocab.getDefinitions(vocab);
+    var defText = '';
+    if (defs.isNotEmpty) {
+      for (var def in defs) {
+        defText += def + ';';
+      }
+    }
+    if (defText == '') {
+      defText += vocab.gloss!;
+    }
+    vocabString += vocab.text! + '`' + defText + '|';
   }
-  vocabString += newExports.last.text! + ',' + newExports.last.gloss!;
+  var defs = userVocab.getDefinitions(newExports.last);
+    var defText = '';
+    if (defs.isNotEmpty) {
+      for (var def in defs) {
+        defText += def + ';';
+      }
+    }
+    if (defText == '') {
+      defText += newExports.last.gloss!;
+    }
+  vocabString += newExports.last.text! + '`' + defText;
 
   final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
   final serviceId = "service_vt2l92h";

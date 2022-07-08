@@ -28,7 +28,7 @@ void main() async {
   // ChangeNotifierProvider is smart enough not to rebuild SomeModel unless absolutely 
   // is no longer needed."
   
-  runApp(MyAppInit());
+  runApp(ProviderScope(child: MyAppInit()));
 }
 
 class MyAppInit extends StatelessWidget {
@@ -43,7 +43,7 @@ class MyAppInit extends StatelessWidget {
         future: _initFuture,
         builder: (context, snapshot){
           if (snapshot.connectionState == ConnectionState.done){
-            return ProviderScope(child: MyApp());
+            return MyApp();
           } else {
             return SplashScreen();
           }

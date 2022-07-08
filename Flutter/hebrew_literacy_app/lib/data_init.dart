@@ -22,7 +22,7 @@ import 'data/providers/providers.dart';
 
 // Delete app from simulator: rm -rf build
 
-int PASSAGE_MODULE_SIZE = 50;
+int PASSAGE_MODULE_SIZE = 100;
 
 class Init {
   static Future initialize() async {
@@ -48,6 +48,7 @@ class Init {
   static _loadData() async {
     await Books.getBooks();
     await AllLexemes.loadAllLexemes();
+    PassageData().clearData();
     await PassageData().initializePassages(PASSAGE_MODULE_SIZE);
   }
 }

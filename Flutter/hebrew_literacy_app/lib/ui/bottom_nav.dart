@@ -49,8 +49,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar>
     //     child: 
         BottomNavigationBar(
           // Set the selection color of an item when tapped.
-          selectedItemColor: Theme.of(context)
-            .textSelectionTheme.selectionColor,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
+          // Theme.of(context)
+            // .textSelectionTheme.selectionColor,
           // Sets the current index of BottomNavigationBar.
           currentIndex: widget.tabManager.selectedTab,
           onTap: (index) {

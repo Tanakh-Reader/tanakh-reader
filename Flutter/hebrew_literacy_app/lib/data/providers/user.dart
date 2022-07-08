@@ -4,6 +4,8 @@ import 'package:hebrew_literacy_app/data/constants.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
 import 'package:hive/hive.dart';
 
+import '../database/user_data/passage.dart';
+import '../database/user_data/vocab.dart';
 import '../models/models.dart';
 import '../database/hebrew_bible_data/hb_db_helper.dart';
 
@@ -14,6 +16,8 @@ import '../database/user_data/user.dart';
 class UserData with ChangeNotifier {
   static final _boxName = 'user';
   var box = Hive.box<User>(_boxName);
+  var passageBox = Hive.box<Passage>('passage');
+  var vocabBox = Hive.box<Vocab>('vocab');
   bool loaded = false;
   
   /// Return true if the [Vocab] database is initialized.
@@ -55,7 +59,26 @@ class UserData with ChangeNotifier {
     notifyListeners();
   }
 
+  int get wordsRead {
+    final completedPassages = passageBox.values.where(
+      (p) => p.completed).toList();
+    if (completedPassages.isEmpty) {
+      return 0;
+    }
+    var sum = completedPassages.map(
+      (p) => p.wordCount).reduce((a, b) => a + b);
+    print(sum);
+    return sum;
+  }
+
+  int get wordsLearned {
+    final wordsLearned = vocabBox.values.where(
+      (lex) => lex.status == VocabStatus.known && lex.userUpdated == true);
+    return wordsLearned.length;
+  }
+
 }
+
 
 final userDataProvider = ChangeNotifierProvider<UserData>((ref) {
   return UserData();

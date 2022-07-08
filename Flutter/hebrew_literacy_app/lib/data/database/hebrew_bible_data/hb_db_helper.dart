@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'dart:collection';
 
 import '../../constants.dart';
 import '../../models/models.dart';
@@ -187,6 +188,77 @@ class HebrewDatabaseHelper {
     print('getAllWords: ${stopwatch.elapsed} to query');
     return words.map((json) => Word.fromJson(json)).toList();
   }
+
+  // 426,584 rows in the database.
+  int MAX_DB_ROW = 426584;
+  // Query 50,000 rows per iteration.
+  int ITER_SIZE = 50000;
+  // Sequence over each query, 500 words at a time.
+  int SEQ_SIZE = 500;
+  // Take a set of lexeme Ids and return the word node, n, such that
+  // n to n + SEQ_SIZE contains the maximum lexeme overlap with savedLexIds.
+  Future<int> getLexIdsMatch(Set<int> savedLexIds) async {
+    final stopwatch = Stopwatch()..start();
+    final db = await database;
+    // Map a word node, n, to the count of savedLexId occurrences that occur
+    // from n to n + SEQ_SIZE.
+    Map<int, int> seqSavedLexIdCounts = {};
+    // The inclusive upper and lower boundary of a database query. 
+    int lower = 1;
+    int upper = ITER_SIZE;
+    // Query the database in ITER_SIZE batches. 
+    while (lower <= MAX_DB_ROW) {
+      // The database query.
+      List<Map<String, Object?>> lexIdsSeq = await db.query(
+        WordConstants.table, 
+        columns: [WordConstants.lexId],
+        where: "${WordConstants.wordId} >= ? AND ${WordConstants.wordId} <= ?",
+        whereArgs: [lower, upper],
+        orderBy: "${WordConstants.wordId} ASC");
+
+      print('getLexIds: ${stopwatch.elapsed} to query');
+
+      // Iterate over the query, counting savedLexId occurrences
+      // per SEQ_SIZE sequence.
+      int wordId = lower;
+      int j = 0;
+      seqSavedLexIdCounts[wordId] = 0;
+      while (j < lexIdsSeq.length) {
+        // SEQ_SIZE iterations are complete.
+        if ((j + lower) - wordId == SEQ_SIZE) {
+          // Remove the previous sequence if there were no
+          // savedLexId occurrences.
+          if (seqSavedLexIdCounts[wordId] == 0) {
+            seqSavedLexIdCounts.remove(wordId);
+          }
+          // Increment the wordId and initialize its count.
+          wordId += SEQ_SIZE;
+          seqSavedLexIdCounts[wordId] = 0;
+        }
+        // Update the count of savedLexId occurrences for the current sequence
+        // if the current lexeme is in savedLexIds.
+        if (savedLexIds.contains(lexIdsSeq[j][WordConstants.lexId])) {
+          seqSavedLexIdCounts[wordId] = seqSavedLexIdCounts[wordId]! + 1;
+        }
+        j += 1;
+      }
+      // Increment the upper and lower bounds. 
+      lower += ITER_SIZE;
+      upper += ITER_SIZE;
+      
+    }
+    // Sort the seqSavedLexIdCounts from highest to lowest savedLexId occurrences.
+    var sortedKeys = seqSavedLexIdCounts.keys.toList(growable:false)
+    ..sort((k1, k2) => seqSavedLexIdCounts[k2]!.compareTo(seqSavedLexIdCounts[k1]!));
+    LinkedHashMap sortedMap = new LinkedHashMap
+      .fromIterable(sortedKeys, key: (k) => k, value: (k) => seqSavedLexIdCounts[k]);
+
+    print(sortedMap);
+    // Return the nodeId that begins the SEQ_SIZE word sequence containing the highest
+    // lexical overlap with savedLexIds.
+    return sortedMap.keys.first;
+  }
+
 
 
   // Interacting with other DB tables

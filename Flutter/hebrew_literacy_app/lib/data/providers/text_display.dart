@@ -28,11 +28,15 @@ class TxtTheme {
 }
 
 class TextDisplay with ChangeNotifier{
-  bool paragraph = true;
+  bool paragraph = false;
   bool verse = true;
   bool clause = false;
   bool phrase = false;
 
+  void toggleParagraph() {
+    paragraph = !paragraph;
+    notifyListeners();
+  }
   void toggleVerse() {
     verse = !verse;
     notifyListeners();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hebrew_literacy_app/data/providers/passage.dart';
 import 'package:hebrew_literacy_app/data/providers/providers.dart';
+import 'package:hebrew_literacy_app/ui/components/read_screen/completion_button.dart';
 import 'package:hebrew_literacy_app/ui/components/read_screen/word_expansion_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
@@ -23,12 +25,13 @@ class PassageDisplay extends ConsumerWidget {
 
     // If HebrewPassage.words is populated, generate a TextSpan
     // with all of the words -- otherwise display a message.
-    final _hebrewPassage = ref.watch(hebrewPassageProvider);
-    bool isChapter = _hebrewPassage.isChapter;
+    final hebrewPassage = ref.watch(hebrewPassageProvider);
+    final passageData = ref.read(passageDataProvider);
+    bool isChapter = hebrewPassage.isChapter;
     /// TODO REMOVE!
     return Column(
       children: [
-        SizedBox(height: 65,),
+        SizedBox(height: 80,),
         Expanded(
           child: SingleChildScrollView(
             
@@ -47,11 +50,8 @@ class PassageDisplay extends ConsumerWidget {
                     ),
                     textDirection: TextDirection.rtl,
                   ),
-                  TextButton(
-                    onPressed: () {
-
-                    },
-                    child: Text("Completed"),),
+                  CompletionButton(passage: hebrewPassage.passage),
+                  SizedBox(height: 20,)
                 ]
                 : [
                   RichText(
@@ -82,7 +82,7 @@ class PassageDisplay extends ConsumerWidget {
     List<Word> words = hebrewPassage.words;
     // List to keep track of words that are joined, such as וְלַחֹ֖שֶׁךְ
     List<Word> joinedWords = [];
-    // int curParagraph 
+    int curParagraph = -1;
     int curVerse = -1; //words.first.vsIdBHS!;
     // int curSentence
     int curClause = -1; 
@@ -94,12 +94,21 @@ class PassageDisplay extends ConsumerWidget {
     for (var i = 0; i < words.length; i++) {
       // The current word.
       var word = words[i];
+      bool newParagraph = false;
       bool newVerse = false;
       bool newClause = false;
       bool newPhrase = false;
+      // Add paragraph divisions.
+      if (textDisplay.paragraph && word.parMarker != null) {
+        if (curParagraph != -1) {
+          hebrewPassageTextSpans.add(newLine);
+          hebrewPassageTextSpans.add(newLine);
+        }
+        curParagraph +=1;
+      }
       // Add verse divisions. 
       if (textDisplay.verse && word.vsBHS != curVerse) {
-        if (curVerse != -1) {
+        if (curVerse != -1 && !newParagraph) {
           hebrewPassageTextSpans.add(newLine);
         }
         newVerse = true;

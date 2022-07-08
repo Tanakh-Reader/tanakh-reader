@@ -7,10 +7,8 @@ import 'package:hebrew_literacy_app/data/providers/providers.dart';
 import 'package:hebrew_literacy_app/ui/screens/passages_screen.dart';
 import 'package:path/path.dart';
 
-import 'word_info_panel/word_info_panel.dart';
-import '../../../data/database/hebrew_bible_data/hb_db_helper.dart';
-import '../../../data/models/models.dart';
-import '../../../data/models/word.dart';
+import 'text_groupings.dart';
+
 
 // TODO
 // Use https://pub.dev/packages/expandable to make a better expansionPanel
@@ -30,20 +28,20 @@ class MyTheme {
 
 /// Used to display word information when a word is selected.
 /// Takes a [context] and [ref] and returns [showModalBottomSheet]
-wordPanelSheet(context) => showModalBottomSheet(
+textSettingsPanelSheet(context) => showModalBottomSheet(
       context: context,
       isDismissible: true,
       backgroundColor: Colors.transparent,
       constraints: BoxConstraints(
           // The view can be scrolled up to maxHeight.
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxHeight: MediaQuery.of(context).size.height * 0.6,
           // Exits when the screen is less then minHeight.
           minHeight: MediaQuery.of(context).size.width * 0.2),
       isScrollControlled: true,
       elevation: 0,
       useRootNavigator: true,
       builder: (context) {
-        return SelectedWordDisplay();
+        return TextSettingsDisplay();
       },
     );
 
@@ -56,25 +54,18 @@ Widget makeDismissible({required Widget child, required context}) => GestureDete
 );
 
 /// Used to construct the view of [wordPanelSheet].
-class SelectedWordDisplay extends ConsumerWidget {
+class TextSettingsDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     // Declare providers.
     final hebrewPassage = ref.watch(hebrewPassageProvider);
-    final userVocab = ref.watch(userVocabProvider);
-    // final passageData = ref.read(passageDataProvider);
-    // TODO -- this is just a hacky solution to prevent the
-    // null check error at final lex.
-    if (!hebrewPassage.hasSelection) {
-      return Container();
-    }
+    final textDisplay = ref.watch(textDisplayProvider);
 
     return makeDismissible(
       context: context,
       child: GestureDetector(
-        child: Column(
-            children: [
-              Expanded(
+            // child:
+              // (
                 // Content can be scrolled to the full height of ModalBottomSheet.
                 // This is the main visible data displayed for a selected word.
                 child: DraggableScrollableSheet(
@@ -109,14 +100,10 @@ class SelectedWordDisplay extends ConsumerWidget {
                                             Radius.circular(15))),
                                   ),
                                   // Word summary
-                                  WordDisplay(),
+                                  TextGroupings(),
                                   Container(height: 1, color: MyTheme.lineColor),
-                                  ExamplesTile(),
-                                  Container(height: 1, color: MyTheme.lineColor),
-                                  TranslationTile(),
-                                  Container(height: 1, color: MyTheme.lineColor),
-                                  StrongsTile(),
-                                  Container(height: 1, color: MyTheme.lineColor),
+                                  
+                                  
                                 ],
                               ),
                               // Button to exit.
@@ -133,12 +120,8 @@ class SelectedWordDisplay extends ConsumerWidget {
                           ),
                       );
                     }),
-              ),
-              Container(height: 1, color: Colors.grey[700]),
-              SaveWordTile()
-            ],
           ),
-        ),
+        // ),
     );
   }
 }

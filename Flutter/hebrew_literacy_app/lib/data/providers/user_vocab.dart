@@ -20,6 +20,17 @@ Map<ReadingLevel, int> LEX_MAP = {
   ReadingLevel.expert: 30 // 1162 lexemes
 };
 
+/// Used for adding words to the dictinary. 
+class TextItem {
+  int id;
+  String text;
+
+  TextItem({
+    required this.id,
+    required this.text
+  });
+}
+
 /// A provider for the Hive [Vocab] database. 
 /// This allows the app to dynamically track user vocabulary
 /// and to rebuild specified widgets when vocab data updates. 
@@ -27,6 +38,7 @@ class UserVocab with ChangeNotifier {
   static final _boxName = 'vocab';
   var vocabBox = Hive.box<Vocab>(_boxName);
   bool loaded = false;
+
   
   /// Return true if the [Vocab] database is initialized.
   get isInitialized {
@@ -216,10 +228,15 @@ class UserVocab with ChangeNotifier {
     _vocab.save();
   }
 
-  void addDefinitions(Lexeme lex, List<String> definitions) {
+  Future<void> addDefinitions(Lexeme lex, List<String> definitions) async {
     var _vocab = vocabBox.get(lex.id!);
     _vocab!.definitions += definitions;
     _vocab.save();
+  }
+
+  List<String> getDefinitions(Lexeme lex) {
+    var _vocab = vocabBox.get(lex.id!);
+    return _vocab!.definitions;
   }
 
   void addWordInstanceIds(Lexeme lex, List<int> wordInstanceIds) {

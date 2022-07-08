@@ -90,7 +90,7 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
     var passageData = ref.read(passageDataProvider);
     var vocab = userVocab.knownVocab;
     if (!showWidget) {
-      _loadPassages(passageData.passages);
+      _loadPassages(passageData.getPassages());
     }
     return SizedBox(
       // height: 420,
@@ -110,15 +110,7 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
             child: ListView.separated(
               itemCount: passageCards.length,
               itemBuilder: (context, index) {
-                return 
-                // Consumer(
-                //   builder: ((context, ref, child) {
-                    
-                //   }
-                    
-                // );
-                completedPassageWrapper(
-                  passageCards[index]);
+                return passageCards[index];
               },
               separatorBuilder: (context, index) {
                 return SizedBox(height: 10);
@@ -132,20 +124,6 @@ class _DisplayPassagesState extends ConsumerState<DisplayPassages> {
     );
   }
 
-  Widget completedPassageWrapper(Widget child) {
-    return Stack(
-      children: [
-        child, 
-        Align( 
-          alignment: Alignment.topLeft,
-          child: Padding( 
-            padding: EdgeInsets.fromLTRB(24, 16, 16, 16),
-            child: FaIcon(FontAwesomeIcons.check, color: Colors.greenAccent,),
-          ),
-        )
-      ]
-    );
-  }
 }
 
 

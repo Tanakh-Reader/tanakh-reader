@@ -20,7 +20,7 @@ wordPanelSheet(context) => showModalBottomSheet(
   builder: (context) {
     return FractionallySizedBox(
       // TODO CHANGE!
-      heightFactor: 0.4,
+      heightFactor: 0.8,
       // widthFactor: Responsive.isTablet(context) ? 0.75 : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -133,7 +133,7 @@ class ReferencesExpansionPanel extends ConsumerWidget {
         builder: (context) {
           return FractionallySizedBox(
             // TODO CHANGE!
-            heightFactor: 0.6,
+            heightFactor: 0.85,
             // widthFactor: Responsive.isTablet(context) ? 0.75 : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

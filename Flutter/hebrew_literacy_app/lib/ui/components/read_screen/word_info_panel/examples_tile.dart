@@ -44,7 +44,13 @@ class _ExamplesTileState extends ConsumerState<ExamplesTile> {
                   future: examplesData,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Align(alignment: Alignment.bottomCenter, child: CircularProgressIndicator());
+                      return Padding(
+                        padding: EdgeInsets.only(top: 40),
+                        child: Align(
+                          alignment: Alignment.center, 
+                          child: CircularProgressIndicator()
+                          ),
+                      );
                     } else if (snapshot.hasData) {
                       return RichText(
                         text: _buildExamplesText(
