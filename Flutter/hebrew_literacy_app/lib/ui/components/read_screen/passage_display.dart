@@ -230,6 +230,7 @@ class PassageDisplay extends ConsumerWidget {
       style:TxtTheme.hebrewStyle.copyWith(
         color: wordColor,
         fontWeight: weight,
+        backgroundColor: hebrewPassage.temp && userVocab.isSaved(lex) && hebrewPassage.isChapter ? Colors.purple[900] : null
       ),
       recognizer: TapGestureRecognizer()
       ..onTap = () async {

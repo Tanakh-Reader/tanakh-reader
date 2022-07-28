@@ -23,6 +23,8 @@ class HebrewPassage with ChangeNotifier {
   List<Phrase> _phrases = [];
   Book? _book;
   Passage? _passage;
+  // TODO -- temp / remove this.
+  bool temp = false;
   bool hasSelection = false;
   bool isChapter = true;
 

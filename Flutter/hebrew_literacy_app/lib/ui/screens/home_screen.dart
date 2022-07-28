@@ -44,11 +44,18 @@ class HomeScreen extends ConsumerWidget {
         
         children: [
           SizedBox(height: 30,),
+          // COOL FUNCTION!
+          if (userVocab.savedVocab.length > 4) 
           TextButton(onPressed: () async {
-            int startNode = await HebrewDatabaseHelper().getLexIdsMatch(userVocab.savedVocab.toSet());
-            hebrewPassage.getPassageWordsById(startNode, startNode + 500);
-          },
-          child: Text("Cool Secret Button ;)")),
+              int startNode = await HebrewDatabaseHelper().getLexIdsMatch(userVocab.savedVocab.toSet());
+              hebrewPassage.getPassageWordsById(startNode, startNode + 500);
+              hebrewPassage.temp = true;
+              hebrewPassage.isChapter = true;
+              ref.read(tabManagerProvider).goToTab(Screens.read);
+            },
+            child: Text("Generate Passage")
+          ),
+          
           Center(child: 
           Text(welcomeText,
                     style: Theme.of(context).textTheme.headline5, 

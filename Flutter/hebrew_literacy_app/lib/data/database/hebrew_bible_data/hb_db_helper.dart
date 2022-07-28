@@ -194,7 +194,7 @@ class HebrewDatabaseHelper {
   // Query 50,000 rows per iteration.
   int ITER_SIZE = 50000;
   // Sequence over each query, 500 words at a time.
-  int SEQ_SIZE = 500;
+  int SEQ_SIZE = 300;
   // Take a set of lexeme Ids and return the word node, n, such that
   // n to n + SEQ_SIZE contains the maximum lexeme overlap with savedLexIds.
   Future<int> getLexIdsMatch(Set<int> savedLexIds) async {
