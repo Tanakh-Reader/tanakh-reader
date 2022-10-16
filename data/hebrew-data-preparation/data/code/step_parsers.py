@@ -72,7 +72,6 @@ class StepBibleHebrewDataProcessor:
 
         return save_path
 
-
     def write_corpora_data_formatted(self, with_qere:bool=False):
 
         rows = []   
