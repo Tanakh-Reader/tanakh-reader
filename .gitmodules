@@ -1,6 +1,0 @@
-[submodule "data_code/Hebrew Data/sources/STEPBible/step"]
-	path = data_code/Hebrew Data/sources/STEPBible/step
-	url = https://github.com/STEPBible/step
-[submodule "data_code/Hebrew Data/sources/STEPBible/STEPBible-Data"]
-	path = data_code/Hebrew Data/sources/STEPBible/STEPBible-Data
-	url = https://github.com/STEPBible/STEPBible-Data.git
