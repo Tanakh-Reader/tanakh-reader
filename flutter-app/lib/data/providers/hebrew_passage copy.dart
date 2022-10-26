@@ -2,8 +2,8 @@
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:hebrew_literacy_app/data/constants.dart';
-// import 'package:hebrew_literacy_app/data/providers/providers.dart';
+// import 'package:tanakhreader/data/constants.dart';
+// import 'package:tanakhreader/data/providers/providers.dart';
 
 // import '../models/models.dart';
 // import '../database/hb_db_helper.dart';

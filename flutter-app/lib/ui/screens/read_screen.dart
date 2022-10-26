@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
+import 'package:tanakhreader/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:provider/provider.dart';
 
 import '../components/read_screen/read_screen.dart';

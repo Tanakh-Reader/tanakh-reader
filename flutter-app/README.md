@@ -1,4 +1,4 @@
-# hebrew_literacy_app
+# tanakhreader
 
 A new Flutter project.
 

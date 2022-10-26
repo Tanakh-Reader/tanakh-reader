@@ -1,0 +1,7 @@
+# For ios
+
+sudo gem install -n /usr/local/bin cocoapods -v 1.8.4
+sudo gem install -n /usr/local/bin cocoapods -v 1.10.0
+
+# to update dependencies (in ios folder)
+pod install --repo-update 

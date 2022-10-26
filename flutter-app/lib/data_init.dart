@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/data/database/user_data/passage.dart';
-import 'package:hebrew_literacy_app/data/database/user_data/settings.dart';
-import 'package:hebrew_literacy_app/data/providers/passage.dart';
+import 'package:tanakhreader/data/database/user_data/passage.dart';
+import 'package:tanakhreader/data/database/user_data/settings.dart';
+import 'package:tanakhreader/data/providers/passage.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -48,7 +48,7 @@ class Init {
   static _loadData() async {
     await Books.getBooks();
     await AllLexemes.loadAllLexemes();
-    PassageData().clearData();
+    // PassageData().clearData();
     await PassageData().initializePassages(PASSAGE_MODULE_SIZE);
   }
 }

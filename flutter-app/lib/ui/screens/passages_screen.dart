@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hebrew_literacy_app/data/providers/user.dart';
-import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
-import 'package:hebrew_literacy_app/ui/screens/screens.dart';
-import 'package:hebrew_literacy_app/ui/components/read_screen/references_expansion_panel.dart';
+import 'package:tanakhreader/data/providers/user.dart';
+import 'package:tanakhreader/ui/screens/register_screen.dart';
+import 'package:tanakhreader/ui/screens/screens.dart';
+import 'package:tanakhreader/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart' as pro;
 

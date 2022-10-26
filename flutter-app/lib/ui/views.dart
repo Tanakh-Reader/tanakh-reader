@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/ui/screens/screens.dart';
+import 'package:tanakhreader/ui/screens/screens.dart';
 
 
 import 'bottom_nav.dart';
@@ -14,7 +14,7 @@ class Views extends ConsumerWidget {
     ReadScreen(),
     VocabScreen(),
     PassagesScreen(),
-    ProfileScreen(),
+    // ProfileScreen(),
   ];
 
   @override

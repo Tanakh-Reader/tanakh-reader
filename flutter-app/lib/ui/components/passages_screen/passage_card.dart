@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/data/providers/passage.dart';
-import 'package:hebrew_literacy_app/data/providers/user.dart';
+import 'package:tanakhreader/data/providers/passage.dart';
+import 'package:tanakhreader/data/providers/user.dart';
 
 import '../../../data/constants.dart';
 import '../../../data/database/user_data/passage.dart';

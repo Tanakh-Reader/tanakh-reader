@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/data/constants.dart';
+import 'package:tanakhreader/data/constants.dart';
 
 import '../database/user_data/passage.dart';
 import '../models/models.dart';

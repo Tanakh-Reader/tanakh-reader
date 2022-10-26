@@ -1,6 +1,6 @@
 {
-    "name": "hebrew_literacy_app",
-    "short_name": "hebrew_literacy_app",
+    "name": "tanakhreader",
+    "short_name": "tanakhreader",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/data/providers/user.dart';
-import 'package:hebrew_literacy_app/ui/screens/register_screen.dart';
+import 'package:tanakhreader/data/providers/user.dart';
+import 'package:tanakhreader/ui/screens/register_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +11,7 @@ import 'ui/screens/screens.dart';
 import 'data/providers/providers.dart';
 import 'ui/views.dart';
 import 'data/database/user_data/user.dart';
+import 'ui/screens/sign_in_screen.dart';
 
 
 class MyApp extends ConsumerWidget {
@@ -26,9 +27,10 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(
-            child: userData.isInitialized
-              ? Views()
-              : RegisterScreen()
+            child: SignInScreen()
+            // userData.isInitialized
+            //   ? Views()
+            //   : RegisterScreen()
           ),
         ),
         routes: {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/data/database/user_data/passage.dart';
-import 'package:hebrew_literacy_app/data/database/user_data/settings.dart';
-import 'package:hebrew_literacy_app/data/providers/passage.dart';
+import 'package:tanakhreader/data/database/user_data/passage.dart';
+import 'package:tanakhreader/data/database/user_data/settings.dart';
+import 'package:tanakhreader/data/providers/passage.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -21,6 +21,8 @@ import 'splash_screen.dart';
 
 // https://www.optisolbusiness.com/insight/flutter-offline-storage-using-hive-database
 
+// TODO : implement https://api.flutter.dev/flutter/foundation/kIsWeb-constant.html
+// for managing web vs app deployment. 
 void main() async { 
 
   // ** RiverPod treats Models like Singeltons: https://docs.flutter.dev/development/data-and-backend/state-mgmt/simple

@@ -1,4 +1,4 @@
-package com.example.hebrew_literacy_app
+package com.tanakhreader
 
 import io.flutter.embedding.android.FlutterActivity
 

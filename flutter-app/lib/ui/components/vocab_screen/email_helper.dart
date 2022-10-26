@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:hebrew_literacy_app/data/providers/providers.dart';
-import 'package:hebrew_literacy_app/data/providers/user.dart';
+import 'package:tanakhreader/data/providers/providers.dart';
+import 'package:tanakhreader/data/providers/user.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 // import 'package:flutter_email_sender/flutter_email_sender.dart';

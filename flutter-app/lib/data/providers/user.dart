@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hebrew_literacy_app/data/constants.dart';
-import 'package:hebrew_literacy_app/data/providers/providers.dart';
+import 'package:tanakhreader/data/constants.dart';
+import 'package:tanakhreader/data/providers/providers.dart';
 import 'package:hive/hive.dart';
 
 import '../database/user_data/passage.dart';
