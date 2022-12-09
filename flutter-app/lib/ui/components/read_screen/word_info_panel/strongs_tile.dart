@@ -4,6 +4,7 @@ import 'package:tanakhreader/data/constants.dart';
 import 'package:tanakhreader/data/providers/providers.dart';
 
 import '../../../../data/models/strongs.dart';
+import '../../../../theme.dart';
 import '../word_expansion_panel.dart';
 
 

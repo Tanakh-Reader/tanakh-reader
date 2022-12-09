@@ -12,6 +12,7 @@ import 'data/providers/providers.dart';
 import 'ui/views.dart';
 import 'data/database/user_data/user.dart';
 import 'ui/screens/sign_in_screen.dart';
+import 'utils/authentication.dart';
 
 
 class MyApp extends ConsumerWidget {
@@ -27,7 +28,21 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(
-            child: SignInScreen()
+            child: FutureBuilder(
+                future: AuthService.initializeFirebaseUser(context: context),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error initializing Firebase');
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    return SignInScreen();
+                  }
+                  return CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      CustomColors.firebaseOrange,
+                    ),
+                  );
+                },
+              ),
             // userData.isInitialized
             //   ? Views()
             //   : RegisterScreen()

@@ -7,6 +7,7 @@ import 'package:tanakhreader/data/providers/providers.dart';
 import 'package:tanakhreader/ui/screens/passages_screen.dart';
 import 'package:path/path.dart';
 
+import '../../../theme.dart';
 import 'word_info_panel/word_info_panel.dart';
 import '../../../data/database/hebrew_bible_data/hb_db_helper.dart';
 import '../../../data/models/models.dart';
@@ -14,14 +15,6 @@ import '../../../data/models/word.dart';
 
 // TODO
 // Use https://pub.dev/packages/expandable to make a better expansionPanel
-
-class MyTheme {
-  static final bgColor = Colors.grey[850];
-  static final lineColor = Colors.grey[800];
-  static final greyText = Colors.grey[400];
-  static final textStyle = TextStyle(color: greyText);
-  static final selectedTileText = Colors.white;
-}
 
 // TODO
 // Make the panelSheet go from .4 size to .8 size on drag rather than

@@ -5,7 +5,7 @@ import 'package:tanakhreader/data/providers/providers.dart';
 import 'package:tanakhreader/ui/components/read_screen/references_expansion_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
-import 'package:tanakhreader/ui/screens/sign_in_screen.dart';
+import 'package:tanakhreader/ui/screens/registration/sign_in_screen.dart';
 import 'package:tanakhreader/utils/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
@@ -151,7 +151,8 @@ class CustomColors {
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({Key? key, required auth.User user})
-      : _user = user,
+      : 
+      _user = user,
         super(key: key);
 
   final auth.User _user;
@@ -245,13 +246,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 ),
               ),
               SizedBox(height: 8.0),
-              Text(
-                _user.displayName!,
-                style: TextStyle(
-                  color: CustomColors.firebaseYellow,
-                  fontSize: 26,
-                ),
-              ),
+              // Text(
+              //   _user.displayName!,
+              //   style: TextStyle(
+              //     color: CustomColors.firebaseYellow,
+              //     fontSize: 26,
+              //   ),
+              // ),
               SizedBox(height: 8.0),
               Text(
                 '( ${_user.email!} )',
@@ -289,7 +290,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         setState(() {
                           _isSigningOut = true;
                         });
-                        await Authentication.signOut(context: context);
+                        await AuthService.signOut(context: context);
                         setState(() {
                           _isSigningOut = false;
                         });

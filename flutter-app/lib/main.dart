@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tanakhreader/data/database/user_data/passage.dart';
@@ -29,7 +30,19 @@ void main() async {
   // "Note that we’re defining a builder that creates a new instance of SomeModel. 
   // ChangeNotifierProvider is smart enough not to rebuild SomeModel unless absolutely 
   // is no longer needed."
-  
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: 
+    const FirebaseOptions(
+      apiKey: "AIzaSyCNkGaA71NVsDb0TY_-1VvgG4IX3cKoy8M",
+      authDomain: "tanakh-reader.firebaseapp.com",
+      databaseURL: "https://tanakh-reader-default-rtdb.firebaseio.com",
+      projectId: "tanakh-reader",
+      storageBucket: "tanakh-reader.appspot.com",
+      messagingSenderId: "797493748621",
+      appId: "1:797493748621:web:ae6644e1e32edf52b453c4",
+      measurementId: "G-87LVD3ECEE"
+    ));
+
   runApp(ProviderScope(child: MyAppInit()));
 }
 

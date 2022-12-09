@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tanakhreader/data/providers/providers.dart';
 
 import '../../../../data/models/strongs.dart';
+import '../../../../theme.dart';
 import '../word_expansion_panel.dart';
 
 

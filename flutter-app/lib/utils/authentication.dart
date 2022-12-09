@@ -6,10 +6,20 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../ui/screens/profile_screen.dart';
 
-// https://medium.com/flutter-community/flutter-implementing-google-sign-in-71888bca24ed
-class Authentication {
+class LoginUser {
+  final String? email;
+  final String? password;
 
-  static Future<FirebaseApp> initializeFirebase({
+  LoginUser({this.email, this.password});
+}
+
+// https://medium.com/flutter-community/flutter-implementing-google-sign-in-71888bca24ed
+class AuthService {
+
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static Future<FirebaseApp> initializeFirebaseUser({
     required BuildContext context,
   }) async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
@@ -29,6 +39,39 @@ class Authentication {
     return firebaseApp;
   }
 
+  Future signInEmailPassword(LoginUser _login) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _login.email.toString(),
+              password: _login.password.toString()
+              );
+      User? user = userCredential.user;
+      return user;
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      // return FirebaseUser(code: e.code, uid: null);
+    }
+  }
+
+  Future registerEmailPassword(LoginUser _login) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _login.email.toString(),
+              password: _login.password.toString());
+      User? user = userCredential.user;
+      return user;
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      // return FirebaseUser(code: e.code, uid: null);
+    } catch (e) {
+      print(e);
+
+      // return FirebaseUser(code: e.toString(), uid: null);
+    }
+  }
+
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -46,7 +89,12 @@ class Authentication {
       }
     }
 
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: "797493748621-e7g85igokd0vpqnav2ur71rqsrn675u7.apps.googleusercontent.com",
+      // scopes: [
+      //   sc.SearchConsoleApi.webmastersReadonlyScope,
+      // ]
+      );
 
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
@@ -69,14 +117,14 @@ class Authentication {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           ScaffoldMessenger.of(context).showSnackBar(
-            Authentication.customSnackBar(
+            AuthService.customSnackBar(
               content:
                   'The account already exists with a different credential',
             ),
           );
         } else if (e.code == 'invalid-credential') {
           ScaffoldMessenger.of(context).showSnackBar(
-            Authentication.customSnackBar(
+            AuthService.customSnackBar(
               content:
                   'Error occurred while accessing credentials. Try again.',
             ),
@@ -84,7 +132,7 @@ class Authentication {
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          Authentication.customSnackBar(
+          AuthService.customSnackBar(
             content: 'Error occurred using Google Sign In. Try again.',
           ),
         );
@@ -104,7 +152,7 @@ class Authentication {
       await FirebaseAuth.instance.signOut();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        Authentication.customSnackBar(
+        AuthService.customSnackBar(
           content: 'Error signing out. Try again.',
         ),
       );
