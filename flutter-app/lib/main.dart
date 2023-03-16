@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tanakhreader/data/database/user_data/passage.dart';
@@ -17,6 +18,9 @@ import 'data/models/models.dart';
 
 import 'data/providers/providers.dart';
 import 'splash_screen.dart';
+
+// TODO -- firebase dependencies:
+// https://firebase.google.com/docs/flutter/setup?platform=ios
 
 //https://bettercoding.dev/flutter/initialization-splash/
 

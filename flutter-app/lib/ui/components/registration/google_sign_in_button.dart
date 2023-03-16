@@ -5,6 +5,7 @@ import 'package:tanakhreader/constants.dart';
 import 'package:tanakhreader/utils/authentication.dart';
 
 import '../../screens/profile_screen.dart';
+import '../../views.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   @override
@@ -38,9 +39,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 if (user != null) {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => UserInfoScreen(
-                        user: user,
-                      ),
+                      builder: (context) => Views(),
+                      // UserInfoScreen(
+                      //   user: user,
+                      // ),
                     ),
                   );
                 }

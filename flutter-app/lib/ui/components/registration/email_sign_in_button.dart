@@ -1,7 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tanakhreader/ui/components/registration/sign_in_fields.dart';
+import 'package:tanakhreader/ui/components/registration/registration_fields.dart';
 import 'package:tanakhreader/ui/screens/screens.dart';
 import 'package:tanakhreader/utils/authentication.dart';
 

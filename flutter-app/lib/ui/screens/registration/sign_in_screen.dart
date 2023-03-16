@@ -2,7 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tanakhreader/ui/components/registration/email_sign_in_button.dart';
-import 'package:tanakhreader/ui/components/registration/sign_in_fields.dart';
+import 'package:tanakhreader/ui/components/registration/registration_fields.dart';
 import 'package:tanakhreader/ui/screens/screens.dart';
 import 'package:tanakhreader/utils/authentication.dart';
 
@@ -11,15 +11,33 @@ import '../profile_screen.dart';
 import 'registration_screen.dart';
 
 class SignInScreen extends StatefulWidget {
+
+  const SignInScreen({
+    Key? key,
+    TextEditingController? email,
+    }) 
+    : 
+    email = email,
+    super(key: key);
+
+  final TextEditingController? email;
+
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
 
-    bool _obscureText = true;
+  @override
+  void initState() {
 
-  final _email = TextEditingController();
+    _email = widget.email ?? TextEditingController();
+    super.initState();
+  }
+
+  bool _obscureText = true;
+
+  late TextEditingController _email;
   final _password = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // final AuthService _auth = AuthService();
@@ -57,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
           
-                  EmailField(email: _email),
+                  PhoneNumberField(phoneNumber: _email),
                   const SizedBox(height: 25.0),
                   PasswordField(password: _password),
                   txtbutton,

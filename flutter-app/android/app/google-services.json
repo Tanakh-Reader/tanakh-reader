@@ -30,6 +30,13 @@
             {
               "client_id": "797493748621-e7g85igokd0vpqnav2ur71rqsrn675u7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "797493748621-3n97r4buadqcugjq1bp2lmq2gbk61b46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hebrewLiteracyApp"
+              }
             }
           ]
         }

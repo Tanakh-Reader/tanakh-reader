@@ -22,6 +22,7 @@ class FirstNameField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
         controller: _firstName,
+        autofillHints: const [AutofillHints.name],
         autofocus: false,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
@@ -35,6 +36,69 @@ class FirstNameField extends StatelessWidget {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
   }
 }
+
+
+class LastNameField extends StatelessWidget {
+
+  const LastNameField({
+    Key? key,
+    required TextEditingController lastName
+    }) 
+    : 
+    _lastName = lastName,
+    super(key: key);
+
+  final TextEditingController _lastName;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        controller: _lastName,
+        autofillHints: const [AutofillHints.familyName],
+        autofocus: false,
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'This field is required';
+          }
+        },
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: "First Name",
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+  }
+}
+
+// TODO : https://pub.dev/packages/intl_phone_number_input/example
+class PhoneNumberField extends StatelessWidget {
+
+  const PhoneNumberField({
+    Key? key,
+    required TextEditingController phoneNumber
+    }) 
+    : 
+    _phoneNumber = phoneNumber,
+    super(key: key);
+
+  final TextEditingController _phoneNumber;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        controller: _phoneNumber,
+        autofillHints: const [AutofillHints.telephoneNumber],
+        autofocus: false,
+        validator: (value) {
+        //  ...
+        },
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: "Phone",
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
+  }
+}
+
 
 class EmailField extends StatelessWidget {
 
@@ -52,6 +116,7 @@ class EmailField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
         controller: _email,
+        autofillHints: const [AutofillHints.email],
         autofocus: false,
         validator: (value) {
           if (value != null) {
@@ -68,6 +133,7 @@ class EmailField extends StatelessWidget {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
   }
 }
+
 
 class PasswordField extends StatefulWidget {
   const PasswordField({
@@ -94,6 +160,7 @@ class _PasswordFieldState extends State<PasswordField> {
     return TextFormField(
         obscureText: _obscureText,
         controller: widget._password,
+        autofillHints: const [AutofillHints.password],
         autofocus: false,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
