@@ -81,10 +81,10 @@
 Imagine being able to read the Hebrew Bible while tracking your progress and saving vocabulary. 
 
 
-The inspiration for this project is [Linga](https://linga.io/) meets [A Readers Hebrew Bible](https://zondervanacademic.com/products/a-readers-hebrew-bible)
+The inspiration for this project is [Linga](https://linga.io/) meets [A Readers Hebrew Bible](https://zondervanacademic.com/products/a-readers-hebrew-bible).
 
 
-I explain my research and development in depth in a video presentation [here](https://www.youtube.com/watch?v=gt2N4Bj_E4Y)
+I explain my research and development in depth in a video presentation [here](https://www.youtube.com/watch?v=gt2N4Bj_E4Y).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
