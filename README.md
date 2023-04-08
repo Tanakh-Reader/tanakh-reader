@@ -32,17 +32,12 @@
 <br />
 <div align="center">
   <a href="https://github.com/Tanakh-Reader/tanakh-reader">
-    <img src="https://github.com/Tanakh-Reader/tanakh-reader/tree/revamped-onion-architecture/logo/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/Tanakh-Reader/tanakh-reader/blob/revamped-onion-architecture/logo/logo.png" alt="Logo" width="160" height="160">
   </a>
 
   <h3 align="center">Tanakh Reader</h3>
 
-  <p align="center">
-    A Hebrew Literacy App
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-
-  </p>
+  <p align="center">A Hebrew Literacy App</p>
 </div>
 
 
@@ -78,9 +73,18 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Tanakh Reader Screen Shot][product-screenshot]](https://github.com/Tanakh-Reader/tanakh-reader/tree/revamped-onion-architecture/logo)
+<a href="https://github.com/Tanakh-Reader/tanakh-reader">
+    <img src="https://github.com/Tanakh-Reader/tanakh-reader/blob/revamped-onion-architecture/screenshot.png" alt="Logo" width="250">
+</a>
 
-[The Project Explained](https://www.youtube.com/watch?v=gt2N4Bj_E4Y)
+
+Imagine being able to read the Hebrew Bible while tracking your progress and saving vocabulary. 
+
+
+The inspiration for this project is [Linga](https://linga.io/) meets [A Readers Hebrew Bible](https://zondervanacademic.com/products/a-readers-hebrew-bible)
+
+
+I explain my research and development in depth in a video presentation [here](https://www.youtube.com/watch?v=gt2N4Bj_E4Y)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -88,7 +92,11 @@
 
 ### Built With
 
-* TODO <!-- [![Next][Next.js]][Next-url] -->
+<!-- [![Next][Next.js]][Next-url] -->
+* Visual Studio Code Editor
+* Flutter SDK
+* Dart Programming Language
+* Firebase Authentication and Firestore
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -195,6 +203,12 @@ Project Link: [https://github.com/Tanakh-Reader/tanakh-reader](https://github.co
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
+### Mentorship and Research
+* Dr. Jesse Scheumann
+* Jonathan Robie
+* Andrew Case
+
+### Resources
 * [Choose an Open Source License](https://choosealicense.com)
 * [README Template](https://github.com/othneildrew/Best-README-Template)
 * [Hebrew Data](https://etcbc.github.io/bhsa/)
