@@ -31,8 +31,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/Tanakh-Reader/tanakh-reader">
+    <img src="https://github.com/Tanakh-Reader/tanakh-reader/tree/revamped-onion-architecture/logo/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Tanakh Reader</h3>
@@ -78,7 +78,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Tanakh Reader Screen Shot][product-screenshot]](https://example.com)
+[![Tanakh Reader Screen Shot][product-screenshot]](https://github.com/Tanakh-Reader/tanakh-reader/tree/revamped-onion-architecture/logo)
 
 [The Project Explained](https://www.youtube.com/watch?v=gt2N4Bj_E4Y)
 
