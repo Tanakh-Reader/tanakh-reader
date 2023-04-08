@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 import '../../data/providers/user.dart';
 import '../../data/database/user_data/user.dart';
-/*
+
 var NAME = 'user';
 Map<ReadingLevel, String> READING_LEVELS = {
   ReadingLevel.beginner: "Beginner", // 103 lexemes
@@ -137,9 +137,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   */
   }
 }
-*/
 
 
+/*
 class CustomColors {
   static final firebaseGrey = Colors.grey;
   static final firebaseNavy = Colors.blue;
@@ -317,3 +317,4 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     );
   }
 }
+*/ 

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../ui/screens/profile_screen.dart';
+import '../ui/views.dart';
 
 class LoginUser {
   final String? email;
@@ -27,8 +28,8 @@ class AuthService {
     if (user != null) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => UserInfoScreen(
-            user: user,
+          builder: (context) => Views( //UserInfoScreen(
+            // user: user,
           ),
         ),
       );

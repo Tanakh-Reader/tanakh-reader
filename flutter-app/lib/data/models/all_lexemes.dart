@@ -1,3 +1,4 @@
+import '../database/firebase-firestore/bible_db_helper.dart';
 import '../models/models.dart';
 import '../database/hebrew_bible_data/hb_db_helper.dart';
 
@@ -9,7 +10,8 @@ class AllLexemes {
   }
   
   static Future<void> loadAllLexemes() async {
-    _lexemes = await HebrewDatabaseHelper().getAllLexemes();
+    // _lexemes = await HebrewDatabaseHelper().getAllLexemes();
+    _lexemes = await FirestoreBibleDatabaseHelper().getAllLexemes();
   }
   
 

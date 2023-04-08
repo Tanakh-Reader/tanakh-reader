@@ -2,7 +2,7 @@
 
 import 'package:firebase_database/firebase_database.dart';
 
-class FirebaseUserDatabaseHelper {
+class RealtimeUserDatabaseHelper {
 
   final DatabaseReference _ref = FirebaseDatabase.instance.ref('users/');
 

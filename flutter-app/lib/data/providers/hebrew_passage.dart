@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tanakhreader/data/constants.dart';
+import 'package:tanakhreader/data/database/firebase-firestore/bible_db_helper.dart';
 
 import '../database/user_data/passage.dart';
 import '../models/models.dart';
@@ -256,7 +257,11 @@ class HebrewPassage with ChangeNotifier {
     _passage = null;
     isChapter = true;
     // Query the SQL database for word nodes.
-    _words = await HebrewDatabaseHelper().getWordsByBookChapter(book, ch);
+
+    // _words = await HebrewDatabaseHelper().getWordsByBookChapter(book, ch);
+
+    _words = await FirestoreBibleDatabaseHelper().getWordsByBookChapter(book, ch);
+
     _lexemes = AllLexemes.getLexemesInPassage(words);
     _verses = [];
     notifyListeners();

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:tanakhreader/data/database/firebase-realtime/bible_db_helper.dart';
 import 'package:tanakhreader/ui/components/registration/email_sign_in_button.dart';
 import 'package:tanakhreader/ui/components/registration/registration_fields.dart';
 import 'package:tanakhreader/ui/screens/screens.dart';
@@ -94,7 +95,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final GlobalKey<FormState> _fullFormKey = GlobalKey<FormState>();
 
   // final AuthService _auth = AuthService();
+  
   final UserDB _userDB = UserDB();
+  
 
   bool emailEntered = false;
   bool emailInUse = false;
@@ -111,6 +114,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     //     },
     //     child: const Text('Sign In'));
 
+    final bdb = RealtimeBibleDatabaseHelper();
+    print("CALLING FUNCTION");
+    bdb.getBooks();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

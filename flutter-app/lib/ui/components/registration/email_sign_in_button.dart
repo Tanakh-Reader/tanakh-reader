@@ -56,8 +56,8 @@ class EmailSignInButton extends StatelessWidget {
           else {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => UserInfoScreen(
-                  user: result,
+                builder: (context) => ProfileScreen(
+                  // user: result,
                 ),
               ),
             );

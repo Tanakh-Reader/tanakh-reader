@@ -17,6 +17,7 @@ class ReadScreen extends ConsumerWidget {
     print("Read built");
     final hebrewPassage = ref.watch(hebrewPassageProvider);
     return Scaffold(
+      backgroundColor: Colors.black,
       body: 
         hebrewPassage.isLoaded ?
         Stack(

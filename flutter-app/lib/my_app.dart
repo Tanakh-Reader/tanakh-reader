@@ -23,10 +23,24 @@ class MyApp extends ConsumerWidget {
     final userData = ref.watch(userDataProvider);
     final tabManager = ref.read(tabManagerProvider);
     return MaterialApp(
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: Colors.black,
-        ),
-        debugShowCheckedModeBanner: false,
+        // theme: ThemeData.dark().copyWith(
+        //   scaffoldBackgroundColor: Colors.black,
+        // ),
+
+        theme: ThemeData(
+        brightness: Brightness.light,
+        /* light theme settings */
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        /* dark theme settings */
+      ),
+      themeMode: ThemeMode.light, 
+      /* ThemeMode.system to follow system theme, 
+         ThemeMode.light for light theme, 
+         ThemeMode.dark for dark theme
+      */
+      debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(
             child: FutureBuilder(
@@ -39,7 +53,7 @@ class MyApp extends ConsumerWidget {
                   }
                   return CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      CustomColors.firebaseOrange,
+                      Colors.black,
                     ),
                   );
                 },

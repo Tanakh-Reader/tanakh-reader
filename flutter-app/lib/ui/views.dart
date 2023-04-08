@@ -21,6 +21,7 @@ class Views extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tabManager = ref.watch(tabManagerProvider);
     return Scaffold(
+      // backgroundColor: Colors.black,
       body: IndexedStack(
         index: tabManager.selectedTab, 
         children: pages),

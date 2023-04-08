@@ -50,6 +50,6 @@ class Init {
     await Books.getBooks();
     await AllLexemes.loadAllLexemes();
     // PassageData().clearData();
-    await PassageData().initializePassages(PASSAGE_MODULE_SIZE);
+    // await PassageData().initializePassages(PASSAGE_MODULE_SIZE);
   }
 }
