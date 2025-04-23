@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "797493748621",
+    "firebase_url": "https://tanakh-reader-default-rtdb.firebaseio.com",
+    "project_id": "tanakh-reader",
+    "storage_bucket": "tanakh-reader.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797493748621:android:fb27cba95763520cb453c4",
+        "android_client_info": {
+          "package_name": "com.tanakhreader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797493748621-e7g85igokd0vpqnav2ur71rqsrn675u7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD78IQRs1vRUX9NcBjg1zJDMVokVxzQB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797493748621-e7g85igokd0vpqnav2ur71rqsrn675u7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "797493748621-3n97r4buadqcugjq1bp2lmq2gbk61b46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hebrewLiteracyApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
