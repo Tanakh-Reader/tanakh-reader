@@ -1,7 +1,45 @@
-data_files/*
-!data_files/*.md
-!data_files/*.txt
-data_code/convert_csv_data.ipynb
-Flutter/python_backend/
-Flutter/hebrew_literacy_app/assets/db/bhsa.sqlite
-Flutter/hebrew_literacy_app/assets/db/bhsa_words.db
+# ─── Top-level one-offs ───────────────────────────────────────────────────────
+
+
+# ─── OS files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Editors & IDEs ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+*.swp
+
+# ─── Misc binaries & logs ────────────────────────────────────────────────────
+*.class
+*.log
+*.pyc
+
+# ─── Flutter / Dart tool outputs ──────────────────────────────────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+**/build/
+
+# generated plugin entry
+lib/generated_plugin_registrant.dart
+
+# symbolication / obfuscation outputs
+app.*.symbols
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# ─── Node (for your web folder) ───────────────────────────────────────────────
+node_modules/
